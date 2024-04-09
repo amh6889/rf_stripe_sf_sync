@@ -52,3 +52,15 @@ def test_update_donation_succeeds():
                }
     response = Donation.update('006Ox000008NqZCIA0',**invoice)
     assert response is 204
+
+
+def test_map_donation_works():
+    invoice = {'Stripe_Invoice_ID__c': '12345', 'Amount': '55',
+               'CloseDate': '2023-06-08',
+               'StageName': 'Closed Won',
+               'Donation_Source__c': 'RF Web-form',
+               'Name': '$5 RF Web-form',
+               'npe03__Recurring_Donation__c': None,
+               'Stripe_Subscription_ID__c': '12345', 'Card_Last_4__c': '5555'
+               }
+    response = DonationProcessor._map_donation(invoice)
