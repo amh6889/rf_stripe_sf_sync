@@ -1,5 +1,7 @@
 from pprint import pprint
 
+import stripe
+
 from salesforce.salesforce_connection import sf
 
 
@@ -31,10 +33,21 @@ class Donation:
             return None
 
     @staticmethod
+    def get_stripe_subscription_id(invoice_id: str):
+        print(invoice_id)
+        try:
+            response = stripe.Invoice.retrieve(invoice_id)
+            print(response)
+            return response['subscription']
+        except Exception as e:
+            print(e)
+            return None
+
+    @staticmethod
     def update(donation_id, **donation):
         print(donation)
         try:
-            response = sf.Opportunity.update(donation_id,donation)
+            response = sf.Opportunity.update(donation_id, donation)
             print(response)
             return response
         except Exception as e:

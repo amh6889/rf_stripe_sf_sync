@@ -9,7 +9,7 @@ from subscriptions.subscription import Subscription
 class SubscriptionProcessor:
 
     @staticmethod
-    def _map_subscription(**event_data):
+    def _map_active_subscription(**event_data):
         pprint(event_data)
         data = event_data['data']['object']
         status = data['status']
@@ -116,4 +116,20 @@ class SubscriptionProcessor:
             case _:
                 print("Unknown payment method:" + str(payment_method_type))
         return mapped_payment_method_type
+
+    @staticmethod
+    def _map_canceled_subscription(**event_data):
+        try:
+            data = event_data['data']['object']
+            status = data['status']
+            mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
+            subscription_id = data['id']
+            sf_subscription = Subscription.exists(subscription_id)
+
+            subscription = {'Id': sf_subscription['id'], 'npsp__Status__c': mapped_status,
+                            'npsp__ClosedReason__c': closed_reason}
+            return subscription
+        except Exception as error:
+            print(f'Error mapping canceled subscription due to {error}')
+
 

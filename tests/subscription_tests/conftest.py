@@ -3,12 +3,16 @@ import json
 import pytest
 
 from donors.donor import Donor
+from subscriptions.subscription import Subscription
 
 
 @pytest.fixture(autouse=True)
 def mocked_donor_id(mocker):
     mocker.patch.object(Donor, 'exists_by_email', return_value="123456")
 
+@pytest.fixture(autouse=True)
+def mocked_sf_recurring_donation_id(mocker):
+    mocker.patch.object(Subscription, 'exists', return_value={'id': '12345', 'sf_contact_id': '12345'})
 
 @pytest.fixture
 def open_subscription_json():
@@ -186,42 +190,45 @@ def open_subscription_json():
 @pytest.fixture
 def canceled_subscription_json():
     return json.dumps({
-        "id": "evt_1OuRZEL1MLd6bigCNHOdtRuT",
-        "data": {
+    "id": "evt_1PCBNeL1MLd6bigCMmvVHJoF",
+    "object": "event",
+    "api_version": "2022-11-15",
+    "created": 1714701466,
+    "data": {
         "object": {
-            "id": "sub_1OxZRmL1MLd6bigCGpI8nX8p",
+            "id": "sub_1P1hCDL1MLd6bigCTMM9YrD9",
             "object": "subscription",
-            "application": None,
+            "application": "ca_EEtbhRJHFK2etIhjyxcqXqBw3Ck05bKK",
             "application_fee_percent": None,
             "automatic_tax": {
                 "enabled": False,
                 "liability": None
             },
-            "billing_cycle_anchor": 1711219058,
+            "billing_cycle_anchor": 1712202157,
             "billing_cycle_anchor_config": None,
             "billing_thresholds": None,
             "cancel_at": None,
             "cancel_at_period_end": False,
-            "canceled_at": 1711585832,
+            "canceled_at": 1714701465,
             "cancellation_details": {
                 "comment": None,
                 "feedback": None,
                 "reason": "cancellation_requested"
             },
             "collection_method": "charge_automatically",
-            "created": 1711219058,
+            "created": 1712202157,
             "currency": "usd",
-            "current_period_end": 1713897458,
-            "current_period_start": 1711219058,
-            "customer": "cus_PjBU4vGjx2wr3I",
+            "current_period_end": 1714794157,
+            "current_period_start": 1712202157,
+            "customer": "cus_PrQ2qIHY8Jzywm",
             "days_until_due": None,
-            "default_payment_method": None,
+            "default_payment_method": "pm_1P1hCCL1MLd6bigCde45mpoC",
             "default_source": None,
-            "default_tax_rates": [
-            ],
+            "default_tax_rates": [],
             "description": None,
             "discount": None,
-            "ended_at": 1711585832,
+            "discounts": [],
+            "ended_at": 1714701465,
             "invoice_settings": {
                 "account_tax_ids": None,
                 "issuer": {
@@ -232,12 +239,12 @@ def canceled_subscription_json():
                 "object": "list",
                 "data": [
                     {
-                        "id": "si_Pn9lglchVwTu2Z",
+                        "id": "si_PrQ28sJ5vSov5C",
                         "object": "subscription_item",
                         "billing_thresholds": None,
-                        "created": 1711219059,
-                        "metadata": {
-                        },
+                        "created": 1712202158,
+                        "discounts": [],
+                        "metadata": {},
                         "plan": {
                             "id": "price_1OxZPCL1MLd6bigCglyGWwz9",
                             "object": "plan",
@@ -251,8 +258,8 @@ def canceled_subscription_json():
                             "interval": "month",
                             "interval_count": 1,
                             "livemode": False,
-                            "metadata": {
-                            },
+                            "metadata": {},
+                            "meter": None,
                             "nickname": None,
                             "product": "prod_Pn9imCT8L9sSWq",
                             "tiers_mode": None,
@@ -270,14 +277,14 @@ def canceled_subscription_json():
                             "custom_unit_amount": None,
                             "livemode": False,
                             "lookup_key": None,
-                            "metadata": {
-                            },
+                            "metadata": {},
                             "nickname": None,
                             "product": "prod_Pn9imCT8L9sSWq",
                             "recurring": {
                                 "aggregate_usage": None,
                                 "interval": "month",
                                 "interval_count": 1,
+                                "meter": None,
                                 "trial_period_days": None,
                                 "usage_type": "licensed"
                             },
@@ -288,19 +295,19 @@ def canceled_subscription_json():
                             "unit_amount": 100,
                             "unit_amount_decimal": "100"
                         },
-                        "quantity": 100,
-                        "subscription": "sub_1OxZRmL1MLd6bigCGpI8nX8p",
-                        "tax_rates": [
-                        ]
+                        "quantity": 1,
+                        "subscription": "sub_1P1hCDL1MLd6bigCTMM9YrD9",
+                        "tax_rates": []
                     }
                 ],
                 "has_more": False,
                 "total_count": 1,
-                "url": "/v1/subscription_items?subscription=sub_1OxZRmL1MLd6bigCGpI8nX8p"
+                "url": "/v1/subscription_items?subscription=sub_1P1hCDL1MLd6bigCTMM9YrD9"
             },
-            "latest_invoice": "in_1OxZRmL1MLd6bigCG9E9WIGu",
+            "latest_invoice": "in_1P1hCDL1MLd6bigCHsJ3eO2v",
             "livemode": False,
             "metadata": {
+                "created_by": "FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 334286604"
             },
             "next_pending_invoice_item_invoice": None,
             "on_behalf_of": None,
@@ -326,8 +333,8 @@ def canceled_subscription_json():
                 "interval": "month",
                 "interval_count": 1,
                 "livemode": False,
-                "metadata": {
-                },
+                "metadata": {},
+                "meter": None,
                 "nickname": None,
                 "product": "prod_Pn9imCT8L9sSWq",
                 "tiers_mode": None,
@@ -335,9 +342,9 @@ def canceled_subscription_json():
                 "trial_period_days": None,
                 "usage_type": "licensed"
             },
-            "quantity": 100,
+            "quantity": 1,
             "schedule": None,
-            "start_date": 1711219058,
+            "start_date": 1712202157,
             "status": "canceled",
             "test_clock": None,
             "transfer_data": None,
@@ -349,15 +356,12 @@ def canceled_subscription_json():
             },
             "trial_start": None
         }
-        },
-        "type": "customer.subscription.created",
-        "object": "event",
-        "created": 1710473784,
-        "request": {
-            "id": "req_bqfLoByWhhpd50",
-            "idempotency_key": "8b36254e-868b-4621-83aa-98d634310106"
-        },
-        "livemode": False,
-        "api_version": "2022-11-15",
-        "pending_webhooks": 3
-    })
+    },
+    "livemode": False,
+    "pending_webhooks": 0,
+    "request": {
+        "id": "req_5zMHKtj6Nq5ARg",
+        "idempotency_key": None
+    },
+    "type": "customer.subscription.deleted"
+})

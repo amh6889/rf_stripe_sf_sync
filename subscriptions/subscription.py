@@ -80,3 +80,4 @@ class Subscription:
         any(payment_method := pm for pm in (default_payment_method,default_source,temp_payment_method))
         pprint(payment_method)
         return payment_method
+

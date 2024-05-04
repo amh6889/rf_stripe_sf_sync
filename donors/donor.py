@@ -12,7 +12,7 @@ class Donor:
 
     @staticmethod
     def exists_by_email(email: str) -> str:
-        search_query = 'FIND {' + email + '} IN EMAIL FIELDS RETURNING Contact(Id)'
+        search_query = f'FIND {email} IN EMAIL FIELDS RETURNING Contact(Id)'
         print(search_query)
         response = sf.search(search_query)
         records = response.get('searchRecords')
@@ -25,7 +25,7 @@ class Donor:
 
     @staticmethod
     def exists_by_stripe_customer_id(stripe_customer_id: str) -> str:
-        search_query = 'SELECT Id FROM Contact Where {' + stripe_customer_id + '} IN EMAIL FIELDS RETURNING Contact(Id)'
+        search_query = f'SELECT Id FROM Contact Where {stripe_customer_id} IN EMAIL FIELDS RETURNING Contact(Id)'
         print(search_query)
         response = sf.search(search_query)
         records = response.get('searchRecords')
