@@ -1,35 +1,83 @@
 from donors.donor import Donor
-
-
+#TODO: create separate app/process/thread that will query Stripe for all customer's that have a null name and update the name with the description field
+#TODO: since Form assembly creates a new customer each time a form is submitted I need to have checks in my code to ensure that if I create a donor in Salesforce that it doesnt exist there already (check by email)
 class DonorProcessor:
 
+    #TODO: change below method to _map_create_donor_event and make new function to map an update donor event
     @staticmethod
     def _map_donor(**event_data):
         print(event_data)
         data = event_data['data']['object']
-        full_name = data['name']
-        first_name, last_name = DonorProcessor._parse_name(full_name)
         customer_id = data['id']
+        full_name = data['name']
+        if not full_name:
+            full_name = data['description']
+        first_name, last_name = DonorProcessor._parse_name(full_name)
         email = data['email']
         phone = data['phone']
-        city = data['address']['city']
-        street = data['address']['line1'] + ' ' + data['address']['line2']
-        state = data['address']['state']
-        country = data['address']['country']
-        postal_code = data['address']['postal_code']
+        metadata = data['metadata']
+        city = None
+        street = None
+        state = None
+        country = None
+        postal_code = None
+        if 'address_city' in metadata:
+            city = metadata['address_city']
+        if 'address_street' in metadata:
+            street = metadata['address_street']
+        if 'address_state' in metadata:
+            state = metadata['address_state']
+        if 'address_country' in metadata:
+            country = metadata['address_country']
+        if 'address_zip' in metadata:
+            postal_code = metadata['address_zip']
         donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name, 'npe01__HomeEmail__c': email, 'Email': email,
-                 'Phone': phone, 'MailingStreet': street.rstrip(), 'MailingState': state,
+                 'Phone': phone, 'MailingStreet': street, 'MailingState': state,
                  'MailingCity': city, 'MailingCountry': country, 'MailingPostalCode': postal_code, 'npe01__Preferred_Email__c': 'Personal'}
         return donor
 
     @staticmethod
     def process_create_event(event_data):
-        donor = DonorProcessor._map_donor(event_data)
-        Donor.create(**donor)
+        try:
+            donor = DonorProcessor._map_donor(**event_data)
+            sf_contact_id = Donor.exists_by_email(donor['Email'])
+            if not sf_contact_id:
+                response = Donor.create(**donor)
+                if 'success' in response:
+                    success = response['success']
+                    response = success
+            else:
+                response = True
+                print(
+                    f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} exists in Salesforce with ID {sf_contact_id}')
+            return response
+        except Exception as error:
+            print(error)
+            return False
+
 
     @staticmethod
-    def process_update_event(event):
-        pass
+    def process_update_event(event_data):
+        try:
+            response = False
+            donor = DonorProcessor._map_donor(**event_data)
+            sf_contact_id = Donor.exists_by_email(donor['Email'])
+            if not sf_contact_id:
+                print(
+                    f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} does not exist in Salesforce. Cannot process update event.')
+                nonlocal response
+                response = False
+            else:
+                nonlocal response
+                response = Donor.update(sf_contact_id, **donor)
+                if 'success' in response:
+                    success = response['success']
+                    response = success
+
+            return response
+        except Exception as error:
+            print(error)
+            return False
 
     @staticmethod
     def _parse_name(full_name):

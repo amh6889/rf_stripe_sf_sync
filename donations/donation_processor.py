@@ -15,7 +15,7 @@ class DonationProcessor:
         try:
             data = event_data['data']['object']
             stripe_payment_intent_id = data['id']
-            amount = data['amount_received']
+            amount = data['amount']
             locale.setlocale(locale.LC_ALL, '')
             formatted_amount = locale.currency(amount / 100, symbol=False)
             stripe_customer_id = data['customer']
@@ -29,7 +29,7 @@ class DonationProcessor:
             closed_date = DonationProcessor._parse_epoch_time(epoch_time_created)
             status = data['status']
             stage_name = DonationProcessor._map_stage_name(status)
-            payment_method = data['payment_method']
+            payment_method = data['payment_method_details']
             last_4_digits = DonationProcessor._get_payment_method_last_4(payment_method)
 
             stripe_invoice_id = data['invoice']
@@ -58,7 +58,6 @@ class DonationProcessor:
     @staticmethod
     def _map_refund(**event_data):
         try:
-            print(event_data)
             data = event_data['data']['object']
             stripe_payment_intent_id = data['payment_intent']
             sf_donation_id = Donation.exists(stripe_payment_intent_id)
@@ -83,17 +82,25 @@ class DonationProcessor:
         return stage_name
 
     @staticmethod
-    def _get_payment_method_last_4(stripe_payment_method_id):
+    def _get_payment_method_last_4(stripe_payment_method):
         try:
-            payment_method = stripe.PaymentMethod.retrieve(stripe_payment_method_id)
-            print(payment_method)
+            #payment_method = stripe.PaymentMethod.retrieve(stripe_payment_method_id)
             last_4_digits = None
-            if payment_method.type == 'card':
-                last_4_digits = payment_method.card.last4
-            elif payment_method.type == 'us_bank_account':
-                last_4_digits = payment_method.us_bank_account.last4
+            payment_method_type = stripe_payment_method['type']
+            if payment_method_type == 'card':
+                last_4_digits = stripe_payment_method['card']['last4']
+            elif payment_method_type == 'us_bank_account':
+                last_4_digits = stripe_payment_method['us_bank_account']['last4']
             else:
-                print(f'Payment method type {payment_method.type} is not supported')
+                print(f'Payment method type {payment_method_type} is not supported')
             return last_4_digits
         except Exception as e:
             print(e)
+
+    @staticmethod
+    def process_create_event(donation_event):
+        pass
+
+    @staticmethod
+    def process_update_event(donation_event):
+        pass

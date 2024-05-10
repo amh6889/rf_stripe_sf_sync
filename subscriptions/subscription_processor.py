@@ -15,6 +15,10 @@ class SubscriptionProcessor:
         status = data['status']
         mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
         subscription_id = data['id']
+        sf_subscription = Subscription.exists(subscription_id)
+        sf_subscription_id = None
+        if sf_subscription:
+            sf_subscription_id = sf_subscription['id']
         amount = data['plan']['amount']
         created = data['created']
         start_date = data['start_date']
@@ -27,7 +31,7 @@ class SubscriptionProcessor:
         payment_method = Subscription.get_payment_method(subscription_id)
         payment_method_type = payment_method['type']
         mapped_payment_method_type = SubscriptionProcessor._map_payment_method(payment_method_type)
-        #last4 = payment_method_type[payment_method_type]['last4']
+        # last4 = payment_method_type[payment_method_type]['last4']
         installment_frequency = data['plan']['interval_count']
 
         subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npe03__Amount__c': amount,
@@ -38,23 +42,30 @@ class SubscriptionProcessor:
                         'npe03__Recurring_Donation_Campaign__c': None,
                         'npsp__RecurringType__c': 'Open', 'npe03__Installment_Period__c': installment_period,
                         'npsp__Day_of_Month__c': day_of_month,
-                        'npsp__InstallmentFrequency__c': installment_frequency, 'npsp__PaymentMethod__c': mapped_payment_method_type,
+                        'npsp__InstallmentFrequency__c': installment_frequency,
+                        'npsp__PaymentMethod__c': mapped_payment_method_type,
                         'npe03__Installments__c': None, 'npe03__Contact__c': salesforce_id}
-        return subscription
+        return subscription, sf_subscription_id
 
     @staticmethod
     def _parse_epoch_time(epoch_time):
         date_time = datetime.datetime.fromtimestamp(epoch_time, datetime.UTC)
-        return date_time.day,date_time.isoformat()
+        return date_time.day, date_time.isoformat()
 
     @staticmethod
     def process_create_event(event_data):
-        subscription = SubscriptionProcessor._map_subscription(event_data)
+        subscription, sf_subscription_id = SubscriptionProcessor._map_active_subscription(**event_data)
         Subscription.create(**subscription)
 
     @staticmethod
-    def process_update_event(event):
-        pass
+    def process_update_event(event_data):
+        subscription, sf_subscription_id = SubscriptionProcessor._map_active_subscription(**event_data)
+        Subscription.update(sf_subscription_id, **subscription)
+
+    @staticmethod
+    def process_delete_event(subscription_event):
+        subscription, sf_subscription_id = SubscriptionProcessor._map_canceled_subscription(**subscription_event)
+        Subscription.update(sf_subscription_id, **subscription)
 
     @staticmethod
     def _map_installment_period(interval):
@@ -125,10 +136,11 @@ class SubscriptionProcessor:
             mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
             subscription_id = data['id']
             sf_subscription = Subscription.exists(subscription_id)
-
-            subscription = {'Id': sf_subscription['id'], 'npsp__Status__c': mapped_status,
+            sf_subscription_id = sf_subscription['id']
+            subscription = {'Id': sf_subscription_id, 'npsp__Status__c': mapped_status,
                             'npsp__ClosedReason__c': closed_reason}
-            return subscription
+
+            return subscription, sf_subscription_id
         except Exception as error:
             print(f'Error mapping canceled subscription due to {error}')
 

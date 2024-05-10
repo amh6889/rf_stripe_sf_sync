@@ -61,7 +61,6 @@ class Subscription:
 
     @staticmethod
     def update(recurring_donation_id, **recurring_donation):
-        print(recurring_donation)
         try:
             response = sf.npe03__Recurring_Donation__c.update(recurring_donation_id, recurring_donation)
             print(response)
