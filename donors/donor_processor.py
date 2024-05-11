@@ -15,26 +15,41 @@ class DonorProcessor:
         first_name, last_name = DonorProcessor._parse_name(full_name)
         email = data['email']
         phone = data['phone']
-        metadata = data['metadata']
-        city = None
-        street = None
-        state = None
-        country = None
-        postal_code = None
-        if 'address_city' in metadata:
-            city = metadata['address_city']
-        if 'address_street' in metadata:
-            street = metadata['address_street']
-        if 'address_state' in metadata:
-            state = metadata['address_state']
-        if 'address_country' in metadata:
-            country = metadata['address_country']
-        if 'address_zip' in metadata:
-            postal_code = metadata['address_zip']
+        street, city, state, country, postal_code = DonorProcessor.get_donor_address(data)
         donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name, 'npe01__HomeEmail__c': email, 'Email': email,
                  'Phone': phone, 'MailingStreet': street, 'MailingState': state,
                  'MailingCity': city, 'MailingCountry': country, 'MailingPostalCode': postal_code, 'npe01__Preferred_Email__c': 'Personal'}
         return donor
+
+    @staticmethod
+    def get_donor_address(data):
+        street = city = state = country = postal_code = None
+        if 'address' in data and data['address']:
+            address = data['address']
+            if 'city' in address:
+                city = address['city']
+            if 'state' in address:
+                state = address['state']
+            if 'line1' in address:
+                street = address['line1'] + ' ' + address['line2']
+            if 'country' in address:
+                country = address['country']
+            if 'postal_code' in address:
+                postal_code = address['postal_code']
+        else:
+            metadata = data['metadata']
+            if 'address_city' in metadata:
+                city = metadata['address_city']
+            if 'address_street' in metadata:
+                street = metadata['address_street']
+            if 'address_state' in metadata:
+                state = metadata['address_state']
+            if 'address_country' in metadata:
+                country = metadata['address_country']
+            if 'address_zip' in metadata:
+                postal_code = metadata['address_zip']
+        return street, city, state, country, postal_code
+
 
     @staticmethod
     def process_create_event(event_data):
@@ -59,22 +74,18 @@ class DonorProcessor:
     @staticmethod
     def process_update_event(event_data):
         try:
-            response = False
             donor = DonorProcessor._map_donor(**event_data)
             sf_contact_id = Donor.exists_by_email(donor['Email'])
             if not sf_contact_id:
                 print(
                     f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} does not exist in Salesforce. Cannot process update event.')
-                nonlocal response
-                response = False
+                update_success = False
             else:
-                nonlocal response
                 response = Donor.update(sf_contact_id, **donor)
                 if 'success' in response:
                     success = response['success']
-                    response = success
-
-            return response
+                    update_success = success
+            return update_success
         except Exception as error:
             print(error)
             return False

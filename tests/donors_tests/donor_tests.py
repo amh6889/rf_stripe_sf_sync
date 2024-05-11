@@ -60,71 +60,8 @@ def test_update_donor_errors():
     assert response is not 204
 
 
-def test_donor_processor_maps_works():
-    donor_event = """
-  {"id": "evt_1OnOgxL1MLd6bigCjQVt4aC3",
-  "data": {
-    "object": {
-      "id": "cus_PcdyPDFvTFM1gP",
-      "name": "Ted Hunt Mendoza",
-      "email": "testemail99@gmail.com",
-      "phone": "+14347280720",
-      "object": "customer",
-      "address": {
-        "city": "Lynchburg",
-        "line1": "406 Stonemill Dr",
-        "line2": "Apt I",
-        "state": "VA",
-        "country": "US",
-        "postal_code": "24502"
-      },
-      "balance": 0,
-      "created": 1708794435,
-      "currency": null,
-      "discount": null,
-      "livemode": false,
-      "metadata": {},
-      "shipping": {
-        "name": "Stripe Test",
-        "phone": "+14347280720",
-        "address": {
-          "city": "Lynchburg",
-          "line1": "406 Stonemill Dr",
-          "line2": "Apt I",
-          "state": "VA",
-          "country": "US",
-          "postal_code": "24502"
-        }
-      },
-      "delinquent": false,
-      "tax_exempt": "none",
-      "test_clock": null,
-      "description": "test",
-      "default_source": null,
-      "invoice_prefix": "D324F091",
-      "invoice_settings": {
-        "footer": null,
-        "custom_fields": null,
-        "rendering_options": null,
-        "default_payment_method": null
-      },
-      "preferred_locales": [],
-      "next_invoice_sequence": 1
-    }
-  },
-  "type": "customer.created",
-  "object": "event",
-  "created": 1708794435,
-  "request": {
-    "id": "req_qMdC5zjrtB9Y2a",
-    "idempotency_key": "044342a2-7dbc-4107-93eb-db064bb76ee6"
-  },
-  "livemode": false,
-  "api_version": "2022-11-15",
-  "pending_webhooks": 3
-}
-"""
-    donor = json.loads(donor_event)
+def test_donor_processor_maps_works_with_donor_address(donor_with_address_json):
+    donor = json.loads(donor_with_address_json)
     mapped_donor = DonorProcessor._map_donor(**donor)
     assert mapped_donor['FirstName'] == 'Ted'
     assert mapped_donor['LastName'] == 'Hunt Mendoza'
@@ -138,6 +75,38 @@ def test_donor_processor_maps_works():
     assert mapped_donor['Phone'] == '+14347280720'
     assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
     assert mapped_donor['External_Contact_ID__c'] == 'cus_PcdyPDFvTFM1gP'
+
+def test_donor_processor_maps_works_with_donor_metadata_address(donor_with_metadata_address_json):
+    donor = json.loads(donor_with_metadata_address_json)
+    mapped_donor = DonorProcessor._map_donor(**donor)
+    assert mapped_donor['FirstName'] == 'Turd'
+    assert mapped_donor['LastName'] == 'Ferguson'
+    assert mapped_donor['npe01__HomeEmail__c'] == 'turdfergusion_test@gmail.com'
+    assert mapped_donor['Email'] == 'turdfergusion_test@gmail.com'
+    assert mapped_donor['MailingStreet'] == '4554 Thomas Jefferson Rd'
+    assert mapped_donor['MailingCity'] == 'Forest'
+    assert mapped_donor['MailingState'] == 'VA'
+    assert mapped_donor['MailingPostalCode'] == '24551'
+    assert mapped_donor['MailingCountry'] == 'United States'
+    assert mapped_donor['Phone'] is None
+    assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
+    assert mapped_donor['External_Contact_ID__c'] == 'cus_Q4X90EUjCmX1wg'
+
+def test_donor_processor_maps_works_with_no_donor_metadata_address(donor_with_no_metadata_address_json):
+    donor = json.loads(donor_with_no_metadata_address_json)
+    mapped_donor = DonorProcessor._map_donor(**donor)
+    assert mapped_donor['FirstName'] == 'Turd'
+    assert mapped_donor['LastName'] == 'Ferguson'
+    assert mapped_donor['npe01__HomeEmail__c'] == 'turdfergusion_test@gmail.com'
+    assert mapped_donor['Email'] == 'turdfergusion_test@gmail.com'
+    assert mapped_donor['MailingStreet'] is None
+    assert mapped_donor['MailingCity'] is None
+    assert mapped_donor['MailingState'] is None
+    assert mapped_donor['MailingPostalCode'] is None
+    assert mapped_donor['MailingCountry'] is None
+    assert mapped_donor['Phone'] is None
+    assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
+    assert mapped_donor['External_Contact_ID__c'] == 'cus_Q4X90EUjCmX1wg'
 
 
 def test_parse_name_two_names_works():
