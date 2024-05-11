@@ -9,34 +9,25 @@ from subscriptions.subscription_processor import SubscriptionProcessor
 class EventProcessor:
 
     @staticmethod
-    def get_events():
-        query = (
-            "select * from stripe.stripe_event where is_synced = 'N' order by FIELD(EVENT_TYPE, 'customer.created','payment_intent.created','charge.succeeded','payment_intent.succeeded'),activity_date desc")
-        events = []
-        with utils.database_connection.db_connection.cursor(dictionary=True) as cursor:
-            cursor.execute(query)
-            for row in cursor:
-                events.append(row)
-        print(events)
-        return events
-
-    @staticmethod
     def process_donor_event(ch, method, properties, body):
-        donor_event = json.loads(body)
-        print(f'donor event: {donor_event}')
-        if donor_event['type'] == 'customer.created':
-            response = DonorProcessor.process_create_event(donor_event)
-            if response:
-                ch.basic_ack(delivery_tag=method.delivery_tag)
-                print(f'Successfully processed donor create event: {donor_event}')
+        try:
+            donor_event = json.loads(body)
+            print(f'donor event: {donor_event}')
+            if donor_event['type'] == 'customer.created':
+                response = DonorProcessor.process_create_event(donor_event)
+                if response:
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
+                    print(f'Successfully processed donor create event: {donor_event}')
+                else:
+                    print(f'Error processing donor create event: {donor_event}')
             else:
-                print(f'Error processing donor create event: {donor_event}')
-        else:
-            response = DonorProcessor.process_update_event(donor_event)
-            if response:
-                ch.basic_ack(delivery_tag=method.delivery_tag)
-            else:
-                print(f'Error processing donor update event: {donor_event}')
+                response = DonorProcessor.process_update_event(donor_event)
+                if response:
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
+                else:
+                    print(f'Error processing donor update event: {donor_event}')
+        except Exception as e:
+            print(f'Error in process_donor_event due to {e}')
 
     @staticmethod
     def process_subscription_event(ch, method, properties, body):
@@ -63,30 +54,21 @@ class EventProcessor:
 
     @staticmethod
     def process_donation_event(ch, method, properties, body):
-        donation_event = json.loads(body)
-        print(f'donation event: {donation_event}')
-        if donation_event['type'] == 'customer.created':
-            response = DonationProcessor.process_create_event(donation_event)
-            if response:
-                ch.basic_ack(delivery_tag=method.delivery_tag)
+        try:
+            donation_event = json.loads(body)
+            print(f'donation event: {donation_event}')
+            if donation_event['type'] == 'customer.created':
+                response = DonationProcessor.process_create_event(donation_event)
+                if response:
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
+                else:
+                    print(f'Error processing donation create event: {donation_event}')
             else:
-                print(f'Error processing donation create event: {donation_event}')
-        else:
-            response = DonationProcessor.process_update_event(donation_event)
-            if response:
-                ch.basic_ack(delivery_tag=method.delivery_tag)
-            else:
-                print(f'Error processing donation update event: {donation_event}')
+                response = DonationProcessor.process_update_event(donation_event)
+                if response:
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
+                else:
+                    print(f'Error processing donation update event: {donation_event}')
+        except Exception as e:
+            print(f'Error in process_donation_event due to {e}')
 
-    @staticmethod
-    def process_events(events):
-        for event in events:
-            event_type = event["event_type"]
-            event_data = event["event_data"]
-            match event_type:
-                case "customer.created":
-                    DonorProcessor.process_create_event(event_data)
-                case "customer.updated":
-                    DonorProcessor.process_update_event(event_data)
-                case _:
-                    print("Unknown event type")

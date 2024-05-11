@@ -8,8 +8,8 @@ from salesforce.salesforce_connection import sf
 class Donation:
 
     @staticmethod
-    def exists(donation_id) -> str:
-        query = f"SELECT Id from Opportunity where Stripe_Invoice_ID__c = '{donation_id}'"
+    def exists(stripe_donation_id) -> str:
+        query = f"SELECT Id from Opportunity where Stripe_Invoice_ID__c = '{stripe_donation_id}'"
         print(query)
         # results = sf.Opportunity.get_by_custom_id('Stripe_Invoice_ID__c', donation_id)
         response = sf.query(query)

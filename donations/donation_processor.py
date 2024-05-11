@@ -99,8 +99,36 @@ class DonationProcessor:
 
     @staticmethod
     def process_create_event(donation_event):
-        pass
+        try:
+            donation = DonationProcessor._map_donation(**donation_event)
+            sf_donation_id = Donation.exists(donation['Stripe_Invoice_ID__c'])
+            if not sf_donation_id:
+                create_response = Donation.create(**donation)
+                if 'success' in create_response:
+                    success = create_response['success']
+            else:
+                success = True
+                print(
+                    f'Stripe charge {donation['Stripe_Invoice_ID__c']} already exists in Salesforce. Cannot process create event.')
+            return success
+        except Exception as error:
+            print(error)
+            return False
 
     @staticmethod
     def process_update_event(donation_event):
-        pass
+        try:
+            donation = DonationProcessor._map_donation(**donation_event)
+            sf_donation_id = Donation.exists(donation['Stripe_Invoice_ID__c'])
+            if not sf_donation_id:
+                print(
+                    f'Stripe charge {donation['Stripe_Invoice_ID__c']} does not exist in Salesforce. Cannot process update event.')
+                update_success = False
+            else:
+                response = Donation.update(sf_donation_id, **donation)
+                if 'success' in response:
+                    update_success = response['success']
+            return update_success
+        except Exception as error:
+            print(error)
+            return False

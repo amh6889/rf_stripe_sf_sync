@@ -57,15 +57,14 @@ class DonorProcessor:
             donor = DonorProcessor._map_donor(**event_data)
             sf_contact_id = Donor.exists_by_email(donor['Email'])
             if not sf_contact_id:
-                response = Donor.create(**donor)
-                if 'success' in response:
-                    success = response['success']
-                    response = success
+                create_response = Donor.create(**donor)
+                if 'success' in create_response:
+                    success = create_response['success']
             else:
-                response = True
+                success = True
                 print(
                     f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} exists in Salesforce with ID {sf_contact_id}')
-            return response
+            return success
         except Exception as error:
             print(error)
             return False
@@ -83,8 +82,7 @@ class DonorProcessor:
             else:
                 response = Donor.update(sf_contact_id, **donor)
                 if 'success' in response:
-                    success = response['success']
-                    update_success = success
+                    update_success = response['success']
             return update_success
         except Exception as error:
             print(error)
