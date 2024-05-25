@@ -17,58 +17,78 @@ class EventProcessor:
                 response = DonorProcessor.process_create_event(donor_event)
                 if response:
                     ch.basic_ack(delivery_tag=method.delivery_tag)
-                    print(f'Successfully processed donor create event: {donor_event}')
+                    print(f'Successfully processed donor create event id: {donor_event['id']}')
                 else:
-                    print(f'Error processing donor create event: {donor_event}')
-            else:
+                    print(f'Error processing donor create event id: {donor_event['id']}')
+                    ch.basic_nack(delivery_tag=method.delivery_tag)
+            elif donor_event['type'] == 'customer.updated':
                 response = DonorProcessor.process_update_event(donor_event)
                 if response:
                     ch.basic_ack(delivery_tag=method.delivery_tag)
+                    print(f'Successfully processed donor update event id: {donor_event['id']}')
                 else:
-                    print(f'Error processing donor update event: {donor_event}')
+                    print(f'Error processing donor update event id: {donor_event['id']}')
+                    ch.basic_nack(delivery_tag=method.delivery_tag)
+            else:
+                print(f'Unknown donor event type: {donor_event['type']}')
         except Exception as e:
             print(f'Error in process_donor_event due to {e}')
 
     @staticmethod
     def process_subscription_event(ch, method, properties, body):
-        subscription_event = json.loads(body)
-        print(f'donor event: {subscription_event}')
-        if subscription_event['type'] == 'customer.subscription.created':
-            response = SubscriptionProcessor.process_create_event(subscription_event)
-            if response:
-                ch.basic_ack(delivery_tag=method.delivery_tag)
+        try:
+            subscription_event = json.loads(body)
+            print(f'subscription  event: {subscription_event}')
+            if subscription_event['type'] == 'customer.subscription.created':
+                response = SubscriptionProcessor.process_create_event(subscription_event)
+                if response:
+                    print(f'Subscription create event id: {subscription_event['id']} processed successfully')
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
+                else:
+                    print(f'Error processing subscription create event id: {subscription_event['id']}')
+                    ch.basic_nack(delivery_tag=method.delivery_tag)
+            elif subscription_event['type'] == 'customer.subscription.deleted':
+                response = SubscriptionProcessor.process_delete_event(subscription_event)
+                if response:
+                    print(f'Subscription delete event id: {subscription_event['id']} processed successfully')
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
+                else:
+                    print(f'Error processing subscription delete event id: {subscription_event['id']}')
+                    ch.basic_nack(delivery_tag=method.delivery_tag)
+            elif subscription_event['type'] == 'customer.subscription.updated':
+                response = SubscriptionProcessor.process_update_event(subscription_event)
+                if response:
+                    print(f'Subscription update event id: {subscription_event['id']} processed successfully')
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
+                else:
+                    print(f'Error processing subscription update event id: {subscription_event['id']}')
+                    ch.basic_nack(delivery_tag=method.delivery_tag)
             else:
-                print(f'Error processing subscription create event: {subscription_event}')
-        elif subscription_event['type'] == 'customer.subscription.deleted':
-            response = SubscriptionProcessor.process_delete_event(subscription_event)
-            if response:
-                ch.basic_ack(delivery_tag=method.delivery_tag)
-            else:
-                print(f'Error processing subscription delete event: {subscription_event}')
-        else:
-            response = SubscriptionProcessor.process_update_event(subscription_event)
-            if response:
-                ch.basic_ack(delivery_tag=method.delivery_tag)
-            else:
-                print(f'Error processing subscription update event: {subscription_event}')
+                print(f'Unknown subscription event: {subscription_event['type']}')
+        except Exception as e:
+            print(f'Error in process_subscription_event due to {e}')
 
     @staticmethod
     def process_donation_event(ch, method, properties, body):
         try:
             donation_event = json.loads(body)
             print(f'donation event: {donation_event}')
-            if donation_event['type'] == 'customer.created':
+            if donation_event['type'] == 'charge.succeeded':
                 response = DonationProcessor.process_create_event(donation_event)
                 if response:
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                 else:
                     print(f'Error processing donation create event: {donation_event}')
-            else:
+                    ch.basic_nack(delivery_tag=method.delivery_tag)
+            elif donation_event['type'] == 'charge.refunded':
                 response = DonationProcessor.process_update_event(donation_event)
                 if response:
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                 else:
                     print(f'Error processing donation update event: {donation_event}')
+                    ch.basic_nack(delivery_tag=method.delivery_tag)
+            else:
+                print(f'Unknown donation event: {donation_event['type']}')
         except Exception as e:
             print(f'Error in process_donation_event due to {e}')
 

@@ -15,6 +15,7 @@ class Donor:
         search_query = 'FIND {' + email + '} IN EMAIL FIELDS RETURNING Contact(Id)'
         print(search_query)
         response = sf.search(search_query)
+        print(response)
         records = response.get('searchRecords')
         sf_contact_id = None
         if len(records) > 0:

@@ -1,4 +1,5 @@
 import datetime
+import locale
 from pprint import pprint
 
 from donors.donor import Donor
@@ -10,12 +11,14 @@ class SubscriptionProcessor:
 
     @staticmethod
     def _map_active_subscription(**event_data):
-        pprint(event_data)
         data = event_data['data']['object']
         status = data['status']
         mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
         subscription_id = data['id']
-        amount = data['plan']['amount']
+
+        amount = data['plan']['amount'] * data['quantity']
+        locale.setlocale(locale.LC_ALL, '')
+        formatted_amount = locale.currency(amount / 100, symbol=False)
         created = data['created']
         start_date = data['start_date']
         day_of_month, date_start = SubscriptionProcessor._parse_epoch_time(created)
@@ -30,7 +33,7 @@ class SubscriptionProcessor:
         # last4 = payment_method_type[payment_method_type]['last4']
         installment_frequency = data['plan']['interval_count']
 
-        subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npe03__Amount__c': amount,
+        subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npe03__Amount__c': formatted_amount,
                         'npe03__Date_Established__c': date_start,
                         'npsp__StartDate__c': date_start, 'npsp__EndDate__c': None,
                         'Donation_Source__c': 'RF Web-form',
@@ -126,7 +129,7 @@ class SubscriptionProcessor:
             case "active":
                 subscription_status = 'Active'
             case "incomplete":
-                pass
+                subscription_status = 'Paused'
             case "incomplete_expired":
                 subscription_status = 'Canceled'
                 closed_reason = 'Webform Canceled'

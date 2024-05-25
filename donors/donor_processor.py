@@ -57,9 +57,19 @@ class DonorProcessor:
             donor = DonorProcessor._map_donor(**event_data)
             sf_contact_id = Donor.exists_by_email(donor['Email'])
             if not sf_contact_id:
+                print(
+                    f'Creating Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} in Salesforce with ID {sf_contact_id}')
                 create_response = Donor.create(**donor)
                 if 'success' in create_response:
                     success = create_response['success']
+                    if success:
+                        salesforce_id = create_response['id']
+                        print(
+                            f'Created Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce with ID {salesforce_id}')
+                    else:
+                        errors = create_response['errors']
+                        print(
+                            f'Did not create Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to: {errors}')
             else:
                 success = True
                 print(
@@ -83,6 +93,13 @@ class DonorProcessor:
                 response = Donor.update(sf_contact_id, **donor)
                 if 'success' in response:
                     update_success = response['success']
+                    if update_success:
+                        print(
+                            f'Updated Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce.')
+                    else:
+                        errors = response['errors']
+                        print(
+                            f'Did not update Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to {errors}')
             return update_success
         except Exception as error:
             print(error)
