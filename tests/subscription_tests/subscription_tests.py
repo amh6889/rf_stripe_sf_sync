@@ -1,12 +1,9 @@
 import json
 
-import mock
 
 from subscriptions.subscription import Subscription
 from subscriptions.subscription_processor import SubscriptionProcessor
-from unittest.mock import Mock, MagicMock
-from donors.donor import Donor
-from unittest.mock import Mock
+
 
 
 def test_subscription_does_not_exist():

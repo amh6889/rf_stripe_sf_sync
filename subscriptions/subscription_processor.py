@@ -3,7 +3,6 @@ import locale
 from pprint import pprint
 
 from donors.donor import Donor
-from salesforce.salesforce_connection import sf
 from subscriptions.subscription import Subscription
 
 

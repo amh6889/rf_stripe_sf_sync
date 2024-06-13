@@ -1,7 +1,6 @@
 import datetime
 import locale
 
-import stripe
 
 from donations.donation import Donation
 from donors.donor import Donor

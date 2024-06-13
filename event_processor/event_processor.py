@@ -2,7 +2,6 @@ import json
 
 from donations.donation_processor import DonationProcessor
 from donors.donor_processor import DonorProcessor
-import utils.database_connection
 from subscriptions.subscription_processor import SubscriptionProcessor
 
 
