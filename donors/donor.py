@@ -1,5 +1,4 @@
 from salesforce.salesforce_connection import sf
-from utils.database_connection import db_connection
 import stripe
 from dotenv import load_dotenv
 import os
@@ -49,20 +48,6 @@ class Donor:
         response = sf.Contact.update(sf_contact_id, donor)
         print(response)
         return response
-
-
-    @staticmethod
-    def get_donor_events():
-        query = (
-            "SELECT * FROM stripe.stripe_event where is_synced = 'N' and event_type like '%customer%' order by created_at")
-        events = []
-        with db_connection.cursor(dictionary=True) as cursor:
-            cursor.execute(query)
-            for row in cursor:
-                print(row)
-                events.append(row)
-        print((events[0]))
-        return events
 
     @staticmethod
     def get_email(stripe_customer_id):
