@@ -58,7 +58,7 @@ class DonorProcessor:
             sf_contact_id = Donor.exists_by_email(donor['Email'])
             if not sf_contact_id:
                 print(
-                    f'Creating Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} in Salesforce with ID {sf_contact_id}')
+                    f'Creating Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} in Salesforce')
                 create_response = Donor.create(**donor)
                 if 'success' in create_response:
                     success = create_response['success']
@@ -82,17 +82,18 @@ class DonorProcessor:
 
     @staticmethod
     def process_update_event(event_data):
+        update_success = False
         try:
             donor = DonorProcessor._map_donor(**event_data)
             sf_contact_id = Donor.exists_by_email(donor['Email'])
+
             if not sf_contact_id:
                 print(
                     f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} does not exist in Salesforce. Cannot process update event.')
-                update_success = False
             else:
                 response = Donor.update(sf_contact_id, **donor)
-                if 'success' in response:
-                    update_success = response['success']
+                if response == 204:
+                    update_success = True
                     if update_success:
                         print(
                             f'Updated Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce.')
@@ -100,10 +101,9 @@ class DonorProcessor:
                         errors = response['errors']
                         print(
                             f'Did not update Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to {errors}')
-            return update_success
         except Exception as error:
             print(error)
-            return False
+        return update_success
 
     @staticmethod
     def _parse_name(full_name):

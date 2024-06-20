@@ -116,18 +116,17 @@ class DonationProcessor:
 
     @staticmethod
     def process_update_event(donation_event):
+        update_success = False
         try:
             donation = DonationProcessor._map_donation(**donation_event)
             sf_donation_id = Donation.exists(donation['Stripe_Invoice_ID__c'])
             if not sf_donation_id:
                 print(
                     f'Stripe charge {donation['Stripe_Invoice_ID__c']} does not exist in Salesforce. Cannot process update event.')
-                update_success = False
             else:
                 response = Donation.update(sf_donation_id, **donation)
-                if 'success' in response:
-                    update_success = response['success']
-            return update_success
+                if response == 204:
+                    update_success = True
         except Exception as error:
             print(error)
-            return False
+        return update_success

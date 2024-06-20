@@ -6,13 +6,13 @@ from donors.donor_processor import DonorProcessor
 
 def test_donor_does_not_exist():
     email = 'sometestemail@gmail.com'
-    exists = Donor.exists(email)
+    exists = Donor.exists_by_email(email)
     assert exists is None
 
 
 def test_donor_exist():
-    email = 'acat@tx.rr.com'
-    donor = Donor.exists(email)
+    email = 'do_test@gmail.com'
+    donor = Donor.exists_by_email(email)
     assert donor is not None
 
 
@@ -57,6 +57,7 @@ def test_update_donor_errors():
              'npe01__PreferredPhone__c': 'Home', 'Created_by_Anet_Sync__c': True}
     sf_contact_id = '003Ox00000Acq6HIAX'
     response = Donor.update(sf_contact_id, **donor)
+    print(response)
     assert response is not 204
 
 

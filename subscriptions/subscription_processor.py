@@ -1,7 +1,5 @@
 import datetime
 import locale
-from pprint import pprint
-
 from donors.donor import Donor
 from subscriptions.subscription import Subscription
 
@@ -70,41 +68,40 @@ class SubscriptionProcessor:
 
     @staticmethod
     def process_update_event(event_data):
+        update_success = False
         try:
             subscription = SubscriptionProcessor._map_active_subscription(**event_data)
             sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
             if not sf_subscription_id:
                 print(
                     f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process update event.')
-                update_success = False
             else:
                 response = Subscription.update(sf_subscription_id, **subscription)
-                if 'success' in response:
-                    update_success = response['success']
-            return update_success
+                if response == 204:
+                    update_success = True
         except Exception as error:
             print(error)
-            return False
+        return update_success
 
 
 
     @staticmethod
     def process_delete_event(subscription_event):
+        update_success = False
         try:
             subscription = SubscriptionProcessor._map_canceled_subscription(**subscription_event)
             sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
             if not sf_subscription_id:
                 print(
                     f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process delete event.')
-                update_success = False
+
             else:
                 response = Subscription.update(sf_subscription_id, **subscription)
-                if 'success' in response:
-                    update_success = response['success']
-            return update_success
+                if response == 204:
+                    update_success = True
         except Exception as error:
             print(error)
-            return False
+        return update_success
 
     @staticmethod
     def _map_installment_period(interval):
