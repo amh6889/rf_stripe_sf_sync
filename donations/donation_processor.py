@@ -15,7 +15,7 @@ class DonationProcessor:
             data = event_data['data']['object']
             stripe_payment_intent_id = data['id']
             amount = data['amount']
-            locale.setlocale(locale.LC_ALL, '')
+            locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
             formatted_amount = locale.currency(amount / 100, symbol=False)
             stripe_customer_id = data['customer']
             donor_email = Donor.get_email(stripe_customer_id)
