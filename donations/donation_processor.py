@@ -9,6 +9,8 @@ from subscriptions.subscription import Subscription
 
 class DonationProcessor:
 
+    #TODO: throw error if donation does not have email/name in Salesforce because I need to be able to connect donation to Contact in Salesforce so that there are not orphan donations
+    #TODO: figure out situation below if salesforce id of existing subscription is different than one in event data.  This sometimes happened with ANET where a husband and wife had a subscription together and then one created one by themselves and messed up the sync
     @staticmethod
     def _map_donation(**event_data):
         try:
@@ -22,8 +24,10 @@ class DonationProcessor:
             salesforce_id = None
             if donor_email:
                 salesforce_id = Donor.exists_by_email(donor_email)
-            else:
-                print(f'Stripe customer {stripe_customer_id} does not have email setup in Stripe')
+
+            if not salesforce_id:
+                raise Exception(f'Donation event error: Stripe customer {stripe_customer_id} with email {donor_email} does not exist in Salesforce')
+
             epoch_time_created = data['created']
             closed_date = DonationProcessor._parse_epoch_time(epoch_time_created)
             status = data['status']
@@ -42,6 +46,9 @@ class DonationProcessor:
                 if salesforce_recurring_donation:
                     salesforce_recurring_donation_id = salesforce_recurring_donation['id']
                     salesforce_id = salesforce_recurring_donation['sf_contact_id']
+                else:
+                    raise Exception(f'Donation event error: Stripe subscription {stripe_subscription_id} does not exist in Salesforce')
+
 
             donation = {'npe01__Contact_Id_for_Role__c': salesforce_id, 'npsp__Primary_Contact__c': salesforce_id,
                         'Amount': formatted_amount,
@@ -52,7 +59,9 @@ class DonationProcessor:
                         'Stripe_Subscription_ID__c': stripe_subscription_id}
             return donation
         except Exception as error:
-            print(f'Error mapping donation due to {error}')
+            message = f'Error mapping donation due to {error}'
+            print(message)
+            raise Exception(message)
 
     @staticmethod
     def _map_refund(**event_data):
@@ -98,6 +107,7 @@ class DonationProcessor:
 
     @staticmethod
     def process_create_event(donation_event):
+        success = False
         try:
             donation = DonationProcessor._map_donation(**donation_event)
             sf_donation_id = Donation.exists(donation['Stripe_Invoice_ID__c'])
@@ -106,13 +116,12 @@ class DonationProcessor:
                 if 'success' in create_response:
                     success = create_response['success']
             else:
-                success = True
                 print(
                     f'Stripe charge {donation['Stripe_Invoice_ID__c']} already exists in Salesforce. Cannot process create event.')
-            return success
         except Exception as error:
-            print(error)
-            return False
+            print(f'Error in Donation.process_create_event due to: {error}')
+        finally:
+            return success
 
     @staticmethod
     def process_update_event(donation_event):
@@ -127,6 +136,9 @@ class DonationProcessor:
                 response = Donation.update(sf_donation_id, **donation)
                 if response == 204:
                     update_success = True
+                    print(
+                        f'Updated donation {sf_donation_id} successfully in Salesforce.')
         except Exception as error:
-            print(error)
-        return update_success
+            print(f'Error in Donation.process_update_event due to: {error}')
+        finally:
+            return update_success

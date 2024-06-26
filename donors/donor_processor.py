@@ -53,6 +53,7 @@ class DonorProcessor:
 
     @staticmethod
     def process_create_event(event_data):
+        success = False
         try:
             donor = DonorProcessor._map_donor(**event_data)
             sf_contact_id = Donor.exists_by_email(donor['Email'])
@@ -71,13 +72,12 @@ class DonorProcessor:
                         print(
                             f'Did not create Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to: {errors}')
             else:
-                success = True
                 print(
                     f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} exists in Salesforce with ID {sf_contact_id}')
-            return success
         except Exception as error:
-            print(error)
-            return False
+            print(f'Error in Donor.process_create_event due to: {error}')
+        finally:
+            return success
 
 
     @staticmethod
@@ -94,16 +94,16 @@ class DonorProcessor:
                 response = Donor.update(sf_contact_id, **donor)
                 if response == 204:
                     update_success = True
-                    if update_success:
-                        print(
-                            f'Updated Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce.')
-                    else:
-                        errors = response['errors']
-                        print(
-                            f'Did not update Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to {errors}')
+                    print(
+                        f'Updated Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce.')
+                else:
+                    errors = response['errors']
+                    print(
+                        f'Did not update Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to {errors}')
         except Exception as error:
-            print(error)
-        return update_success
+            print(f'Error in Donor.process_update_event due to: {error}')
+        finally:
+            return update_success
 
     @staticmethod
     def _parse_name(full_name):

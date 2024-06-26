@@ -97,7 +97,6 @@ class EventProcessor:
                 else:
                     message = f'Error processing donation create event id: {donation_event['id']}: {donation_event}'
                     print(message)
-                    #slack_notifier.send_message(message)
                     ch.basic_nack(delivery_tag=method.delivery_tag)
             elif donation_event['type'] == 'charge.refunded':
                 response = DonationProcessor.process_update_event(donation_event)
@@ -106,7 +105,6 @@ class EventProcessor:
                 else:
                     message = f'Error processing donation update event id: {donation_event['id']}: {donation_event}'
                     print(message)
-                    #slack_notifier.send_message(message)
                     ch.basic_nack(delivery_tag=method.delivery_tag)
             else:
                 print(f'Unknown donation event: {donation_event['type']}')

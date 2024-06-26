@@ -14,7 +14,7 @@ class SubscriptionProcessor:
         subscription_id = data['id']
 
         amount = data['plan']['amount'] * data['quantity']
-        locale.setlocale(locale.LC_ALL, '')
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         formatted_amount = locale.currency(amount / 100, symbol=False)
         created = data['created']
         start_date = data['start_date']
@@ -50,6 +50,7 @@ class SubscriptionProcessor:
 
     @staticmethod
     def process_create_event(event_data):
+        success = False
         try:
             subscription = SubscriptionProcessor._map_active_subscription(**event_data)
             sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
@@ -58,13 +59,12 @@ class SubscriptionProcessor:
                 if 'success' in create_response:
                     success = create_response['success']
             else:
-                success = True
                 print(
                     f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} already exists in Salesforce. Cannot process create event.')
-            return success
         except Exception as error:
-            print(error)
-            return False
+            print(f'Error in Subscription.process_create_event due to: {error}')
+        finally:
+            return success
 
     @staticmethod
     def process_update_event(event_data):
@@ -80,8 +80,9 @@ class SubscriptionProcessor:
                 if response == 204:
                     update_success = True
         except Exception as error:
-            print(error)
-        return update_success
+            print(f'Error in Subscription.process_update_event due to: {error}')
+        finally:
+            return update_success
 
 
 
@@ -94,14 +95,14 @@ class SubscriptionProcessor:
             if not sf_subscription_id:
                 print(
                     f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process delete event.')
-
             else:
                 response = Subscription.update(sf_subscription_id, **subscription)
                 if response == 204:
                     update_success = True
         except Exception as error:
-            print(error)
-        return update_success
+            print(f'Error in Subscription.process_delete_event due to: {error}')
+        finally:
+            return update_success
 
     @staticmethod
     def _map_installment_period(interval):
