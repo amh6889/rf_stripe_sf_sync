@@ -162,6 +162,10 @@ def test_map_fixed_canceled_subscription_works(mocked_donor_id, fixed_canceled_s
     assert mapped_subscription['npe03__Installments__c'] is None
     assert mapped_subscription['npe03__Contact__c'] == '123456'
 
+def test_process_update_event(subscription_update_event_json):
+    event_data = json.loads(subscription_update_event_json)
+    response = SubscriptionProcessor.process_update_event(event_data)
+    assert response is True
 
 def test_parse_epoch_time_works():
     epoch_time = 1710473782

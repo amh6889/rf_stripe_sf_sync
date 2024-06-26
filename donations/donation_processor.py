@@ -45,7 +45,7 @@ class DonationProcessor:
                 salesforce_recurring_donation = Subscription.exists(stripe_subscription_id)
                 if salesforce_recurring_donation:
                     salesforce_recurring_donation_id = salesforce_recurring_donation['id']
-                    salesforce_id = salesforce_recurring_donation['sf_contact_id']
+                    #salesforce_id = salesforce_recurring_donation['sf_contact_id']
                 else:
                     raise Exception(f'Donation event error: Stripe subscription {stripe_subscription_id} does not exist in Salesforce')
 

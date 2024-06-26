@@ -20,7 +20,6 @@ class Donor:
         if len(records) > 0:
             record = records[0]
             sf_contact_id = record.get('Id')
-            print(sf_contact_id)
         return sf_contact_id
 
     @staticmethod

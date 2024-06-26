@@ -5,4 +5,5 @@ def test_retrieving_events_works():
     events = EventProcessor.get_events()
     assert events is not None
 
-
+def test_subscription_event_works():
+    pass

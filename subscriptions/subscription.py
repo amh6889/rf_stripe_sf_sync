@@ -9,18 +9,18 @@ class Subscription:
 
     @staticmethod
     def exists(subscription_id):
-        query = f"SELECT Id,npe03__Contact__c from npe03__Recurring_Donation__c where Stripe_Subscription_ID__c = '{subscription_id}'"
-        print(query)
-        # results = sf.npe03__Recurring_Donation__c.get_by_custom_id('Stripe_Subscription_ID__c', subscription_id)
-        response = sf.query(query)
-        pprint(response)
-        records = response['records']
-        subscription = {}
-        if len(records) > 0:
-            record = records[0]
-            subscription['id'] = record.get('Id')
-            subscription['sf_contact_id'] = record.get('npe03__Contact__c')
-        return subscription
+            query = f"SELECT Id,npe03__Contact__c from npe03__Recurring_Donation__c where Stripe_Subscription_ID__c = '{subscription_id}'"
+            print(query)
+            # results = sf.npe03__Recurring_Donation__c.get_by_custom_id('Stripe_Subscription_ID__c', subscription_id)
+            response = sf.query(query)
+            pprint(response)
+            records = response['records']
+            subscription = {}
+            if len(records) > 0:
+                record = records[0]
+                subscription['id'] = record.get('Id')
+                subscription['sf_contact_id'] = record.get('npe03__Contact__c')
+            return subscription
 
     @staticmethod
     def get_metadata():

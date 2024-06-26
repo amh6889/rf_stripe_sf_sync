@@ -71,12 +71,13 @@ class SubscriptionProcessor:
         update_success = False
         try:
             subscription = SubscriptionProcessor._map_active_subscription(**event_data)
-            sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
-            if not sf_subscription_id:
+            print(subscription)
+            sf_subscription = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
+            if not sf_subscription:
                 print(
                     f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process update event.')
             else:
-                response = Subscription.update(sf_subscription_id, **subscription)
+                response = Subscription.update(sf_subscription['id'], **subscription)
                 if response == 204:
                     update_success = True
         except Exception as error:
@@ -91,12 +92,12 @@ class SubscriptionProcessor:
         update_success = False
         try:
             subscription = SubscriptionProcessor._map_canceled_subscription(**subscription_event)
-            sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
-            if not sf_subscription_id:
+            sf_subscription = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
+            if not sf_subscription:
                 print(
                     f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process delete event.')
             else:
-                response = Subscription.update(sf_subscription_id, **subscription)
+                response = Subscription.update(sf_subscription['id'], **subscription)
                 if response == 204:
                     update_success = True
         except Exception as error:
