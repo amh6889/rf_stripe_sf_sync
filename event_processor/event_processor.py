@@ -22,7 +22,6 @@ class EventProcessor:
 
     @staticmethod
     def process_donor_event(ch, method, properties, body):
-        delivery_count = properties.headers.get('x-delivery-count')
         try:
             donor_event = json.loads(body)
             print(f'donor event: {donor_event}')
@@ -76,25 +75,21 @@ class EventProcessor:
         try:
             donation_event = json.loads(body)
             print(f'donation event: {donation_event}')
-            if donation_event['type'] == 'charge.succeeded':
-                response = DonationProcessor.process_create_event(donation_event)
-                if response:
+            match donation_event['type']:
+                case 'charge.succeeded':
+                    DonationProcessor.process_create_event(donation_event)
                     print(f'Donation create event id: {donation_event['id']} processed successfully')
                     ch.basic_ack(delivery_tag=method.delivery_tag)
-                else:
-                    message = f'Error processing donation create event id: {donation_event['id']}: {donation_event}'
-                    print(message)
-                    ch.basic_nack(delivery_tag=method.delivery_tag)
-            elif donation_event['type'] == 'charge.refunded':
-                response = DonationProcessor.process_update_event(donation_event)
-                if response:
+                case 'charge.refunded':
+                    DonationProcessor.process_update_event(donation_event)
+                    print(f'Donation refund event id: {donation_event['id']} processed successfully')
                     ch.basic_ack(delivery_tag=method.delivery_tag)
-                else:
-                    message = f'Error processing donation update event id: {donation_event['id']}: {donation_event}'
-                    print(message)
-                    ch.basic_nack(delivery_tag=method.delivery_tag)
-            else:
-                print(f'Unknown donation event: {donation_event['type']}')
+                case _:
+                    print(f'Unknown donation event: {donation_event['type']}')
         except Exception as e:
-            print(f'Error in process_donation_event due to {e}')
+            print(f'Error in process_subscription_event due to {e}')
+            if properties.headers.get('x-delivery-count') == 10:
+                stack_trace = traceback.format_exc()
+                slack_notifier.send_message(f'ERROR PROCESSING DONATION EVENT:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
+            ch.basic_nack(delivery_tag=method.delivery_tag)
 
