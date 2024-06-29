@@ -50,62 +50,63 @@ class SubscriptionProcessor:
 
     @staticmethod
     def process_create_event(event_data):
-        success = False
-        errors = []
-        try:
-            subscription = SubscriptionProcessor._map_active_subscription(**event_data)
-            sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
-            if not sf_subscription_id:
-                create_response = Subscription.create(**subscription)
-                if 'success' in create_response:
-                    success = create_response['success']
-            else:
-                print(
-                    f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} already exists in Salesforce. Cannot process create event.')
-        except Exception as error:
-            print(f'Error in Subscription.process_create_event due to: {error}')
-        finally:
-            return success
+        subscription = SubscriptionProcessor._map_active_subscription(**event_data)
+        sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
+        if not sf_subscription_id:
+            create_response = Subscription.create(**subscription)
+            if 'success' in create_response:
+                success = create_response['success']
+                if success:
+                    salesforce_id = create_response['id']
+                    print(
+                        f'Created Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce with ID {salesforce_id}')
+                else:
+                    errors = create_response['errors']
+                    error_message = f'Did not create Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce due to: {errors}'
+                    raise Exception(error_message)
+        else:
+            error_message = f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} already exists in Salesforce. Cannot process create event.'
+            print(error_message)
+            raise Exception(error_message)
 
     @staticmethod
     def process_update_event(event_data):
-        update_success = False
-        errors = []
-        try:
-            subscription = SubscriptionProcessor._map_active_subscription(**event_data)
-            print(subscription)
-            sf_subscription = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
-            if not sf_subscription:
-                print(
-                    f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process update event.')
-            else:
-                response = Subscription.update(sf_subscription['id'], **subscription)
-                if response == 204:
-                    update_success = True
-        except Exception as error:
-            print(f'Error in Subscription.process_update_event due to: {error}')
-        finally:
-            return update_success
+        subscription = SubscriptionProcessor._map_active_subscription(**event_data)
+        print(subscription)
+        sf_subscription = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
+        if not sf_subscription:
+            error_message = f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process update event.'
+            print(error_message)
+            raise Exception(error_message)
+        else:
+            response = Subscription.update(sf_subscription['id'], **subscription)
+            if response != 204:
+                errors = response['errors']
+                error_message = f'Did not update Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce due to {errors}'
+                print(error_message)
+                raise Exception(error_message)
 
-
+            print(
+                f'Updated Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce.')
 
     @staticmethod
     def process_delete_event(subscription_event):
-        update_success = False
-        try:
-            subscription = SubscriptionProcessor._map_canceled_subscription(**subscription_event)
-            sf_subscription = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
-            if not sf_subscription:
-                print(
-                    f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process delete event.')
-            else:
-                response = Subscription.update(sf_subscription['id'], **subscription)
-                if response == 204:
-                    update_success = True
-        except Exception as error:
-            print(f'Error in Subscription.process_delete_event due to: {error}')
-        finally:
-            return update_success
+        subscription = SubscriptionProcessor._map_canceled_subscription(**subscription_event)
+        sf_subscription = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
+        if not sf_subscription:
+            error_message = f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process delete event.'
+            print(error_message)
+            raise Exception(error_message)
+        else:
+            response = Subscription.update(sf_subscription['id'], **subscription)
+            if response != 204:
+                errors = response['errors']
+                error_message = f'Did not update canceled Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce due to {errors}'
+                print(error_message)
+                raise Exception(error_message)
+
+            print(
+                f'Updated canceled Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce.')
 
     @staticmethod
     def _map_installment_period(interval):
@@ -175,11 +176,9 @@ class SubscriptionProcessor:
             status = data['status']
             mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
             subscription_id = data['id']
-            subscription = {'Stripe_Subscription_ID__c':subscription_id, 'npsp__Status__c': mapped_status,
+            subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npsp__Status__c': mapped_status,
                             'npsp__ClosedReason__c': closed_reason}
 
             return subscription
         except Exception as error:
             print(f'Error mapping canceled subscription due to {error}')
-
-

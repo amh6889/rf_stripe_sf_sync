@@ -22,73 +22,54 @@ class EventProcessor:
 
     @staticmethod
     def process_donor_event(ch, method, properties, body):
+        delivery_count = properties.headers.get('x-delivery-count')
         try:
             donor_event = json.loads(body)
             print(f'donor event: {donor_event}')
-            delivery_count = properties.headers.get('x-delivery-count')
-            if donor_event['type'] == 'customer.created':
-                response,error = DonorProcessor.process_create_event(donor_event)
-                if response:
+            match donor_event['type']:
+                case 'customer.created':
+                    DonorProcessor.process_create_event(donor_event)
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                     print(f'Successfully processed donor create event id: {donor_event['id']}')
-                else:
-                    message = f'Error processing donor create event id: {donor_event['id']}: {donor_event} due to error:\n {error}'
-                    print(message)
-                    if delivery_count == 10:
-                        slack_notifier.send_message(message)
-                    ch.basic_nack(delivery_tag=method.delivery_tag)
-            elif donor_event['type'] == 'customer.updated':
-                response = DonorProcessor.process_update_event(donor_event)
-                if response:
+                case 'customer.updated':
+                    DonorProcessor.process_update_event(donor_event)
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                     print(f'Successfully processed donor update event id: {donor_event['id']}')
-                else:
-                    message = f'Error processing donor update event id: {donor_event['id']}: {donor_event}'
-                    print(message)
-                    ch.basic_nack(delivery_tag=method.delivery_tag)
-            else:
-                print(f'Unknown donor event type: {donor_event['type']}')
+                case _:
+                    print(f'Unknown donor event type: {donor_event['type']}')
         except Exception as e:
-            print(f'Error in process_donor_event due to {e}')
-            formatted_lines = traceback.format_exc()
-            print(formatted_lines)
+            print(f'Error in process_donor_event due to: {e}')
+            if properties.headers.get('x-delivery-count') == 10:
+                stack_trace = traceback.format_exc()
+                slack_notifier.send_message(f'ERROR PROCESSING DONOR EVENT:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
+            ch.basic_nack(delivery_tag=method.delivery_tag)
 
     @staticmethod
     def process_subscription_event(ch, method, properties, body):
         try:
             subscription_event = json.loads(body)
-            print(f'subscription  event: {subscription_event}')
-            if subscription_event['type'] == 'customer.subscription.created':
-                response = SubscriptionProcessor.process_create_event(subscription_event)
-                if response:
+            print(f'subscription event: {subscription_event}')
+            match subscription_event['type']:
+                case 'customer.subscription.created':
+                    SubscriptionProcessor.process_create_event(subscription_event)
                     print(f'Subscription create event id: {subscription_event['id']} processed successfully')
                     ch.basic_ack(delivery_tag=method.delivery_tag)
-                else:
-                    message = f'Error processing subscription create event id: {subscription_event['id']}: {subscription_event}'
-                    print(message)
-                    ch.basic_nack(delivery_tag=method.delivery_tag)
-            elif subscription_event['type'] == 'customer.subscription.deleted':
-                success = SubscriptionProcessor.process_delete_event(subscription_event)
-                if success:
-                    print(f'Subscription delete event id: {subscription_event['id']} processed successfully')
-                    ch.basic_ack(delivery_tag=method.delivery_tag)
-                else:
-                    message = f'Error processing subscription delete event id: {subscription_event['id']}: {subscription_event}'
-                    print(message)
-                    ch.basic_nack(delivery_tag=method.delivery_tag)
-            elif subscription_event['type'] == 'customer.subscription.updated':
-                response = SubscriptionProcessor.process_update_event(subscription_event)
-                if response:
+                case 'customer.subscription.updated':
+                    SubscriptionProcessor.process_update_event(subscription_event)
                     print(f'Subscription update event id: {subscription_event['id']} processed successfully')
                     ch.basic_ack(delivery_tag=method.delivery_tag)
-                else:
-                    message = f'Error processing subscription update event id: {subscription_event['id']}: {subscription_event}'
-                    print(message)
-                    ch.basic_nack(delivery_tag=method.delivery_tag)
-            else:
-                print(f'Unknown subscription event: {subscription_event['type']}')
+                case 'customer.subscription.deleted':
+                    SubscriptionProcessor.process_delete_event(subscription_event)
+                    print(f'Subscription delete event id: {subscription_event['id']} processed successfully')
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
+                case _:
+                    print(f'Unknown subscription event: {subscription_event['type']}')
         except Exception as e:
             print(f'Error in process_subscription_event due to {e}')
+            if properties.headers.get('x-delivery-count') == 10:
+                stack_trace = traceback.format_exc()
+                slack_notifier.send_message(f'ERROR PROCESSING SUBSCRIPTION EVENT:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
+            ch.basic_nack(delivery_tag=method.delivery_tag)
 
     @staticmethod
     def process_donation_event(ch, method, properties, body):

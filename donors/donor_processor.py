@@ -1,18 +1,20 @@
 import traceback
 
 from donors.donor import Donor
-#TODO: create separate app/process/thread that will query Stripe for all customer's that have a null name and update the name with the description field
-#TODO: since Form assembly creates a new customer each time a form is submitted I need to have checks in my code to ensure that if I create a donor in Salesforce that it doesnt exist there already (check by email)
+
+
+# TODO: create separate app/process/thread that will query Stripe for all customer's that have a null name and update the name with the description field
+# TODO: since Form assembly creates a new customer each time a form is submitted I need to have checks in my code to ensure that if I create a donor in Salesforce that it doesnt exist there already (check by email)
 class DonorProcessor:
 
-    #TODO: change below method to _map_create_donor_event and make new function to map an update donor event
+    # TODO: change below method to _map_create_donor_event and make new function to map an update donor event
     @staticmethod
     def _map_donor(**event_data):
         print(event_data)
         data = event_data['data']['object']
         customer_id = data['id']
         full_name = data['name']
-        #TODO: instead of making another process to update name in Stripe I say just do it in this process to update it.  So create new function that will update Stripe with name
+        # TODO: instead of making another process to update name in Stripe I say just do it in this process to update it.  So create new function that will update Stripe with name
         if not full_name:
             full_name = data['description']
         first_name, last_name = DonorProcessor._parse_name(full_name)
@@ -20,9 +22,11 @@ class DonorProcessor:
         email = data['email']
         phone = data['phone']
         street, city, state, country, postal_code = DonorProcessor.get_donor_address(data)
-        donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name, 'npe01__HomeEmail__c': email, 'Email': email,
+        donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name,
+                 'npe01__HomeEmail__c': email, 'Email': email,
                  'Phone': phone, 'MailingStreet': street, 'MailingState': state,
-                 'MailingCity': city, 'MailingCountry': country, 'MailingPostalCode': postal_code, 'npe01__Preferred_Email__c': 'Personal'}
+                 'MailingCity': city, 'MailingCountry': country, 'MailingPostalCode': postal_code,
+                 'npe01__Preferred_Email__c': 'Personal'}
         return donor
 
     @staticmethod
@@ -54,63 +58,46 @@ class DonorProcessor:
                 postal_code = metadata['address_zip']
         return street, city, state, country, postal_code
 
-
     @staticmethod
     def process_create_event(event_data):
-        success = False
-        error = None
-        try:
-            donor = DonorProcessor._map_donor(**event_data)
-            sf_contact_id = Donor.exists_by_email(donor['Email'])
-            if not sf_contact_id:
-                print(
-                    f'Creating Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} in Salesforce')
-                create_response = Donor.create(**donor)
-                if 'success' in create_response:
-                    success = create_response['success']
-                    if success:
-                        salesforce_id = create_response['id']
-                        print(
-                            f'Created Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce with ID {salesforce_id}')
-                    else:
-                        errors = create_response['errors']
-                        error_message = f'Did not create Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to: {errors}'
-                        raise Exception(error_message)
-            else:
-                error_message = f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} already exists in Salesforce with ID {sf_contact_id}'
-                raise Exception(error_message)
-        except Exception as exception_error:
-            print(exception_error)
-            print(traceback.format_exc())
-            error = traceback.format_exc()
-        finally:
-            return success,error
-
+        donor = DonorProcessor._map_donor(**event_data)
+        sf_contact_id = Donor.exists_by_email(donor['Email'])
+        if not sf_contact_id:
+            print(
+                f'Creating Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} in Salesforce')
+            create_response = Donor.create(**donor)
+            if 'success' in create_response:
+                success = create_response['success']
+                if success:
+                    salesforce_id = create_response['id']
+                    print(
+                        f'Created Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce with ID {salesforce_id}')
+                else:
+                    errors = create_response['errors']
+                    error_message = f'Did not create Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to: {errors}'
+                    raise Exception(error_message)
+        else:
+            error_message = f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} already exists in Salesforce with ID {sf_contact_id}'
+            raise Exception(error_message)
 
     @staticmethod
     def process_update_event(event_data):
-        update_success = False
-        try:
-            donor = DonorProcessor._map_donor(**event_data)
-            sf_contact_id = Donor.exists_by_email(donor['Email'])
+        donor = DonorProcessor._map_donor(**event_data)
+        sf_contact_id = Donor.exists_by_email(donor['Email'])
 
-            if not sf_contact_id:
-                print(
-                    f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} does not exist in Salesforce. Cannot process update event.')
-            else:
-                response = Donor.update(sf_contact_id, **donor)
-                if response == 204:
-                    update_success = True
-                    print(
-                        f'Updated Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce.')
-                else:
-                    errors = response['errors']
-                    print(
-                        f'Did not update Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to {errors}')
-        except Exception as error:
-            print(f'Error in Donor.process_update_event due to: {error}')
-        finally:
-            return update_success
+        if not sf_contact_id:
+            error_message = f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} does not exist in Salesforce. Cannot process update event.'
+            print(error_message)
+            raise Exception(error_message)
+        else:
+            response = Donor.update(sf_contact_id, **donor)
+            if response != 204:
+                errors = response['errors']
+                error_message = f'Did not update Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to {errors}'
+                print(error_message)
+                raise Exception(error_message)
+
+            print(f'Updated Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce.')
 
     @staticmethod
     def _parse_name(full_name):
