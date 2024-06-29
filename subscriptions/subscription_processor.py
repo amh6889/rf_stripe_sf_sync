@@ -51,6 +51,7 @@ class SubscriptionProcessor:
     @staticmethod
     def process_create_event(event_data):
         success = False
+        errors = []
         try:
             subscription = SubscriptionProcessor._map_active_subscription(**event_data)
             sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
@@ -69,6 +70,7 @@ class SubscriptionProcessor:
     @staticmethod
     def process_update_event(event_data):
         update_success = False
+        errors = []
         try:
             subscription = SubscriptionProcessor._map_active_subscription(**event_data)
             print(subscription)

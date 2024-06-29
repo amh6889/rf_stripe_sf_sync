@@ -1,3 +1,5 @@
+import traceback
+
 from donors.donor import Donor
 #TODO: create separate app/process/thread that will query Stripe for all customer's that have a null name and update the name with the description field
 #TODO: since Form assembly creates a new customer each time a form is submitted I need to have checks in my code to ensure that if I create a donor in Salesforce that it doesnt exist there already (check by email)
@@ -10,9 +12,11 @@ class DonorProcessor:
         data = event_data['data']['object']
         customer_id = data['id']
         full_name = data['name']
+        #TODO: instead of making another process to update name in Stripe I say just do it in this process to update it.  So create new function that will update Stripe with name
         if not full_name:
             full_name = data['description']
         first_name, last_name = DonorProcessor._parse_name(full_name)
+
         email = data['email']
         phone = data['phone']
         street, city, state, country, postal_code = DonorProcessor.get_donor_address(data)
@@ -54,6 +58,7 @@ class DonorProcessor:
     @staticmethod
     def process_create_event(event_data):
         success = False
+        error = None
         try:
             donor = DonorProcessor._map_donor(**event_data)
             sf_contact_id = Donor.exists_by_email(donor['Email'])
@@ -69,15 +74,17 @@ class DonorProcessor:
                             f'Created Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce with ID {salesforce_id}')
                     else:
                         errors = create_response['errors']
-                        print(
-                            f'Did not create Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to: {errors}')
+                        error_message = f'Did not create Stripe customer {donor['External_Contact_ID__c']} successfully in Salesforce due to: {errors}'
+                        raise Exception(error_message)
             else:
-                print(
-                    f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} exists in Salesforce with ID {sf_contact_id}')
-        except Exception as error:
-            print(f'Error in Donor.process_create_event due to: {error}')
+                error_message = f'Stripe customer {donor['External_Contact_ID__c']} with email {donor['Email']} already exists in Salesforce with ID {sf_contact_id}'
+                raise Exception(error_message)
+        except Exception as exception_error:
+            print(exception_error)
+            print(traceback.format_exc())
+            error = traceback.format_exc()
         finally:
-            return success
+            return success,error
 
 
     @staticmethod

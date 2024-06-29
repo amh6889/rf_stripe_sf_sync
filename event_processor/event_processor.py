@@ -1,4 +1,5 @@
 import json
+import traceback
 
 from donations.donation_processor import DonationProcessor
 from donors.donor_processor import DonorProcessor
@@ -24,14 +25,17 @@ class EventProcessor:
         try:
             donor_event = json.loads(body)
             print(f'donor event: {donor_event}')
+            delivery_count = properties.headers.get('x-delivery-count')
             if donor_event['type'] == 'customer.created':
-                response = DonorProcessor.process_create_event(donor_event)
+                response,error = DonorProcessor.process_create_event(donor_event)
                 if response:
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                     print(f'Successfully processed donor create event id: {donor_event['id']}')
                 else:
-                    message = f'Error processing donor create event id: {donor_event['id']}: {donor_event}'
+                    message = f'Error processing donor create event id: {donor_event['id']}: {donor_event} due to error:\n {error}'
                     print(message)
+                    if delivery_count == 10:
+                        slack_notifier.send_message(message)
                     ch.basic_nack(delivery_tag=method.delivery_tag)
             elif donor_event['type'] == 'customer.updated':
                 response = DonorProcessor.process_update_event(donor_event)
@@ -46,6 +50,8 @@ class EventProcessor:
                 print(f'Unknown donor event type: {donor_event['type']}')
         except Exception as e:
             print(f'Error in process_donor_event due to {e}')
+            formatted_lines = traceback.format_exc()
+            print(formatted_lines)
 
     @staticmethod
     def process_subscription_event(ch, method, properties, body):
