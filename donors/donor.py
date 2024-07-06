@@ -1,7 +1,11 @@
+import re
+
 from salesforce.salesforce_connection import sf
 import stripe
 from dotenv import load_dotenv
 import os
+
+from utils.filter_string import filter_string
 
 load_dotenv()
 
@@ -11,7 +15,8 @@ class Donor:
 
     @staticmethod
     def exists_by_email(email: str) -> str:
-        search_query = 'FIND {' + email + '} IN EMAIL FIELDS RETURNING Contact(Id)'
+        escaped_email = filter_string(email)
+        search_query = f"""FIND {{{escaped_email}}} IN EMAIL FIELDS RETURNING Contact(Id)"""
         print(search_query)
         response = sf.search(search_query)
         print(response)

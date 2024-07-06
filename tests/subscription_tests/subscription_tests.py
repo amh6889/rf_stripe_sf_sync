@@ -187,3 +187,9 @@ def test_get_payment_method_through_invoice_works():
     payment_method_type = subscription['type']
     assert subscription is not None
     assert subscription[payment_method_type]['last4'] == '4242'
+
+def test_get_campaign_id():
+    campaign_code = 'F000 - General'
+    campaign_id = Subscription.get_campaign_id(campaign_code)
+    assert campaign_id is not None
+    assert campaign_id == '7015a000001SjmyAAC'

@@ -12,6 +12,14 @@ class SubscriptionProcessor:
         status = data['status']
         mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
         subscription_id = data['id']
+        campaign_code = None
+        sf_campaign_id = None
+        if metadata := data['metadata']:
+            campaign_code = metadata['campaign_code']
+            sf_campaign_id = Subscription.get_campaign_id(campaign_code)
+
+
+
 
         amount = data['plan']['amount'] * data['quantity']
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -35,7 +43,7 @@ class SubscriptionProcessor:
                         'npsp__StartDate__c': date_start, 'npsp__EndDate__c': None,
                         'Donation_Source__c': 'RF Web-form',
                         'npsp__Status__c': mapped_status, 'npsp__ClosedReason__c': closed_reason,
-                        'npe03__Recurring_Donation_Campaign__c': None,
+                        'npe03__Recurring_Donation_Campaign__c': sf_campaign_id,
                         'npsp__RecurringType__c': 'Open', 'npe03__Installment_Period__c': installment_period,
                         'npsp__Day_of_Month__c': day_of_month,
                         'npsp__InstallmentFrequency__c': installment_frequency,

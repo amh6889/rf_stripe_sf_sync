@@ -77,6 +77,7 @@ def test_donor_processor_maps_works_with_donor_address(donor_with_address_json):
     assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
     assert mapped_donor['External_Contact_ID__c'] == 'cus_PcdyPDFvTFM1gP'
 
+
 def test_donor_processor_maps_works_with_donor_metadata_address(donor_with_metadata_address_json):
     donor = json.loads(donor_with_metadata_address_json)
     mapped_donor = DonorProcessor._map_donor(**donor)
@@ -92,6 +93,7 @@ def test_donor_processor_maps_works_with_donor_metadata_address(donor_with_metad
     assert mapped_donor['Phone'] is None
     assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
     assert mapped_donor['External_Contact_ID__c'] == 'cus_Q4X90EUjCmX1wg'
+
 
 def test_donor_processor_maps_works_with_no_donor_metadata_address(donor_with_no_metadata_address_json):
     donor = json.loads(donor_with_no_metadata_address_json)
@@ -131,8 +133,22 @@ def test_parse_name_four_names_works():
     assert first_name == 'Wing'
     assert last_name == 'Pong Robert Luk'
 
+
 def test_get_email_works():
     stripe_customer_id = 'cus_PjBU4vGjx2wr3I'
     email = Donor.get_email(stripe_customer_id)
     assert email is not None
     assert email == 'thisisatestemailhomey@gmail.com'
+
+
+def test_reserved_characters_email_does_not_exist():
+    email = 'ade-^?|"\'rogers-wright@hotmail.co.uk'
+    contact_id = Donor.exists_by_email(email)
+    assert contact_id is None
+
+
+def test_reserved_characters_email_exists():
+    email = 'ade-rogers-wright@hotmail.co.uk'
+    contact_id = Donor.exists_by_email(email)
+    assert contact_id is not None
+    assert contact_id == '0030b00002TWpQwAAL'

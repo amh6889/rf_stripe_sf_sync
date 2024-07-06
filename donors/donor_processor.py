@@ -26,7 +26,7 @@ class DonorProcessor:
                  'npe01__HomeEmail__c': email, 'Email': email,
                  'Phone': phone, 'MailingStreet': street, 'MailingState': state,
                  'MailingCity': city, 'MailingCountry': country, 'MailingPostalCode': postal_code,
-                 'npe01__Preferred_Email__c': 'Personal'}
+                 'npe01__Preferred_Email__c': 'Personal', 'Stripe_Donor__c': True}
         return donor
 
     @staticmethod
