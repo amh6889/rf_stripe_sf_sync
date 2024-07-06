@@ -22,7 +22,7 @@ class Donor:
         print(response)
         records = response.get('searchRecords')
         sf_contact_id = None
-        if len(records) > 0:
+        if records:
             record = records[0]
             sf_contact_id = record.get('Id')
         return sf_contact_id

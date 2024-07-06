@@ -5,6 +5,7 @@ from donations.donation_processor import DonationProcessor
 from donors.donor_processor import DonorProcessor
 from subscriptions.subscription_processor import SubscriptionProcessor
 from utils import slack_notifier
+from datetime import datetime
 
 
 #TODO: make a poison queue for messages that are repeatedly processed.  Perhaps after 10 times of processing message put it on a poison queue and send a slack message
@@ -23,8 +24,9 @@ class EventProcessor:
     @staticmethod
     def process_donor_event(ch, method, properties, body):
         try:
+            start_time = datetime.now()
             donor_event = json.loads(body)
-            print(f'donor event: {donor_event}')
+            print(f'Processing donor event at {start_time}: {donor_event}')
             match donor_event['type']:
                 case 'customer.created':
                     DonorProcessor.process_create_event(donor_event)
@@ -37,17 +39,19 @@ class EventProcessor:
                 case _:
                     print(f'Unknown donor event type: {donor_event['type']}')
         except Exception as e:
-            print(f'Error in process_donor_event due to: {e}')
-            if properties.headers.get('x-delivery-count') == 10:
+            error_time = datetime.now()
+            print(f'Error in process_donor_event at {error_time} due to: {e}')
+            if properties.headers.get('x-delivery-count') == 30:
                 stack_trace = traceback.format_exc()
-                slack_notifier.send_message(f'ERROR PROCESSING DONOR EVENT:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
+                slack_notifier.send_message(f'ERROR PROCESSING DONOR EVENT AT {error_time}:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
             ch.basic_nack(delivery_tag=method.delivery_tag)
 
     @staticmethod
     def process_subscription_event(ch, method, properties, body):
         try:
+            start_time = datetime.now()
             subscription_event = json.loads(body)
-            print(f'subscription event: {subscription_event}')
+            print(f'Processing subscription event at {start_time}: {subscription_event}')
             match subscription_event['type']:
                 case 'customer.subscription.created':
                     SubscriptionProcessor.process_create_event(subscription_event)
@@ -64,17 +68,19 @@ class EventProcessor:
                 case _:
                     print(f'Unknown subscription event: {subscription_event['type']}')
         except Exception as e:
-            print(f'Error in process_subscription_event due to {e}')
-            if properties.headers.get('x-delivery-count') == 10:
+            error_time = datetime.now()
+            print(f'Error in process_subscription_event at {error_time} due to {e}')
+            if properties.headers.get('x-delivery-count') == 30:
                 stack_trace = traceback.format_exc()
-                slack_notifier.send_message(f'ERROR PROCESSING SUBSCRIPTION EVENT:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
+                slack_notifier.send_message(f'ERROR PROCESSING SUBSCRIPTION EVENT AT {error_time}:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
             ch.basic_nack(delivery_tag=method.delivery_tag)
 
     @staticmethod
     def process_donation_event(ch, method, properties, body):
         try:
+            start_time = datetime.now()
             donation_event = json.loads(body)
-            print(f'donation event: {donation_event}')
+            print(f'Processing donation event at {start_time}: {donation_event}')
             match donation_event['type']:
                 case 'charge.succeeded':
                     DonationProcessor.process_create_event(donation_event)
@@ -87,9 +93,10 @@ class EventProcessor:
                 case _:
                     print(f'Unknown donation event: {donation_event['type']}')
         except Exception as e:
-            print(f'Error in process_subscription_event due to {e}')
-            if properties.headers.get('x-delivery-count') == 10:
+            error_time = datetime.now()
+            print(f'Error in process_subscription_event at {error_time} due to {e}')
+            if properties.headers.get('x-delivery-count') == 30:
                 stack_trace = traceback.format_exc()
-                slack_notifier.send_message(f'ERROR PROCESSING DONATION EVENT:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
+                slack_notifier.send_message(f'ERROR PROCESSING DONATION EVENT at {error_time}:\n{body}\nERROR MESSAGE: {e}\nSTACK TRACE: {stack_trace}')
             ch.basic_nack(delivery_tag=method.delivery_tag)
 
