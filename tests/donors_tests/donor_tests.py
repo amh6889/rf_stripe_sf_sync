@@ -152,3 +152,15 @@ def test_reserved_characters_email_exists():
     contact_id = Donor.exists_by_email(email)
     assert contact_id is not None
     assert contact_id == '0030b00002TWpQwAAL'
+
+def test_stripe_update_customer():
+    stripe_customer_id = 'cus_QQWGdqZVFJarM9'
+    street_address = '1234 Cool Lane'
+    city = 'San Jose'
+    state = 'CA'
+    zip_code = '95124'
+    country = 'US'
+    address = {'city': city}
+    updates = {'address': address}
+    response = Donor.update_stripe_customer(stripe_customer_id, updates)
+    assert response is not None

@@ -63,9 +63,8 @@ class Donor:
         return customer.email
 
     @staticmethod
-    def update_stripe_customer(customer_id, key, value):
+    def update_stripe_customer(customer_id, updates):
         try:
-            updates = {key: value}
             print(updates)
             response = stripe.Customer.modify(customer_id, **updates)
             print(response)

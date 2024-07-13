@@ -14,49 +14,61 @@ class DonorProcessor:
         data = event_data['data']['object']
         customer_id = data['id']
         full_name = data['name']
+        updates = {}
         # TODO: instead of making another process to update name in Stripe I say just do it in this process to update it.  So create new function that will update Stripe with name
         if not full_name:
             full_name = data['description']
+            updates['name'] = full_name
+
         first_name, last_name = DonorProcessor._parse_name(full_name)
 
         email = data['email']
         phone = data['phone']
-        street, city, state, country, postal_code = DonorProcessor.get_donor_address(data)
+        address = data['address']
+        donor_address = DonorProcessor.get_donor_address(data)
+        if not address:
+            updates['address'] = donor_address
+
+        if updates:
+            Donor.update_stripe_customer(customer_id, updates)
+
         donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name,
-                 'npe01__HomeEmail__c': email, 'Email': email,
-                 'Phone': phone, 'MailingStreet': street, 'MailingState': state,
-                 'MailingCity': city, 'MailingCountry': country, 'MailingPostalCode': postal_code,
+                 'npe01__HomeEmail__c': email, 'Email': email, 'Phone': phone, 'MailingStreet': donor_address['line1'],
+                 'MailingState': donor_address['state'], 'MailingCity': donor_address['city'],
+                 'MailingCountry': donor_address['country'], 'MailingPostalCode': donor_address['postal_code'],
                  'npe01__Preferred_Email__c': 'Personal', 'Stripe_Donor__c': True}
         return donor
 
     @staticmethod
     def get_donor_address(data):
-        street = city = state = country = postal_code = None
+        donor_address = {'city': None, 'state': None, 'line1': None, 'country': None, 'postal_code': None}
         if 'address' in data and data['address']:
             address = data['address']
             if 'city' in address:
-                city = address['city']
+                donor_address['city'] = address['city']
             if 'state' in address:
-                state = address['state']
+                donor_address['state'] = address['state']
             if 'line1' in address:
-                street = address['line1'] + ' ' + address['line2']
+                donor_address['line1'] = address['line1']
+            if 'line2' in address:
+                donor_address['line1'] = donor_address['line1'] + ' ' + address['line2']
             if 'country' in address:
-                country = address['country']
+                donor_address['country'] = address['country']
             if 'postal_code' in address:
-                postal_code = address['postal_code']
+                donor_address['postal_code'] = address['postal_code']
         else:
             metadata = data['metadata']
             if 'address_city' in metadata:
-                city = metadata['address_city']
+                donor_address['city'] = metadata['address_city']
             if 'address_street' in metadata:
-                street = metadata['address_street']
+                donor_address['line1'] = metadata['address_street']
             if 'address_state' in metadata:
-                state = metadata['address_state']
+                donor_address['state'] = metadata['address_state']
             if 'address_country' in metadata:
-                country = metadata['address_country']
+                donor_address['country'] = metadata['address_country']
             if 'address_zip' in metadata:
-                postal_code = metadata['address_zip']
-        return street, city, state, country, postal_code
+                donor_address['postal_code'] = metadata['address_zip']
+        return donor_address
 
     @staticmethod
     def process_create_event(event_data):
