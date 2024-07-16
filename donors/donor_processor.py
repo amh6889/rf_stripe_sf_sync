@@ -3,8 +3,6 @@ import traceback
 from donors.donor import Donor
 
 
-# TODO: create separate app/process/thread that will query Stripe for all customer's that have a null name and update the name with the description field
-# TODO: since Form assembly creates a new customer each time a form is submitted I need to have checks in my code to ensure that if I create a donor in Salesforce that it doesnt exist there already (check by email)
 class DonorProcessor:
 
     # TODO: change below method to _map_create_donor_event and make new function to map an update donor event
@@ -15,7 +13,7 @@ class DonorProcessor:
         customer_id = data['id']
         full_name = data['name']
         updates = {}
-        # TODO: instead of making another process to update name in Stripe I say just do it in this process to update it.  So create new function that will update Stripe with name
+
         if not full_name:
             full_name = data['description']
             updates['name'] = full_name
@@ -50,8 +48,8 @@ class DonorProcessor:
                 donor_address['state'] = address['state']
             if 'line1' in address:
                 donor_address['line1'] = address['line1']
-            if 'line2' in address:
-                donor_address['line1'] = donor_address['line1'] + ' ' + address['line2']
+            if 'line2' in address and address['line2']:
+                donor_address = donor_address['line1'] + ' ' + address['line2']
             if 'country' in address:
                 donor_address['country'] = address['country']
             if 'postal_code' in address:
@@ -116,5 +114,5 @@ class DonorProcessor:
         names = full_name.split()
         first_name = names[0]
         del names[0]
-        last_name = ' '.join(names)
+        last_name = ' '.join(names) if names else 'N/A'
         return first_name, last_name

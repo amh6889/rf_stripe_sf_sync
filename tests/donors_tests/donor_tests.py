@@ -164,3 +164,11 @@ def test_stripe_update_customer():
     updates = {'address': address}
     response = Donor.update_stripe_customer(stripe_customer_id, updates)
     assert response is not None
+
+def test_stripe_update_event(donor_that_erred_during_uat):
+    donor_event = json.loads(donor_that_erred_during_uat)
+    response = DonorProcessor.process_update_event(donor_event)
+    assert response is not None
+
+
+

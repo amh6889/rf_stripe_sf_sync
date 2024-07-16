@@ -24,13 +24,9 @@ class Donation:
     @staticmethod
     def create(**donation):
         print(donation)
-        try:
-            response = sf.Opportunity.create(donation)
-            print(response)
-            return response
-        except Exception as e:
-            print(e)
-            return None
+        response = sf.Opportunity.create(donation)
+        return response
+
 
     @staticmethod
     def get_stripe_subscription_id(invoice_id: str):
@@ -46,10 +42,5 @@ class Donation:
     @staticmethod
     def update(donation_id, **donation):
         print(donation)
-        try:
-            response = sf.Opportunity.update(donation_id, donation)
-            print(response)
-            return response
-        except Exception as e:
-            print(e)
-            return None
+        response = sf.Opportunity.update(donation_id, donation)
+        return response

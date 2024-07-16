@@ -8,7 +8,6 @@ from utils import slack_notifier
 from datetime import datetime
 
 
-#TODO: make a poison queue for messages that are repeatedly processed.  Perhaps after 10 times of processing message put it on a poison queue and send a slack message
 class EventProcessor:
 
     @staticmethod

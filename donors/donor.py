@@ -42,19 +42,15 @@ class Donor:
 
     @staticmethod
     def create(**donor):
+        print(donor)
         response = sf.Contact.create(donor)
-        print(response)
         return response
 
     @staticmethod
     def update(sf_contact_id, **donor):
-        try:
-            print(donor)
-            response = sf.Contact.update(sf_contact_id, donor)
-            print(response)
-            return response
-        except Exception as e:
-            print(e.message)
+        print(donor)
+        response = sf.Contact.update(sf_contact_id, donor)
+        return response
 
     @staticmethod
     def get_email(stripe_customer_id):

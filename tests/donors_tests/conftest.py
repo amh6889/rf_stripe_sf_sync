@@ -168,3 +168,8 @@ def donor_with_address_json():
                        "api_version": "2022-11-15",
                        "pending_webhooks": 3
                        })
+
+@pytest.fixture
+def donor_that_erred_during_uat():
+    return json.dumps({'id': 'evt_1PcrJEL1MLd6bigCdNbs220i', 'object': 'event', 'api_version': '2022-11-15', 'created': 1721059168, 'data': {'object': {'id': 'cus_QToxMZVIxZRAtF', 'object': 'customer', 'address': {'city': 'Alajuela', 'country': 'Costa Rica', 'line1': 'Av. 0AS, Calle 42', 'line2': None, 'postal_code': '20102', 'state': 'Alajuela'}, 'balance': 0, 'created': 1721059167, 'currency': None, 'default_source': None, 'delinquent': False, 'description': 'VISA', 'discount': None, 'email': 'allansr20@gmail.com', 'invoice_prefix': '341086FB', 'invoice_settings': {'custom_fields': None, 'default_payment_method': 'pm_1PcrJCL1MLd6bigCldfpPEmT', 'footer': None, 'rendering_options': None}, 'livemode': False, 'metadata': {'created_by': 'FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 346524701', 'address_street': 'Av. 0AS, Calle 42', 'address_country': 'Costa Rica', 'address_state': 'Alajuela', 'address_zip': '20102', 'address_city': 'Alajuela'}, 'name': 'VISA', 'next_invoice_sequence': 1, 'phone': None, 'preferred_locales': [], 'shipping': None, 'tax_exempt': 'none', 'test_clock': None}, 'previous_attributes': {'address': None, 'name': None}}, 'livemode': False, 'pending_webhooks': 1, 'request': {'id': 'req_p3B9ZYNOmcXQcC', 'idempotency_key': '4e0dc179-d7fd-468a-bcf1-4b24df489497'}, 'type': 'customer.updated'})
+    _

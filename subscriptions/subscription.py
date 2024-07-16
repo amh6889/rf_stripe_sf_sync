@@ -54,23 +54,17 @@ class Subscription:
     @staticmethod
     def create(**recurring_donation):
         print(recurring_donation)
-        try:
-            response = sf.npe03__Recurring_Donation__c.create(recurring_donation)
-            print(response)
-            return response
-        except Exception as e:
-            print(e)
-            return None
+        response = sf.npe03__Recurring_Donation__c.create(recurring_donation)
+        print(response)
+        return response
 
     @staticmethod
     def update(recurring_donation_id, **recurring_donation):
-        try:
-            response = sf.npe03__Recurring_Donation__c.update(recurring_donation_id, recurring_donation)
-            print(response)
-            return response
-        except Exception as e:
-            print(e)
-            return None
+        print(recurring_donation)
+        response = sf.npe03__Recurring_Donation__c.update(recurring_donation_id, recurring_donation)
+        print(response)
+        return response
+
 
     @staticmethod
     def get_payment_method(stripe_subscription_id):
