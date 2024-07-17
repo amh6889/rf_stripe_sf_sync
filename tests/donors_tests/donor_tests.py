@@ -112,6 +112,23 @@ def test_donor_processor_maps_works_with_no_donor_metadata_address(donor_with_no
     assert mapped_donor['External_Contact_ID__c'] == 'cus_Q4X90EUjCmX1wg'
 
 
+def test_donor_processor_maps_works_with_donor_metadata_name(donor_with_metadata_name):
+    donor = json.loads(donor_with_metadata_name)
+    mapped_donor = DonorProcessor._map_donor(**donor)
+    assert mapped_donor['FirstName'] == 'Allan'
+    assert mapped_donor['LastName'] == 'Sanchez'
+    assert mapped_donor['npe01__HomeEmail__c'] == 'allansr20@gmail.com'
+    assert mapped_donor['Email'] == 'allansr20@gmail.com'
+    assert mapped_donor['MailingStreet'] == 'Av. 0AS, Calle 42'
+    assert mapped_donor['MailingCity'] == 'Alajuela'
+    assert mapped_donor['MailingState'] == 'Alajuela'
+    assert mapped_donor['MailingPostalCode'] == '20102'
+    assert mapped_donor['MailingCountry'] == 'Costa Rica'
+    assert mapped_donor['Phone'] is None
+    assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
+    assert mapped_donor['External_Contact_ID__c'] == 'cus_QToxMZVIxZRAtF'
+
+
 def test_parse_name_two_names_works():
     full_name = 'Billy Bob'
     first_name, last_name = DonorProcessor._parse_name(full_name)
@@ -153,6 +170,7 @@ def test_reserved_characters_email_exists():
     assert contact_id is not None
     assert contact_id == '0030b00002TWpQwAAL'
 
+
 def test_stripe_update_customer():
     stripe_customer_id = 'cus_QQWGdqZVFJarM9'
     street_address = '1234 Cool Lane'
@@ -165,10 +183,8 @@ def test_stripe_update_customer():
     response = Donor.update_stripe_customer(stripe_customer_id, updates)
     assert response is not None
 
-def test_stripe_update_event(donor_that_erred_during_uat):
-    donor_event = json.loads(donor_that_erred_during_uat)
+
+def test_stripe_update_event(donor_with_address_line2_missing):
+    donor_event = json.loads(donor_with_address_line2_missing)
     response = DonorProcessor.process_update_event(donor_event)
     assert response is not None
-
-
-

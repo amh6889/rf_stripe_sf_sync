@@ -15,10 +15,12 @@ class DonorProcessor:
         updates = {}
 
         if not full_name:
-            full_name = data['description']
-            updates['name'] = full_name
-
-        first_name, last_name = DonorProcessor._parse_name(full_name)
+            donor_names = DonorProcessor.get_donor_name(data)
+            first_name = donor_names['first_name']
+            last_name = donor_names['last_name']
+            updates['name'] = first_name + ' ' + last_name
+        else:
+            first_name, last_name = DonorProcessor._parse_name(full_name)
 
         email = data['email']
         phone = data['phone']
@@ -36,6 +38,23 @@ class DonorProcessor:
                  'MailingCountry': donor_address['country'], 'MailingPostalCode': donor_address['postal_code'],
                  'npe01__Preferred_Email__c': 'Personal', 'Stripe_Donor__c': True}
         return donor
+    @staticmethod
+    def get_donor_name(data):
+        donor_name = {'first_name': None, 'last_name': None}
+        if data['metadata']:
+            if 'first_name' in data['metadata'] and data['metadata']['first_name']:
+                donor_name['first_name'] = data['metadata']['first_name']
+
+            if 'last_name' in data['metadata'] and data['metadata']['last_name']:
+                donor_name['last_name'] = data['metadata']['last_name']
+
+        if not donor_name['first_name'] and not donor_name['last_name']:
+            full_name = data['description']
+            first_name, last_name = DonorProcessor._parse_name(full_name)
+            donor_name['first_name'] = first_name
+            donor_name['last_name'] = last_name
+        return donor_name
+
 
     @staticmethod
     def get_donor_address(data):
