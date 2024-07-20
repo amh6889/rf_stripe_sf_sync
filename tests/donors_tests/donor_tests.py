@@ -129,6 +129,46 @@ def test_donor_processor_maps_works_with_donor_metadata_name(donor_with_metadata
     assert mapped_donor['External_Contact_ID__c'] == 'cus_QToxMZVIxZRAtF'
 
 
+def test_donor_processor_maps_works_with_donor_metadata_opt_out(donor_with_metadata_opt_out):
+    donor = json.loads(donor_with_metadata_opt_out)
+    mapped_donor = DonorProcessor._map_donor_create_event(**donor)
+    assert mapped_donor['FirstName'] == 'Bill'
+    assert mapped_donor['LastName'] == 'Nye'
+    assert mapped_donor['npe01__HomeEmail__c'] == 'bill_nye_test@gmail.com'
+    assert mapped_donor['Email'] == 'bill_nye_test@gmail.com'
+    assert mapped_donor['MailingStreet'] == '901 Alum Springs Rd'
+    assert mapped_donor['MailingCity'] == 'Forest'
+    assert mapped_donor['MailingState'] == 'VA'
+    assert mapped_donor['MailingPostalCode'] == '24551'
+    assert mapped_donor['MailingCountry'] is None
+    assert mapped_donor['Phone'] is None
+    assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
+    assert mapped_donor['External_Contact_ID__c'] == 'cus_QUl5PhyHKkQnDC'
+    assert mapped_donor['HasOptedOutOfEmail'] is True
+    assert mapped_donor['DoNotMail__c'] is True
+
+def test_donor_processor_maps_works_with_donor_create_event_metadata_receipt(donor_with_metadata_receipt):
+    donor = json.loads(donor_with_metadata_receipt)
+    mapped_donor = DonorProcessor._map_donor_create_event(**donor)
+    assert mapped_donor['FirstName'] == 'Bill'
+    assert mapped_donor['LastName'] == 'Nye'
+    assert mapped_donor['npe01__HomeEmail__c'] == 'bill_nye_test@gmail.com'
+    assert mapped_donor['Email'] == 'bill_nye_test@gmail.com'
+    assert mapped_donor['MailingStreet'] == '901 Alum Springs Rd'
+    assert mapped_donor['MailingCity'] == 'Forest'
+    assert mapped_donor['MailingState'] == 'VA'
+    assert mapped_donor['MailingPostalCode'] == '24551'
+    assert mapped_donor['MailingCountry'] is None
+    assert mapped_donor['Phone'] is None
+    assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
+    assert mapped_donor['External_Contact_ID__c'] == 'cus_QUl5PhyHKkQnDC'
+    assert mapped_donor['HasOptedOutOfEmail'] is False
+    assert mapped_donor['DoNotMail__c'] is False
+    assert mapped_donor['Receipt_Preference__c'] == 'Email;Mail'
+
+
+
+
 def test_parse_name_two_names_works():
     full_name = 'Billy Bob'
     first_name, last_name = DonorProcessor._parse_name(full_name)

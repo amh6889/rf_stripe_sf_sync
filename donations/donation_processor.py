@@ -81,8 +81,6 @@ class DonationProcessor:
 
     @staticmethod
     def _get_payment_method_last_4(stripe_payment_method):
-        # payment_method = stripe.PaymentMethod.retrieve(stripe_payment_method_id)
-        last_4_digits = None
         payment_method_type = stripe_payment_method['type']
         if payment_method_type == 'card':
             last_4_digits = stripe_payment_method['card']['last4']
@@ -90,6 +88,7 @@ class DonationProcessor:
             last_4_digits = stripe_payment_method['us_bank_account']['last4']
         else:
             print(f'Payment method type {payment_method_type} is not supported')
+            raise Exception(f'Payment method type {payment_method_type} is not supported')
         return last_4_digits
 
     @staticmethod

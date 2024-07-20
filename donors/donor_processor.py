@@ -7,7 +7,7 @@ class DonorProcessor:
 
     # TODO: change below method to _map_create_donor_event and make new function to map an update donor event
     @staticmethod
-    def _map_donor(**event_data):
+    def _map_donor_update_event(**event_data):
         print(event_data)
         data = event_data['data']['object']
         customer_id = data['id']
@@ -26,11 +26,15 @@ class DonorProcessor:
         phone = data['phone']
         address = data['address']
         donor_address = DonorProcessor.get_donor_address(data)
+        # opt_out = DonorProcessor.get_donor_opt_out(data)
+        # receipt_preference = DonorProcessor.get_donor_receipt_preference(data)
         if not address:
             updates['address'] = donor_address
 
         if updates:
             Donor.update_stripe_customer(customer_id, updates)
+
+        #TODO: to ensure that I dont overwrite values I need to only including the key/values that are present in the request (e.g. HasOptedOutOfEmail)
 
         donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name,
                  'npe01__HomeEmail__c': email, 'Email': email, 'Phone': phone, 'MailingStreet': donor_address['line1'],
@@ -38,6 +42,46 @@ class DonorProcessor:
                  'MailingCountry': donor_address['country'], 'MailingPostalCode': donor_address['postal_code'],
                  'npe01__Preferred_Email__c': 'Personal', 'Stripe_Donor__c': True}
         return donor
+
+    @staticmethod
+    def _map_donor_create_event(**event_data):
+        print(event_data)
+        data = event_data['data']['object']
+        customer_id = data['id']
+        full_name = data['name']
+        updates = {}
+
+        if not full_name:
+            donor_names = DonorProcessor.get_donor_name(data)
+            first_name = donor_names['first_name']
+            last_name = donor_names['last_name']
+            updates['name'] = first_name + ' ' + last_name
+        else:
+            first_name, last_name = DonorProcessor._parse_name(full_name)
+
+        email = data['email']
+        phone = data['phone']
+        address = data['address']
+        donor_address = DonorProcessor.get_donor_address(data)
+        opt_out = DonorProcessor.get_donor_opt_out(data)
+        receipt_preference = DonorProcessor.get_donor_receipt_preference(data)
+        if not address:
+            updates['address'] = donor_address
+
+        if updates:
+            Donor.update_stripe_customer(customer_id, updates)
+
+        # TODO: to ensure that I dont overwrite values I need to only including the key/values that are present in the request (e.g. HasOptedOutOfEmail)
+
+        donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name,
+                 'npe01__HomeEmail__c': email, 'Email': email, 'Phone': phone, 'MailingStreet': donor_address['line1'],
+                 'MailingState': donor_address['state'], 'MailingCity': donor_address['city'],
+                 'MailingCountry': donor_address['country'], 'MailingPostalCode': donor_address['postal_code'],
+                 'npe01__Preferred_Email__c': 'Personal', 'Stripe_Donor__c': True,
+                 'Receipt_Preference__c': receipt_preference,
+                 'HasOptedOutOfEmail': opt_out['email_opt_out'], 'DoNotMail__c': opt_out['mail_opt_out']}
+        return donor
+
     @staticmethod
     def get_donor_name(data):
         donor_name = {'first_name': None, 'last_name': None}
@@ -55,6 +99,39 @@ class DonorProcessor:
             donor_name['last_name'] = last_name
         return donor_name
 
+    @staticmethod
+    def get_donor_opt_out(data):
+        opt_out = {'email_opt_out': False, 'mail_opt_out': False}
+        if data['metadata']:
+            if 'opt_out' in data['metadata'] and data['metadata']['opt_out']:
+                opt_out_number = data['metadata']['opt_out']
+                match opt_out_number:
+                    case '1':
+                        opt_out['email_opt_out'] = True
+                    case '2':
+                        opt_out['mail_opt_out'] = True
+                    case '3':
+                        opt_out['email_opt_out'] = True
+                        opt_out['mail_opt_out'] = True
+                    case _:
+                        print(f'Unknown donor opt out number: {opt_out_number}')
+        return opt_out
+
+    @staticmethod
+    def get_donor_receipt_preference(data):
+        receipt_preference = None
+        if data['metadata']:
+            if receipt := 'receipt' in data['metadata'] and data['metadata']['receipt']:
+                match receipt:
+                    case 'Email':
+                        receipt_preference = 'Email'
+                    case 'Mail':
+                        receipt_preference = 'Mail'
+                    case 'Email + Mail':
+                        receipt_preference = 'Email;Mail'
+                    case _:
+                        print(f'Unknown donor receipt preference: {receipt}')
+        return receipt_preference
 
     @staticmethod
     def get_donor_address(data):
@@ -88,8 +165,12 @@ class DonorProcessor:
         return donor_address
 
     @staticmethod
+    def build_dictionary():
+        pass
+
+    @staticmethod
     def process_create_event(event_data):
-        donor = DonorProcessor._map_donor(**event_data)
+        donor = DonorProcessor._map_donor_create_event(**event_data)
         sf_contact_id = Donor.exists_by_email(donor['Email'])
         if not sf_contact_id:
             print(
@@ -111,7 +192,7 @@ class DonorProcessor:
 
     @staticmethod
     def process_update_event(event_data):
-        donor = DonorProcessor._map_donor(**event_data)
+        donor = DonorProcessor._map_donor_update_event(**event_data)
         sf_contact_id = Donor.exists_by_email(donor['Email'])
 
         if not sf_contact_id:
