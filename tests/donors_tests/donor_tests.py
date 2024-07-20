@@ -147,7 +147,7 @@ def test_donor_processor_maps_works_with_donor_metadata_opt_out(donor_with_metad
     assert mapped_donor['HasOptedOutOfEmail'] is True
     assert mapped_donor['DoNotMail__c'] is True
 
-def test_donor_processor_maps_works_with_donor_create_event_metadata_receipt(donor_with_metadata_receipt):
+def test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail(donor_with_metadata_receipt):
     donor = json.loads(donor_with_metadata_receipt)
     mapped_donor = DonorProcessor._map_donor_create_event(**donor)
     assert mapped_donor['FirstName'] == 'Bill'
@@ -164,9 +164,7 @@ def test_donor_processor_maps_works_with_donor_create_event_metadata_receipt(don
     assert mapped_donor['External_Contact_ID__c'] == 'cus_QUl5PhyHKkQnDC'
     assert mapped_donor['HasOptedOutOfEmail'] is False
     assert mapped_donor['DoNotMail__c'] is False
-    assert mapped_donor['Receipt_Preference__c'] == 'Email;Mail'
-
-
+    assert mapped_donor['ReceiptDelivery__c'] == 'Email + Mail'
 
 
 def test_parse_name_two_names_works():

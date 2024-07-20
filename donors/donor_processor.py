@@ -78,7 +78,7 @@ class DonorProcessor:
                  'MailingState': donor_address['state'], 'MailingCity': donor_address['city'],
                  'MailingCountry': donor_address['country'], 'MailingPostalCode': donor_address['postal_code'],
                  'npe01__Preferred_Email__c': 'Personal', 'Stripe_Donor__c': True,
-                 'Receipt_Preference__c': receipt_preference,
+                 'ReceiptDelivery__c': receipt_preference,
                  'HasOptedOutOfEmail': opt_out['email_opt_out'], 'DoNotMail__c': opt_out['mail_opt_out']}
         return donor
 
@@ -119,18 +119,8 @@ class DonorProcessor:
 
     @staticmethod
     def get_donor_receipt_preference(data):
-        receipt_preference = None
-        if data['metadata']:
-            if receipt := 'receipt' in data['metadata'] and data['metadata']['receipt']:
-                match receipt:
-                    case 'Email':
-                        receipt_preference = 'Email'
-                    case 'Mail':
-                        receipt_preference = 'Mail'
-                    case 'Email + Mail':
-                        receipt_preference = 'Email;Mail'
-                    case _:
-                        print(f'Unknown donor receipt preference: {receipt}')
+        default_receipt_preference = 'Email'
+        receipt_preference = data['metadata']['receipt'] if data['metadata'] and 'receipt' in data['metadata'] else default_receipt_preference
         return receipt_preference
 
     @staticmethod
