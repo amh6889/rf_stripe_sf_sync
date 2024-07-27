@@ -147,6 +147,7 @@ def test_donor_processor_maps_works_with_donor_metadata_opt_out(donor_with_metad
     assert mapped_donor['HasOptedOutOfEmail'] is True
     assert mapped_donor['DoNotMail__c'] is True
 
+
 def test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail(donor_with_metadata_receipt):
     donor = json.loads(donor_with_metadata_receipt)
     mapped_donor = DonorProcessor._map_donor_create_event(**donor)
@@ -226,3 +227,19 @@ def test_stripe_update_event(donor_with_address_line2_missing):
     donor_event = json.loads(donor_with_address_line2_missing)
     response = DonorProcessor.process_update_event(donor_event)
     assert response is not None
+
+
+def test_filter_donor_works():
+    donor = {'FirstName': None, 'LastName': 'Turkey',
+             'MailingStreet': '12345 Bob Villa Way',
+             'MailingState': 'VA', 'MailingCity': None,
+             'MailingCountry': None, 'MailingPostalCode': None}
+    filtered_donor = DonorProcessor._filter_donor(donor)
+    assert filtered_donor is not None
+    assert filtered_donor.get('FirstName') is None
+    assert filtered_donor.get('LastName') == 'Turkey'
+    assert filtered_donor.get('MailingStreet') == '12345 Bob Villa Way'
+    assert filtered_donor.get('MailingState') == 'VA'
+    assert filtered_donor.get('MailingCity') is None
+    assert filtered_donor.get('MailingCountry') is None
+    assert filtered_donor.get('MailingPostalCode') is None

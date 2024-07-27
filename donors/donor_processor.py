@@ -10,8 +10,8 @@ class DonorProcessor:
     def _map_donor_update_event(**event_data):
         print(event_data)
         data = event_data['data']['object']
-        customer_id = data['id']
-        full_name = data['name']
+        customer_id = data.get('id')
+        full_name = data.get('name')
         updates = {}
 
         if not full_name:
@@ -22,26 +22,25 @@ class DonorProcessor:
         else:
             first_name, last_name = DonorProcessor._parse_name(full_name)
 
-        email = data['email']
-        phone = data['phone']
         address = data['address']
         donor_address = DonorProcessor.get_donor_address(data)
-        # opt_out = DonorProcessor.get_donor_opt_out(data)
-        # receipt_preference = DonorProcessor.get_donor_receipt_preference(data)
         if not address:
             updates['address'] = donor_address
 
         if updates:
             Donor.update_stripe_customer(customer_id, updates)
 
-        #TODO: to ensure that I dont overwrite values I need to only including the key/values that are present in the request (e.g. HasOptedOutOfEmail)
+        donor = {'FirstName': first_name, 'LastName': last_name, 'npe01__HomeEmail__c': data.get('email'),
+                 'Email': data.get('email'), 'Phone': data.get('phone'), 'MailingStreet': donor_address['line1'],
+                 'MailingState': donor_address.get('state'), 'MailingCity': donor_address.get('city'),
+                 'MailingCountry': donor_address.get('country'), 'MailingPostalCode': donor_address.get('postal_code')}
+        filtered_donor = DonorProcessor._filter_donor(donor)
+        return filtered_donor
 
-        donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name,
-                 'npe01__HomeEmail__c': email, 'Email': email, 'Phone': phone, 'MailingStreet': donor_address['line1'],
-                 'MailingState': donor_address['state'], 'MailingCity': donor_address['city'],
-                 'MailingCountry': donor_address['country'], 'MailingPostalCode': donor_address['postal_code'],
-                 'npe01__Preferred_Email__c': 'Personal', 'Stripe_Donor__c': True}
-        return donor
+    @staticmethod
+    def _filter_donor(donor):
+        filtered_donor = {k: v for k, v in donor.items() if v is not None}
+        return filtered_donor
 
     @staticmethod
     def _map_donor_create_event(**event_data):
@@ -73,7 +72,7 @@ class DonorProcessor:
 
         # TODO: to ensure that I dont overwrite values I need to only including the key/values that are present in the request (e.g. HasOptedOutOfEmail)
 
-        donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name,
+        donor = {'FirstName': first_name, 'LastName': last_name,
                  'npe01__HomeEmail__c': email, 'Email': email, 'Phone': phone, 'MailingStreet': donor_address['line1'],
                  'MailingState': donor_address['state'], 'MailingCity': donor_address['city'],
                  'MailingCountry': donor_address['country'], 'MailingPostalCode': donor_address['postal_code'],
@@ -120,7 +119,8 @@ class DonorProcessor:
     @staticmethod
     def get_donor_receipt_preference(data):
         default_receipt_preference = 'Email'
-        receipt_preference = data['metadata']['receipt'] if data['metadata'] and 'receipt' in data['metadata'] else default_receipt_preference
+        receipt_preference = data['metadata']['receipt'] if data['metadata'] and 'receipt' in data[
+            'metadata'] else default_receipt_preference
         return receipt_preference
 
     @staticmethod
@@ -153,10 +153,6 @@ class DonorProcessor:
             if 'address_zip' in metadata:
                 donor_address['postal_code'] = metadata['address_zip']
         return donor_address
-
-    @staticmethod
-    def build_dictionary():
-        pass
 
     @staticmethod
     def process_create_event(event_data):
