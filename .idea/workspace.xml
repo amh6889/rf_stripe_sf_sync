@@ -7,7 +7,10 @@
     <list default="true" id="e242112d-11d0-49a5-a8b9-e5317a5594e1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/donors/donor_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/donor_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/donor_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions/subscription.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/subscription_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/subscription_tests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,6 +113,7 @@
     "Python tests.Python tests for subscription_tests.test_parse_epoch_time_works.executor": "Run",
     "Python tests.Python tests for subscription_tests.test_process_update_event.executor": "Debug",
     "Python tests.Python tests for subscription_tests.test_subscription_does_not_exist.executor": "Debug",
+    "Python tests.Python tests for subscription_tests.test_subscription_error_8_18_24.executor": "Debug",
     "Python tests.Python tests for subscription_tests.test_subscription_exists.executor": "Run",
     "Python tests.Python tests for subscription_tests.test_update_subscription_succeeds.executor": "Debug",
     "Python tests.Python tests in donor_tests.py.executor": "Run",
@@ -150,7 +154,7 @@
       <recent name="C:\Users\amh68\Documents\Source Code\RF_Stripe_SF_Sync\donors" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for donor_tests.test_filter_donor_works">
+  <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
@@ -222,22 +226,6 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for donor_tests.test_donor_processor_maps_works_with_donor_metadata_receipt" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="RF_Stripe_SF_Sync" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/donors_tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;donor_tests.test_donor_processor_maps_works_with_donor_metadata_receipt&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
     <configuration name="Python tests for donor_tests.test_filter_donor_works" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
@@ -251,6 +239,22 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;donor_tests.test_filter_donor_works&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for subscription_tests.test_subscription_error_8_18_24" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="RF_Stripe_SF_Sync" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/subscription_tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;subscription_tests.test_subscription_error_8_18_24&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -275,19 +279,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.main" />
+      <item itemvalue="Python tests.Python tests for subscription_tests.test_subscription_error_8_18_24" />
       <item itemvalue="Python tests.Python tests for donor_tests.test__filter_donor_works" />
       <item itemvalue="Python tests.Python tests for donor_tests.test_filter_donor_works" />
       <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt" />
       <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail" />
-      <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_metadata_receipt" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for subscription_tests.test_subscription_error_8_18_24" />
         <item itemvalue="Python tests.Python tests for donor_tests.test_filter_donor_works" />
         <item itemvalue="Python tests.Python tests for donor_tests.test__filter_donor_works" />
         <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail" />
         <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt" />
-        <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_metadata_receipt" />
       </list>
     </recent_temporary>
   </component>
@@ -320,7 +324,8 @@
       <workItem from="1714427934187" duration="9429000" />
       <workItem from="1717952509499" duration="15198000" />
       <workItem from="1718670528078" duration="104816000" />
-      <workItem from="1722089569443" duration="5975000" />
+      <workItem from="1722089569443" duration="10164000" />
+      <workItem from="1724117515359" duration="5293000" />
     </task>
     <servers />
   </component>
@@ -330,75 +335,75 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/event_processor_tests/event_processor_tests.py</url>
           <line>4</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/donation_tests/donation_tests.py</url>
           <line>20</line>
           <option name="timeStamp" value="73" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donations/donation_processor.py</url>
           <line>67</line>
           <option name="timeStamp" value="76" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/donation_tests/donation_tests.py</url>
           <line>69</line>
           <option name="timeStamp" value="85" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_processor.py</url>
-          <line>84</line>
+          <line>83</line>
           <option name="timeStamp" value="126" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_processor.py</url>
-          <line>89</line>
+          <line>88</line>
           <option name="timeStamp" value="128" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/event_processor/event_processor.py</url>
           <line>44</line>
           <option name="timeStamp" value="135" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/subscription_tests/subscription_tests.py</url>
-          <line>192</line>
-          <option name="timeStamp" value="146" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donors/donor.py</url>
           <line>67</line>
           <option name="timeStamp" value="149" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donors/donor_processor.py</url>
           <line>136</line>
           <option name="timeStamp" value="163" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donors/donor_processor.py</url>
           <line>16</line>
           <option name="timeStamp" value="165" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/donors_tests/donor_tests.py</url>
           <line>133</line>
           <option name="timeStamp" value="166" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/subscriptions/subscription.py</url>
+          <line>86</line>
+          <option name="timeStamp" value="172" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$main.coverage" NAME="main Coverage Results" MODIFIED="1719630676305" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1722097796269" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/donors_tests" />
+    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1724122339390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/subscription_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$event_processor_tests.coverage" NAME="event_processor_tests Coverage Results" MODIFIED="1710209137532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/event_processor_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$database_connection.coverage" NAME="database_connection Coverage Results" MODIFIED="1710208968263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1721183837995" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1724122784536" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$get_donor_events.coverage" NAME="get_donor_events Coverage Results" MODIFIED="1710203834010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/donors" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$event_processor.coverage" NAME="event_processor Coverage Results" MODIFIED="1710209027955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/event_processor" />
   </component>

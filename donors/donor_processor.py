@@ -72,7 +72,7 @@ class DonorProcessor:
 
         # TODO: to ensure that I dont overwrite values I need to only including the key/values that are present in the request (e.g. HasOptedOutOfEmail)
 
-        donor = {'FirstName': first_name, 'LastName': last_name,
+        donor = {'External_Contact_ID__c': customer_id, 'FirstName': first_name, 'LastName': last_name,
                  'npe01__HomeEmail__c': email, 'Email': email, 'Phone': phone, 'MailingStreet': donor_address['line1'],
                  'MailingState': donor_address['state'], 'MailingCity': donor_address['city'],
                  'MailingCountry': donor_address['country'], 'MailingPostalCode': donor_address['postal_code'],

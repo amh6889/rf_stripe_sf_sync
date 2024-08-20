@@ -12,14 +12,12 @@ class SubscriptionProcessor:
         status = data['status']
         mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
         subscription_id = data['id']
-        campaign_code = None
         sf_campaign_id = None
-        if metadata := data['metadata']:
-            campaign_code = metadata['campaign_code']
-            sf_campaign_id = Subscription.get_campaign_id(campaign_code)
+        mapped_payment_method_type = None
 
-
-
+        if metadata := data.get('metadata'):
+            if campaign_code := metadata.get('campaign_code'):
+                sf_campaign_id = Subscription.get_campaign_id(campaign_code)
 
         amount = data['plan']['amount'] * data['quantity']
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -32,10 +30,11 @@ class SubscriptionProcessor:
         salesforce_id = Donor.exists_by_email(email)
         interval = data['plan']['interval']
         installment_period = SubscriptionProcessor._map_installment_period(interval)
-        payment_method = Subscription.get_payment_method(subscription_id)
-        payment_method_type = payment_method['type']
-        mapped_payment_method_type = SubscriptionProcessor._map_payment_method(payment_method_type)
-        # last4 = payment_method_type[payment_method_type]['last4']
+
+        if payment_method := Subscription.get_payment_method(subscription_id):
+            if payment_method_type := payment_method.get('type'):
+                mapped_payment_method_type = SubscriptionProcessor._map_payment_method(payment_method_type)
+
         installment_frequency = data['plan']['interval_count']
 
         subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npe03__Amount__c': formatted_amount,

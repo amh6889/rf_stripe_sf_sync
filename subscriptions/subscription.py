@@ -68,15 +68,28 @@ class Subscription:
 
     @staticmethod
     def get_payment_method(stripe_subscription_id):
-        payment_method = ''
         subscription = stripe.Subscription.retrieve(stripe_subscription_id,
                                                     expand=['default_payment_method', 'default_source',
                                                             'latest_invoice.payment_intent.payment_method'])
-        default_payment_method = subscription['default_payment_method']
-        default_source = subscription['default_source']
-        temp_payment_method = subscription['latest_invoice']['payment_intent']['payment_method']
-        any(payment_method := pm for pm in (default_payment_method, default_source, temp_payment_method))
-        pprint(payment_method)
+        payment_method = Subscription.parse_payment_method(subscription)
+        print(payment_method)
+        return payment_method
+
+    @staticmethod
+    def parse_payment_method(subscription):
+        payment_method = None
+        payment_methods = []
+        if subscription['default_payment_method']:
+            payment_methods.append(subscription['default_payment_method'])
+        if subscription['default_source']:
+            payment_methods.append(subscription['default_source'])
+        if subscription['latest_invoice']:
+            if subscription['latest_invoice']['payment_intent']:
+                temp_payment_intent = subscription['latest_invoice']['payment_intent']
+                if temp_payment_intent['payment_method']:
+                    payment_methods.append(temp_payment_intent.get('payment_method'))
+        if payment_methods:
+            any(payment_method := pm for pm in tuple(payment_methods))
         return payment_method
 
     @staticmethod
