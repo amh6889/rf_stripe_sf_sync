@@ -77,7 +77,7 @@ class SubscriptionProcessor:
                     error_message = f'Did not create Stripe subscription {stripe_subscription_id} successfully in Salesforce due to: {errors}'
                     raise Exception(error_message)
         else:
-            error_message = f'Stripe subscription {stripe_subscription_id} already exists in Salesforce. Cannot process create event.'
+            error_message = f'Stripe subscription {stripe_subscription_id} already exists in Salesforce with Recurring Donation ID {sf_subscription_id}. Cannot process subscription create event further.'
             print(error_message)
             raise Exception(error_message)
 
@@ -89,7 +89,7 @@ class SubscriptionProcessor:
             raise Exception('Stripe subscription ID is null.  Cannot process subscription update event further.')
         sf_subscription = Subscription.exists(stripe_subscription_id)
         if not sf_subscription:
-            error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process update event.'
+            error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process subscription update event further.'
             print(error_message)
             time.sleep(30)
             raise Exception(error_message)
@@ -113,7 +113,7 @@ class SubscriptionProcessor:
             raise Exception('Stripe subscription ID is null.  Cannot process subscription delete event further.')
         sf_subscription = Subscription.exists(stripe_subscription_id)
         if not sf_subscription:
-            error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process delete event.'
+            error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process subscription delete event further.'
             print(error_message)
             time.sleep(30)
             raise Exception(error_message)
@@ -127,7 +127,7 @@ class SubscriptionProcessor:
                 raise Exception(error_message)
 
             print(
-                f'Canceled Stripe subscription {stripe_subscription_id} successfully in Salesforce.')
+                f'Canceled Stripe subscription {stripe_subscription_id}/Salesforce Recurring Donation ID {sf_subscription_id} successfully in Salesforce.')
 
     @staticmethod
     def _map_installment_period(interval):

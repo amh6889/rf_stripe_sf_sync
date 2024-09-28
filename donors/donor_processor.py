@@ -176,7 +176,7 @@ class DonorProcessor:
                     error_message = f'Did not create Stripe customer with {email} successfully in Salesforce due to: {errors}'
                     raise Exception(error_message)
         else:
-            error_message = f'Stripe customer with email {email} already exists in Salesforce with ID {sf_contact_id}'
+            error_message = f'Stripe customer with email {email} already exists in Salesforce with ID {sf_contact_id}. Cannot process donor create event further.'
             raise Exception(error_message)
 
     @staticmethod
@@ -188,7 +188,7 @@ class DonorProcessor:
         sf_contact_id = Donor.exists_by_email(email)
 
         if not sf_contact_id:
-            error_message = f'Stripe customer with email {email} does not exist in Salesforce. Cannot process update event.'
+            error_message = f'Stripe customer with email {email} does not exist in Salesforce. Cannot process donor update event further.'
             print(error_message)
             time.sleep(30)
             raise Exception(error_message)

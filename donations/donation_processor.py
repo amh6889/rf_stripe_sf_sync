@@ -115,7 +115,7 @@ class DonationProcessor:
                     error_message = f'Did not create Stripe donation {stripe_invoice_id} successfully in Salesforce due to: {errors}'
                     raise Exception(error_message)
         else:
-            error_message = f'Stripe charge {stripe_invoice_id} already exists in Salesforce. Cannot process create event.'
+            error_message = f'Stripe charge {stripe_invoice_id} already exists in Salesforce with Donation ID {sf_donation_id}. Cannot process donation create event further.'
             print(error_message)
             raise Exception(error_message)
 
@@ -128,7 +128,7 @@ class DonationProcessor:
 
         sf_donation_id = Donation.exists(stripe_invoice_id)
         if not sf_donation_id:
-            error_message = f'Stripe charge {stripe_invoice_id} does not exist in Salesforce. Cannot process update event.'
+            error_message = f'Stripe charge {stripe_invoice_id} does not exist in Salesforce. Cannot process donation update event.'
             print(error_message)
             time.sleep(30)
             raise Exception(error_message)

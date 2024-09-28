@@ -8,7 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/donations/donation_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/donors/donor_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/event_processor/event_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/event_processor/event_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/subscriptions/subscription_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -326,7 +325,7 @@
       <workItem from="1717952509499" duration="15198000" />
       <workItem from="1718670528078" duration="104816000" />
       <workItem from="1722089569443" duration="10164000" />
-      <workItem from="1724117515359" duration="22519000" />
+      <workItem from="1724117515359" duration="24795000" />
     </task>
     <servers />
   </component>
