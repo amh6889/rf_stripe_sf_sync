@@ -26,17 +26,21 @@ class EventProcessor:
             start_time = datetime.now()
             donor_event = json.loads(body)
             print(f'Processing donor event at {start_time}: {donor_event}')
-            match donor_event['type']:
+            event_type = donor_event.get('type')
+            event_id = donor_event.get('id')
+            match event_type:
                 case 'customer.created':
+                    print(f'Processing donor create event id: {event_id}')
                     DonorProcessor.process_create_event(donor_event)
                     ch.basic_ack(delivery_tag=method.delivery_tag)
-                    print(f'Successfully processed donor create event id: {donor_event['id']}')
+                    print(f'Successfully processed donor create event id: {event_id}')
                 case 'customer.updated':
+                    print(f'Processing donor update event id: {event_id}')
                     DonorProcessor.process_update_event(donor_event)
                     ch.basic_ack(delivery_tag=method.delivery_tag)
-                    print(f'Successfully processed donor update event id: {donor_event['id']}')
+                    print(f'Successfully processed donor update event id: {event_id}')
                 case _:
-                    print(f'Unknown donor event type: {donor_event['type']}')
+                    print(f'Unknown donor event type: {event_type}')
         except Exception as e:
             error_time = datetime.now()
             print(f'Error in process_donor_event at {error_time} due to: {e}')

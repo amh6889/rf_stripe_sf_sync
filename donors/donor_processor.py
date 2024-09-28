@@ -1,3 +1,4 @@
+import time
 import traceback
 
 from donors.donor import Donor
@@ -189,6 +190,7 @@ class DonorProcessor:
         if not sf_contact_id:
             error_message = f'Stripe customer with email {email} does not exist in Salesforce. Cannot process update event.'
             print(error_message)
+            time.sleep(30)
             raise Exception(error_message)
         else:
             response = Donor.update(sf_contact_id, **donor)

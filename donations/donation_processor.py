@@ -1,5 +1,6 @@
 import datetime
 import locale
+import time
 
 from donations.donation import Donation
 from donors.donor import Donor
@@ -12,17 +13,18 @@ class DonationProcessor:
     @staticmethod
     def _map_donation(**event_data):
         data = event_data['data']['object']
-        stripe_payment_intent_id = data['id']
-        amount = data['amount']
+        stripe_payment_intent_id = data.get('id')
+        amount = data.get('amount')
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         formatted_amount = locale.currency(amount / 100, symbol=False)
-        stripe_customer_id = data['customer']
+        stripe_customer_id = data.get('customer')
         donor_email = Donor.get_email(stripe_customer_id)
         salesforce_id = None
         if donor_email:
             salesforce_id = Donor.exists_by_email(donor_email)
 
         if not salesforce_id:
+            time.sleep(30)
             raise Exception(
                 f'Donation event error: Stripe customer {stripe_customer_id} with email {donor_email} does not exist in Salesforce')
 
@@ -45,6 +47,7 @@ class DonationProcessor:
                 salesforce_recurring_donation_id = salesforce_recurring_donation['id']
                 # salesforce_id = salesforce_recurring_donation['sf_contact_id']
             else:
+                time.sleep(30)
                 raise Exception(
                     f'Donation event error: Stripe subscription {stripe_subscription_id} does not exist in Salesforce')
 
@@ -127,6 +130,7 @@ class DonationProcessor:
         if not sf_donation_id:
             error_message = f'Stripe charge {stripe_invoice_id} does not exist in Salesforce. Cannot process update event.'
             print(error_message)
+            time.sleep(30)
             raise Exception(error_message)
         else:
             response = Donation.update(sf_donation_id, **donation)

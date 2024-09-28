@@ -8,8 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/donations/donation_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/donors/donor_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/event_processor/event_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/event_processor/event_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/subscriptions/subscription_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils_tests/filter_string_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils_tests/filter_string_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -326,7 +326,7 @@
       <workItem from="1717952509499" duration="15198000" />
       <workItem from="1718670528078" duration="104816000" />
       <workItem from="1722089569443" duration="10164000" />
-      <workItem from="1724117515359" duration="19301000" />
+      <workItem from="1724117515359" duration="22519000" />
     </task>
     <servers />
   </component>
@@ -347,29 +347,19 @@
           <option name="timeStamp" value="73" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/donations/donation_processor.py</url>
-          <line>67</line>
-          <option name="timeStamp" value="76" />
-        </line-breakpoint>
-        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/donation_tests/donation_tests.py</url>
           <line>69</line>
           <option name="timeStamp" value="85" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_processor.py</url>
-          <line>88</line>
+          <line>90</line>
           <option name="timeStamp" value="126" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_processor.py</url>
-          <line>94</line>
+          <line>97</line>
           <option name="timeStamp" value="128" />
-        </line-breakpoint>
-        <line-breakpoint suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/event_processor/event_processor.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="135" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donors/donor.py</url>
@@ -378,7 +368,7 @@
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donors/donor_processor.py</url>
-          <line>134</line>
+          <line>135</line>
           <option name="timeStamp" value="163" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
@@ -393,7 +383,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donations/donation_processor.py</url>
-          <line>97</line>
+          <line>100</line>
           <option name="timeStamp" value="173" />
         </line-breakpoint>
       </breakpoints>

@@ -1,5 +1,7 @@
 import datetime
 import locale
+import time
+
 from donors.donor import Donor
 from subscriptions.subscription import Subscription
 
@@ -89,6 +91,7 @@ class SubscriptionProcessor:
         if not sf_subscription:
             error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process update event.'
             print(error_message)
+            time.sleep(30)
             raise Exception(error_message)
         else:
             sf_subscription_id = sf_subscription.get('id')
@@ -112,6 +115,7 @@ class SubscriptionProcessor:
         if not sf_subscription:
             error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process delete event.'
             print(error_message)
+            time.sleep(30)
             raise Exception(error_message)
         else:
             sf_subscription_id = sf_subscription.get('id')
