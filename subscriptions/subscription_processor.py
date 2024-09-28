@@ -58,62 +58,72 @@ class SubscriptionProcessor:
     @staticmethod
     def process_create_event(event_data):
         subscription = SubscriptionProcessor._map_active_subscription(**event_data)
-        sf_subscription_id = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
+        stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
+        if stripe_subscription_id is None:
+            raise Exception('Stripe subscription ID is null.  Cannot process subscription create event further.')
+        sf_subscription_id = Subscription.exists(stripe_subscription_id)
         if not sf_subscription_id:
             create_response = Subscription.create(**subscription)
             if 'success' in create_response:
-                success = create_response['success']
+                success = create_response.get('success')
                 if success:
-                    salesforce_id = create_response['id']
+                    salesforce_id = create_response.get('id')
                     print(
-                        f'Created Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce with ID {salesforce_id}')
+                        f'Created Stripe subscription {stripe_subscription_id} successfully in Salesforce with ID {salesforce_id}')
                 else:
-                    errors = create_response['errors']
-                    error_message = f'Did not create Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce due to: {errors}'
+                    errors = create_response.get('errors')
+                    error_message = f'Did not create Stripe subscription {stripe_subscription_id} successfully in Salesforce due to: {errors}'
                     raise Exception(error_message)
         else:
-            error_message = f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} already exists in Salesforce. Cannot process create event.'
+            error_message = f'Stripe subscription {stripe_subscription_id} already exists in Salesforce. Cannot process create event.'
             print(error_message)
             raise Exception(error_message)
 
     @staticmethod
     def process_update_event(event_data):
         subscription = SubscriptionProcessor._map_active_subscription(**event_data)
-        print(subscription)
-        sf_subscription = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
+        stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
+        if stripe_subscription_id is None:
+            raise Exception('Stripe subscription ID is null.  Cannot process subscription update event further.')
+        sf_subscription = Subscription.exists(stripe_subscription_id)
         if not sf_subscription:
-            error_message = f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process update event.'
+            error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process update event.'
             print(error_message)
             raise Exception(error_message)
         else:
-            response = Subscription.update(sf_subscription['id'], **subscription)
+            sf_subscription_id = sf_subscription.get('id')
+            response = Subscription.update(sf_subscription_id, **subscription)
             if response != 204:
-                errors = response['errors']
-                error_message = f'Did not update Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce due to {errors}'
+                errors = response.get('errors')
+                error_message = f'Did not update Stripe subscription {stripe_subscription_id} successfully in Salesforce due to {errors}'
                 print(error_message)
                 raise Exception(error_message)
 
             print(
-                f'Updated Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce.')
+                f'Updated Stripe subscription {stripe_subscription_id} successfully in Salesforce.')
 
     @staticmethod
     def process_delete_event(subscription_event):
         subscription = SubscriptionProcessor._map_canceled_subscription(**subscription_event)
-        sf_subscription = Subscription.exists(subscription['Stripe_Subscription_ID__c'])
+        stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
+        if stripe_subscription_id is None:
+            raise Exception('Stripe subscription ID is null.  Cannot process subscription delete event further.')
+        sf_subscription = Subscription.exists(stripe_subscription_id)
         if not sf_subscription:
-            error_message = f'Stripe subscription {subscription['Stripe_Subscription_ID__c']} does not exist in Salesforce. Cannot process delete event.'
+            error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process delete event.'
             print(error_message)
             raise Exception(error_message)
         else:
-            response = Subscription.update(sf_subscription['id'], **subscription)
+            sf_subscription_id = sf_subscription.get('id')
+            response = Subscription.update(sf_subscription_id, **subscription)
             if response != 204:
                 errors = response['errors']
-                error_message = f'Did not update canceled Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce due to {errors}'
+                error_message = f'Did not cancel Stripe subscription {stripe_subscription_id} successfully in Salesforce due to {errors}'
                 print(error_message)
                 raise Exception(error_message)
 
             print(
-                f'Updated canceled Stripe subscription {subscription['Stripe_Subscription_ID__c']} successfully in Salesforce.')
+                f'Canceled Stripe subscription {stripe_subscription_id} successfully in Salesforce.')
 
     @staticmethod
     def _map_installment_period(interval):

@@ -30,7 +30,6 @@ class DonorProcessor:
         if updates:
             Donor.update_stripe_customer(customer_id, updates)
 
-        #TODO: either add External_Contact_ID__c field below in donor dictionary or remove External_Contact_ID__c completely since it will always be changing since the Form assembly web form will always create a new customer
         donor = {'FirstName': first_name, 'LastName': last_name, 'npe01__HomeEmail__c': data.get('email'),
                  'Email': data.get('email'), 'Phone': data.get('phone'), 'MailingStreet': donor_address['line1'],
                  'MailingState': donor_address.get('state'), 'MailingCity': donor_address.get('city'),
@@ -156,20 +155,23 @@ class DonorProcessor:
     @staticmethod
     def process_create_event(event_data):
         donor = DonorProcessor._map_donor_create_event(**event_data)
-        email = donor.get('email')
+        email = donor.get('Email')
+        if email is None:
+            raise Exception('Donor email is null.  Cannot process donor create event further.')
+
         sf_contact_id = Donor.exists_by_email(email)
         if not sf_contact_id:
             print(
                 f'Creating Stripe customer {donor.get('FirstName')} {donor.get('LastName')} with email {email} in Salesforce')
             create_response = Donor.create(**donor)
             if 'success' in create_response:
-                success = create_response['success']
+                success = create_response.get('success')
                 if success:
-                    salesforce_id = create_response['id']
+                    salesforce_id = create_response.get('id')
                     print(
                         f'Created Stripe customer with email {email} successfully in Salesforce with ID {salesforce_id}')
                 else:
-                    errors = create_response['errors']
+                    errors = create_response.get('errors')
                     error_message = f'Did not create Stripe customer with {email} successfully in Salesforce due to: {errors}'
                     raise Exception(error_message)
         else:
@@ -180,21 +182,23 @@ class DonorProcessor:
     def process_update_event(event_data):
         donor = DonorProcessor._map_donor_update_event(**event_data)
         email = donor.get('Email')
+        if email is None:
+            raise Exception('Donor email is null.  Cannot process donor update event further.')
         sf_contact_id = Donor.exists_by_email(email)
 
         if not sf_contact_id:
-            error_message = f'Stripe customer {donor.get('FirstName')} {donor.get('LastName')} with email {email} does not exist in Salesforce. Cannot process update event.'
+            error_message = f'Stripe customer with email {email} does not exist in Salesforce. Cannot process update event.'
             print(error_message)
             raise Exception(error_message)
         else:
             response = Donor.update(sf_contact_id, **donor)
             if response != 204:
-                errors = response['errors']
-                error_message = f'Did not update Stripe customer {donor.get('FirstName')} {donor.get('LastName')} with email {email}  successfully in Salesforce due to {errors}'
+                errors = response.get('errors')
+                error_message = f'Did not update Stripe customer with email {email} and Salesforce Contact ID {sf_contact_id} successfully in Salesforce due to {errors}'
                 print(error_message)
                 raise Exception(error_message)
 
-            print(f'Updated Stripe customer {donor.get('FirstName')} {donor.get('LastName')} with email {email} successfully in Salesforce.')
+            print(f'Updated Stripe customer with email {email} and Salesforce Contact ID {sf_contact_id} successfully in Salesforce.')
 
     @staticmethod
     def _parse_name(full_name):

@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="e242112d-11d0-49a5-a8b9-e5317a5594e1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/donations/donation_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/donors/donor_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils_tests/filter_string_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils_tests/filter_string_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,6 +87,8 @@
     "Python tests.Python tests for donor_tests.test_update_donor_succeeds.executor": "Run",
     "Python tests.Python tests for event_processor_tests.test_getting_customer_events_works.executor": "Debug",
     "Python tests.Python tests for filter_string_test.test_filter_string.executor": "Debug",
+    "Python tests.Python tests for filter_string_test.test_filter_string_with_invalid_characters.executor": "Run",
+    "Python tests.Python tests for filter_string_test.test_filter_string_with_no_invalid_characters.executor": "Run",
     "Python tests.Python tests for get_donor_events_tests.test_database_connection.executor": "Run",
     "Python tests.Python tests for get_donor_events_tests.test_get_donor_events_works.executor": "Debug",
     "Python tests.Python tests for process_customer_create_event_tests.test_process_customer_create_event.executor": "Run",
@@ -150,7 +155,7 @@
       <recent name="C:\Users\amh68\Documents\Source Code\RF_Stripe_SF_Sync\donors" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for subscription_tests.test_subscription_error_8_18_24">
+  <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
@@ -190,38 +195,6 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="RF_Stripe_SF_Sync" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/donors_tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="RF_Stripe_SF_Sync" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/donors_tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
     <configuration name="Python tests for donor_tests.test_filter_donor_works" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
@@ -235,6 +208,38 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;donor_tests.test_filter_donor_works&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for filter_string_test.test_filter_string_with_invalid_characters" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="RF_Stripe_SF_Sync" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/utils_tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;filter_string_test.test_filter_string_with_invalid_characters&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for filter_string_test.test_filter_string_with_no_invalid_characters" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="RF_Stripe_SF_Sync" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/utils_tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;filter_string_test.test_filter_string_with_no_invalid_characters&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -275,19 +280,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.main" />
+      <item itemvalue="Python tests.Python tests for filter_string_test.test_filter_string_with_invalid_characters" />
+      <item itemvalue="Python tests.Python tests for filter_string_test.test_filter_string_with_no_invalid_characters" />
       <item itemvalue="Python tests.Python tests for subscription_tests.test_subscription_error_8_18_24" />
       <item itemvalue="Python tests.Python tests for donor_tests.test__filter_donor_works" />
       <item itemvalue="Python tests.Python tests for donor_tests.test_filter_donor_works" />
-      <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt" />
-      <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for filter_string_test.test_filter_string_with_no_invalid_characters" />
+        <item itemvalue="Python tests.Python tests for filter_string_test.test_filter_string_with_invalid_characters" />
         <item itemvalue="Python tests.Python tests for subscription_tests.test_subscription_error_8_18_24" />
         <item itemvalue="Python tests.Python tests for donor_tests.test_filter_donor_works" />
         <item itemvalue="Python tests.Python tests for donor_tests.test__filter_donor_works" />
-        <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail" />
-        <item itemvalue="Python tests.Python tests for donor_tests.test_donor_processor_maps_works_with_donor_create_event_metadata_receipt" />
       </list>
     </recent_temporary>
   </component>
@@ -321,7 +326,7 @@
       <workItem from="1717952509499" duration="15198000" />
       <workItem from="1718670528078" duration="104816000" />
       <workItem from="1722089569443" duration="10164000" />
-      <workItem from="1724117515359" duration="8636000" />
+      <workItem from="1724117515359" duration="19301000" />
     </task>
     <servers />
   </component>
@@ -353,12 +358,12 @@
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_processor.py</url>
-          <line>83</line>
+          <line>88</line>
           <option name="timeStamp" value="126" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_processor.py</url>
-          <line>88</line>
+          <line>94</line>
           <option name="timeStamp" value="128" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
@@ -373,13 +378,8 @@
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donors/donor_processor.py</url>
-          <line>135</line>
+          <line>134</line>
           <option name="timeStamp" value="163" />
-        </line-breakpoint>
-        <line-breakpoint suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/donors/donor_processor.py</url>
-          <line>16</line>
-          <option name="timeStamp" value="165" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/donors_tests/donor_tests.py</url>
@@ -391,15 +391,20 @@
           <line>86</line>
           <option name="timeStamp" value="172" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/donations/donation_processor.py</url>
+          <line>97</line>
+          <option name="timeStamp" value="173" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$main.coverage" NAME="main Coverage Results" MODIFIED="1719630676305" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1724122940689" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/subscription_tests" />
+    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1727529724537" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/utils_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$event_processor_tests.coverage" NAME="event_processor_tests Coverage Results" MODIFIED="1710209137532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/event_processor_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$database_connection.coverage" NAME="database_connection Coverage Results" MODIFIED="1710208968263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1724122784536" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1727531056469" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$get_donor_events.coverage" NAME="get_donor_events Coverage Results" MODIFIED="1710203834010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/donors" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$event_processor.coverage" NAME="event_processor Coverage Results" MODIFIED="1710209027955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/event_processor" />
   </component>

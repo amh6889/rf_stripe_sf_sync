@@ -94,38 +94,46 @@ class DonationProcessor:
     @staticmethod
     def process_create_event(donation_event):
         donation = DonationProcessor._map_donation(**donation_event)
-        sf_donation_id = Donation.exists(donation['Stripe_Invoice_ID__c'])
+        stripe_invoice_id = donation.get('Stripe_Invoice_ID__c')
+        if not stripe_invoice_id:
+            raise Exception('Stripe charge ID is null.  Cannot process donation create event further.')
+
+        sf_donation_id = Donation.exists(stripe_invoice_id)
         if not sf_donation_id:
             create_response = Donation.create(**donation)
             if 'success' in create_response:
-                success = create_response['success']
+                success = create_response.get('success')
                 if success:
-                    salesforce_id = create_response['id']
+                    salesforce_id = create_response.get('id')
                     print(
-                        f'Created Stripe donation {donation['Stripe_Invoice_ID__c']} successfully in Salesforce with ID {salesforce_id}')
+                        f'Created Stripe donation {stripe_invoice_id} successfully in Salesforce with ID {salesforce_id}')
                 else:
-                    errors = create_response['errors']
-                    error_message = f'Did not create Stripe donation {donation['Stripe_Invoice_ID__c']} successfully in Salesforce due to: {errors}'
+                    errors = create_response.get('errors')
+                    error_message = f'Did not create Stripe donation {stripe_invoice_id} successfully in Salesforce due to: {errors}'
                     raise Exception(error_message)
         else:
-            error_message = f'Stripe charge {donation['Stripe_Invoice_ID__c']} already exists in Salesforce. Cannot process create event.'
+            error_message = f'Stripe charge {stripe_invoice_id} already exists in Salesforce. Cannot process create event.'
             print(error_message)
             raise Exception(error_message)
 
     @staticmethod
     def process_update_event(donation_event):
         donation = DonationProcessor._map_donation(**donation_event)
-        sf_donation_id = Donation.exists(donation['Stripe_Invoice_ID__c'])
+        stripe_invoice_id = donation.get('Stripe_Invoice_ID__c')
+        if not stripe_invoice_id:
+            raise Exception('Stripe charge ID is null.  Cannot process donation update event further.')
+
+        sf_donation_id = Donation.exists(stripe_invoice_id)
         if not sf_donation_id:
-            error_message = f'Stripe charge {donation['Stripe_Invoice_ID__c']} does not exist in Salesforce. Cannot process update event.'
+            error_message = f'Stripe charge {stripe_invoice_id} does not exist in Salesforce. Cannot process update event.'
             print(error_message)
             raise Exception(error_message)
         else:
             response = Donation.update(sf_donation_id, **donation)
             if response != 204:
-                errors = response['errors']
-                error_message = f'Did not update Stripe charge {donation['Stripe_Invoice_ID__c']} successfully in Salesforce due to {errors}'
+                errors = response.get('errors')
+                error_message = f'Did not update Stripe charge {stripe_invoice_id} successfully in Salesforce due to {errors}'
                 print(error_message)
                 raise Exception(error_message)
 
-            print(f'Updated Stripe charge {donation['Stripe_Invoice_ID__c']} successfully in Salesforce.')
+            print(f'Updated Stripe charge {stripe_invoice_id} successfully in Salesforce.')
