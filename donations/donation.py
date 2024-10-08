@@ -1,11 +1,16 @@
+import os
 from pprint import pprint
 
 import stripe
+from dotenv import load_dotenv
 
 from salesforce.salesforce_connection import sf
 
+load_dotenv()
+
 
 class Donation:
+    stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 
     @staticmethod
     def exists(stripe_donation_id) -> str:
@@ -26,7 +31,6 @@ class Donation:
         print(donation)
         response = sf.Opportunity.create(donation)
         return response
-
 
     @staticmethod
     def get_stripe_subscription_id(invoice_id: str):

@@ -1,14 +1,19 @@
+import os
 from pprint import pprint
 
 import stripe
 import re
 
+from dotenv import load_dotenv
 from simple_salesforce import format_soql
 
 from salesforce.salesforce_connection import sf
 
+load_dotenv()
+
 
 class Subscription:
+    stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 
     @staticmethod
     def exists(subscription_id):
@@ -65,7 +70,6 @@ class Subscription:
         print(response)
         return response
 
-
     @staticmethod
     def get_payment_method(stripe_subscription_id):
         subscription = stripe.Subscription.retrieve(stripe_subscription_id,
@@ -94,7 +98,7 @@ class Subscription:
 
     @staticmethod
     def get_campaign_id(campaign_code):
-        #escaped_string = re.escape(campaign_code)
+        # escaped_string = re.escape(campaign_code)
         # regex = r"""[-?&!{}\[\]\\^~*:"'+]"""
         # regex_campaign_code = re.sub(regex, "\\\\", campaign_code)
         # #print(regex_campaign_code)
