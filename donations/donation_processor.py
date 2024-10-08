@@ -71,8 +71,8 @@ class DonationProcessor:
             time.sleep(30)
             raise Exception(error_message)
         else:
-            donation = {'Id': sf_donation_id, 'StageName': 'Withdrawn', 'Stripe_Invoice_ID__c': stripe_charge_id}
-        return donation
+            donation = {'StageName': 'Withdrawn', 'Stripe_Invoice_ID__c': stripe_charge_id}
+        return sf_donation_id, donation
 
     @staticmethod
     def _parse_epoch_time(epoch_time):
@@ -130,8 +130,7 @@ class DonationProcessor:
 
     @staticmethod
     def process_refund_event(refund_event):
-        refund = DonationProcessor._map_refund(**refund_event)
-        sf_donation_id = refund.get('Id')
+        sf_donation_id, refund = DonationProcessor._map_refund(**refund_event)
         stripe_charge_id = refund.get('Stripe_Invoice_ID__c')
         response = Donation.update(sf_donation_id, **refund)
         if response != 204:

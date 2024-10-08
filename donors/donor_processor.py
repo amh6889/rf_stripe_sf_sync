@@ -9,7 +9,6 @@ class DonorProcessor:
     # TODO: change below method to _map_create_donor_event and make new function to map an update donor event
     @staticmethod
     def _map_donor_update_event(**event_data):
-        print(event_data)
         data = event_data['data']['object']
         customer_id = data.get('id')
         full_name = data.get('name')
