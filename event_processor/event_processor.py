@@ -90,7 +90,7 @@ class EventProcessor:
                     print(f'Donation create event id: {donation_event['id']} processed successfully')
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                 case 'charge.refunded':
-                    DonationProcessor.process_update_event(donation_event)
+                    DonationProcessor.process_refund_event(donation_event)
                     print(f'Donation refund event id: {donation_event['id']} processed successfully')
                     ch.basic_ack(delivery_tag=method.delivery_tag)
                 case _:

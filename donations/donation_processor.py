@@ -63,9 +63,15 @@ class DonationProcessor:
     @staticmethod
     def _map_refund(**event_data):
         data = event_data['data']['object']
-        stripe_payment_intent_id = data['payment_intent']
-        sf_donation_id = Donation.exists(stripe_payment_intent_id)
-        donation = {'Id': sf_donation_id, 'StageName': 'Withdrawn'}
+        stripe_charge_id = data.get('id')
+        sf_donation_id = Donation.exists(stripe_charge_id)
+        if not sf_donation_id:
+            error_message = f'Stripe charge {stripe_charge_id} does not exist in Salesforce. Cannot process donation refund event.'
+            print(error_message)
+            time.sleep(30)
+            raise Exception(error_message)
+        else:
+            donation = {'Id': sf_donation_id, 'StageName': 'Withdrawn', 'Stripe_Invoice_ID__c': stripe_charge_id}
         return donation
 
     @staticmethod
@@ -76,10 +82,13 @@ class DonationProcessor:
     # TODO: might need to change map stage name since status can be required action, etc (but I think stripe would send another webhook event type in this case)
     @staticmethod
     def _map_stage_name(stripe_donation_status):
-        print(stripe_donation_status)
-        stage_name = 'Closed Won'
+        stage_name = 'Unknown'
         if stripe_donation_status == 'succeeded':
             stage_name = 'Closed Won'
+        if stripe_donation_status == 'failed':
+            stage_name = 'Withdrawn'
+        if stripe_donation_status == 'pending':
+            stage_name = 'Pledged'
         return stage_name
 
     @staticmethod
@@ -118,6 +127,20 @@ class DonationProcessor:
             error_message = f'Stripe charge {stripe_invoice_id} already exists in Salesforce with Donation ID {sf_donation_id}. Cannot process donation create event further.'
             print(error_message)
             raise Exception(error_message)
+
+    @staticmethod
+    def process_refund_event(refund_event):
+        refund = DonationProcessor._map_refund(**refund_event)
+        sf_donation_id = refund.get('Id')
+        stripe_charge_id = refund.get('Stripe_Invoice_ID__c')
+        response = Donation.update(sf_donation_id, **refund)
+        if response != 204:
+            errors = response.get('errors')
+            error_message = f'Did not update Stripe charge {stripe_charge_id} successfully as refund in Salesforce due to {errors}'
+            print(error_message)
+            raise Exception(error_message)
+
+        print(f'Updated Stripe charge {stripe_charge_id} successfully in Salesforce as a refund.')
 
     @staticmethod
     def process_update_event(donation_event):

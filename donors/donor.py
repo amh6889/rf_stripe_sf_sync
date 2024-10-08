@@ -19,7 +19,6 @@ class Donor:
         search_query = f"""FIND {{{escaped_email}}} IN EMAIL FIELDS RETURNING Contact(Id)"""
         print(search_query)
         response = sf.search(search_query)
-        print(response)
         records = response.get('searchRecords')
         sf_contact_id = None
         if records:
@@ -37,18 +36,17 @@ class Donor:
         if len(records) > 0:
             record = records[0]
             sf_contact_id = record.get('Id')
-            print(sf_contact_id)
         return sf_contact_id
 
     @staticmethod
     def create(**donor):
-        print(donor)
+        print(f'Creating Stripe donor in Salesforce with data:\n{donor}')
         response = sf.Contact.create(donor)
         return response
 
     @staticmethod
     def update(sf_contact_id, **donor):
-        print(donor)
+        print(f'Updating Salesforce donor {sf_contact_id} in Salesforce with data:\n{donor}')
         response = sf.Contact.update(sf_contact_id, donor)
         return response
 
@@ -61,11 +59,10 @@ class Donor:
     @staticmethod
     def update_stripe_customer(customer_id, updates):
         try:
-            print(updates)
+            print(f'Updating Stripe customer {customer_id} in Stripe with data:\n{updates}\n')
             response = stripe.Customer.modify(customer_id, **updates)
-            print(response)
         except Exception as error:
-            print(error)
+            print(f'Error updating Stripe customer {customer_id} in Stripe due to {error}')
 
     @staticmethod
     def get_stripe_customer_address(stripe_payment_method_id):

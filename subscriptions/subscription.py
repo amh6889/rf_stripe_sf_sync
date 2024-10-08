@@ -21,8 +21,7 @@ class Subscription:
         print(query)
         # results = sf.npe03__Recurring_Donation__c.get_by_custom_id('Stripe_Subscription_ID__c', subscription_id)
         response = sf.query(query)
-        pprint(response)
-        records = response['records']
+        records = response.get('records')
         subscription = {}
         if len(records) > 0:
             record = records[0]
@@ -58,25 +57,23 @@ class Subscription:
 
     @staticmethod
     def create(**recurring_donation):
-        print(recurring_donation)
+        print(f'Creating recurring donation in Salesforce with data:\n{recurring_donation}\n')
         response = sf.npe03__Recurring_Donation__c.create(recurring_donation)
-        print(response)
         return response
 
     @staticmethod
     def update(recurring_donation_id, **recurring_donation):
-        print(recurring_donation)
+        print(f'Updating Salesforce recurring donation {recurring_donation_id} in Salesforce with data:\n{recurring_donation}\n')
         response = sf.npe03__Recurring_Donation__c.update(recurring_donation_id, recurring_donation)
-        print(response)
         return response
 
     @staticmethod
     def get_payment_method(stripe_subscription_id):
+        print(f'Getting payment method from Stripe for subscription {stripe_subscription_id}')
         subscription = stripe.Subscription.retrieve(stripe_subscription_id,
                                                     expand=['default_payment_method', 'default_source',
                                                             'latest_invoice.payment_intent.payment_method'])
         payment_method = Subscription.parse_payment_method(subscription)
-        print(payment_method)
         return payment_method
 
     @staticmethod
@@ -106,9 +103,8 @@ class Subscription:
         # #query = f
         # print(query)
         # response = sf.search(query)
-
+        print(f'Retrieving campaign code {campaign_code} from Salesforce...')
         response = sf.query(format_soql("SELECT Id FROM CAMPAIGN WHERE NAME LIKE '%{:like}%'", campaign_code))
-        print(response)
         records = response['records']
         campaign_id = None
         if len(records) > 0:

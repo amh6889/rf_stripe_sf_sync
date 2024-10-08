@@ -28,16 +28,16 @@ class Donation:
 
     @staticmethod
     def create(**donation):
-        print(donation)
+        print(f'Creating donation in Salesforce with data:\n{donation}')
         response = sf.Opportunity.create(donation)
         return response
 
     @staticmethod
     def get_stripe_subscription_id(invoice_id: str):
-        print(invoice_id)
+        print(f'Retrieving stripe subscription id for invoice id: {invoice_id}')
         try:
             response = stripe.Invoice.retrieve(invoice_id)
-            print(response)
+            print(f'Response from Stripe after retrieving stripe subscription id:\n{response}')
             return response['subscription']
         except Exception as e:
             print(e)
@@ -45,6 +45,6 @@ class Donation:
 
     @staticmethod
     def update(donation_id, **donation):
-        print(donation)
+        print(f'Updating Donation {donation_id} in Salesforce...')
         response = sf.Opportunity.update(donation_id, donation)
         return response

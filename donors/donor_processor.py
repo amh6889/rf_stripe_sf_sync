@@ -45,7 +45,6 @@ class DonorProcessor:
 
     @staticmethod
     def _map_donor_create_event(**event_data):
-        print(event_data)
         data = event_data['data']['object']
         customer_id = data.get('id')
         full_name = data.get('name')
