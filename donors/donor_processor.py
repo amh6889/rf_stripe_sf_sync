@@ -31,9 +31,10 @@ class DonorProcessor:
             Donor.update_stripe_customer(customer_id, updates)
 
         donor = {'FirstName': first_name, 'LastName': last_name, 'npe01__HomeEmail__c': data.get('email'),
-                 'Email': data.get('email'), 'Phone': data.get('phone'), 'MailingStreet': donor_address['line1'],
-                 'MailingState': donor_address.get('state'), 'MailingCity': donor_address.get('city'),
-                 'MailingCountry': donor_address.get('country'), 'MailingPostalCode': donor_address.get('postal_code')}
+                 'Stripe_Donor__c': True, 'Email': data.get('email'), 'Phone': data.get('phone'),
+                 'MailingStreet': donor_address.get('line1'), 'MailingState': donor_address.get('state'),
+                 'MailingCity': donor_address.get('city'), 'MailingCountry': donor_address.get('country'),
+                 'MailingPostalCode': donor_address.get('postal_code')}
         filtered_donor = DonorProcessor._filter_donor(donor)
         return filtered_donor
 
@@ -198,7 +199,8 @@ class DonorProcessor:
                 print(error_message)
                 raise Exception(error_message)
 
-            print(f'Updated Stripe customer with email {email} and Salesforce Contact ID {sf_contact_id} successfully in Salesforce.')
+            print(
+                f'Updated Stripe customer with email {email} and Salesforce Contact ID {sf_contact_id} successfully in Salesforce.')
 
     @staticmethod
     def _parse_name(full_name):

@@ -18,7 +18,6 @@ class Donation:
         print(query)
         # results = sf.Opportunity.get_by_custom_id('Stripe_Invoice_ID__c', donation_id)
         response = sf.query(query)
-        pprint(response)
         records = response['records']
         donation_id = None
         if len(records) > 0:
@@ -45,6 +44,6 @@ class Donation:
 
     @staticmethod
     def update(donation_id, **donation):
-        print(f'Updating Donation {donation_id} in Salesforce...')
+        print(f'Updating Donation {donation_id} in Salesforce with data:\n{donation}')
         response = sf.Opportunity.update(donation_id, donation)
         return response

@@ -52,8 +52,8 @@ class Donor:
 
     @staticmethod
     def get_email(stripe_customer_id):
+        print(f'Retrieving Stripe customer {stripe_customer_id} info from Stripe...')
         customer = stripe.Customer.retrieve(stripe_customer_id)
-        print(customer)
         return customer.email
 
     @staticmethod
@@ -66,6 +66,7 @@ class Donor:
 
     @staticmethod
     def get_stripe_customer_address(stripe_payment_method_id):
+        print(f'Retrieving Stripe address for Stripe payment method id {stripe_payment_method_id}...')
         payment_method = stripe.PaymentMethod.retrieve(stripe_payment_method_id)
         address = payment_method.billing_details.address
         return address

@@ -194,6 +194,12 @@ def test_get_campaign_id():
     assert campaign_id is not None
     assert campaign_id == '7015a000001SjmyAAC'
 
+def test_get_campaign_id():
+    campaign_code = 'C1022'
+    campaign_id = Subscription.get_campaign_id(campaign_code)
+    assert campaign_id is not None
+    assert campaign_id == '7015a000001SpJnAAK'
+
 def test_subscription_error_8_18_24(subscription_error_8_18_24):
     event_data = json.loads(subscription_error_8_18_24)
     subscription = SubscriptionProcessor.process_update_event(event_data)
