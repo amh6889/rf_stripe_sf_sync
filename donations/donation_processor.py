@@ -42,7 +42,7 @@ class DonationProcessor:
 
         salesforce_recurring_donation_id = None
         if stripe_subscription_id is not None:
-            salesforce_recurring_donation = Subscription.exists(stripe_subscription_id)
+            salesforce_recurring_donation = Subscription.search_by_stripe_id(stripe_subscription_id)
             if salesforce_recurring_donation:
                 salesforce_recurring_donation_id = salesforce_recurring_donation['id']
                 # salesforce_id = salesforce_recurring_donation['sf_contact_id']

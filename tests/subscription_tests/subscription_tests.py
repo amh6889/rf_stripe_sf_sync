@@ -8,13 +8,13 @@ from subscriptions.subscription_processor import SubscriptionProcessor
 
 def test_subscription_does_not_exist():
     sub_id = '99999'
-    sub = Subscription.exists(sub_id)
+    sub = Subscription.search_by_stripe_id(sub_id)
     assert sub is None
 
 
 def test_subscription_exists():
     sub_id = '12345'
-    sub = Subscription.exists(sub_id)
+    sub = Subscription.search_by_stripe_id(sub_id)
     assert sub is not None
 
 

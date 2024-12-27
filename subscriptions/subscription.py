@@ -16,18 +16,27 @@ class Subscription:
     stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 
     @staticmethod
-    def exists(subscription_id):
+    def search_by_stripe_id(subscription_id: str) -> dict:
         query = f"SELECT Id,npe03__Contact__c from npe03__Recurring_Donation__c where Stripe_Subscription_ID__c = '{subscription_id}'"
         print(query)
         # results = sf.npe03__Recurring_Donation__c.get_by_custom_id('Stripe_Subscription_ID__c', subscription_id)
         response = sf.query(query)
         records = response.get('records')
-        subscription = {}
         if len(records) > 0:
             record = records[0]
-            subscription['id'] = record.get('Id')
-            subscription['sf_contact_id'] = record.get('npe03__Contact__c')
-        return subscription
+            subscription = {'id': record.get('Id'), 'sf_contact_id': record.get('npe03__Contact__c')}
+            return subscription
+
+    @staticmethod
+    def search_by_anet_id(subscription_id: str) -> dict:
+        query = f"SELECT Id,npe03__Contact__c from npe03__Recurring_Donation__c where ANET_ARB_ID__c = '{subscription_id}'"
+        print(query)
+        response = sf.query(query)
+        records = response.get('records')
+        if len(records) > 0:
+            record = records[0]
+            subscription = {'id': record.get('Id'), 'sf_contact_id': record.get('npe03__Contact__c')}
+            return subscription
 
     @staticmethod
     def get_metadata():
@@ -62,7 +71,7 @@ class Subscription:
         return response
 
     @staticmethod
-    def update(recurring_donation_id, **recurring_donation):
+    def update(recurring_donation_id: str, **recurring_donation: dict):
         print(f'Updating Salesforce recurring donation {recurring_donation_id} in Salesforce with data:\n{recurring_donation}\n')
         response = sf.npe03__Recurring_Donation__c.update(recurring_donation_id, recurring_donation)
         return response

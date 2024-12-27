@@ -4,78 +4,57 @@ import time
 
 from donors.donor import Donor
 from subscriptions.subscription import Subscription
+from subscriptions.subscription_mapper import SubscriptionMapper
+
+
+def update_existing_anet_subscription(anet_subscription_id, stripe_subscription_id, subscription):
+    sf_subscription = Subscription.search_by_anet_id(anet_subscription_id)
+    if sf_subscription:
+        update_subscription(sf_subscription, stripe_subscription_id, subscription)
+    else:
+        raise Exception(f"Cannot update Salesforce recurring donation with Stripe subscription ID {stripe_subscription_id} since it doesn't exist based on ANET subscription ID {anet_subscription_id}")
+
+
+def update_subscription(sf_subscription, stripe_subscription_id, subscription):
+    sf_subscription_id = sf_subscription.get('id')
+    response = Subscription.update(sf_subscription_id, **subscription)
+    if response != 204:
+        errors = response.get('errors')
+        error_message = f'Did not update Stripe subscription {stripe_subscription_id} successfully in Salesforce due to {errors}'
+        print(error_message)
+        raise Exception(error_message)
+    print(
+        f'Updated Stripe subscription {stripe_subscription_id} successfully in Salesforce.')
+
+
+def create_subscription(stripe_subscription_id, subscription):
+    create_response = Subscription.create(**subscription)
+    if 'success' in create_response:
+        success = create_response.get('success')
+        if success:
+            salesforce_id = create_response.get('id')
+            print(
+                f'Created Stripe subscription {stripe_subscription_id} successfully in Salesforce with ID {salesforce_id}')
+        else:
+            errors = create_response.get('errors')
+            error_message = f'Did not create Stripe subscription {stripe_subscription_id} successfully in Salesforce due to: {errors}'
+            raise Exception(error_message)
 
 
 class SubscriptionProcessor:
-
-    @staticmethod
-    def _map_active_subscription(**event_data):
-        data = event_data['data']['object']
-        status = data['status']
-        mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
-        subscription_id = data['id']
-        sf_campaign_id = None
-        mapped_payment_method_type = None
-
-        if metadata := data.get('metadata'):
-            if campaign_code := metadata.get('campaign_code'):
-                sf_campaign_id = Subscription.get_campaign_id(campaign_code)
-
-        amount = data['plan']['amount'] * data['quantity']
-        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-        formatted_amount = locale.currency(amount / 100, symbol=False)
-        created = data['created']
-        start_date = data['start_date']
-        day_of_month, date_start = SubscriptionProcessor._parse_epoch_time(created)
-        stripe_customer_id = data['customer']
-        email = Donor.get_email(stripe_customer_id)
-        salesforce_id = Donor.exists_by_email(email)
-        interval = data['plan']['interval']
-        installment_period = SubscriptionProcessor._map_installment_period(interval)
-
-        if payment_method := Subscription.get_payment_method(subscription_id):
-            if payment_method_type := payment_method.get('type'):
-                mapped_payment_method_type = SubscriptionProcessor._map_payment_method(payment_method_type)
-
-        installment_frequency = data['plan']['interval_count']
-
-        subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npe03__Amount__c': formatted_amount,
-                        'npe03__Date_Established__c': date_start,
-                        'npsp__StartDate__c': date_start, 'npsp__EndDate__c': None,
-                        'Donation_Source__c': 'RF Web-form',
-                        'npsp__Status__c': mapped_status, 'npsp__ClosedReason__c': closed_reason,
-                        'npe03__Recurring_Donation_Campaign__c': sf_campaign_id,
-                        'npsp__RecurringType__c': 'Open', 'npe03__Installment_Period__c': installment_period,
-                        'npsp__Day_of_Month__c': day_of_month,
-                        'npsp__InstallmentFrequency__c': installment_frequency,
-                        'npsp__PaymentMethod__c': mapped_payment_method_type,
-                        'npe03__Installments__c': None, 'npe03__Contact__c': salesforce_id}
-        return subscription
-
-    @staticmethod
-    def _parse_epoch_time(epoch_time):
-        date_time = datetime.datetime.fromtimestamp(epoch_time, datetime.UTC)
-        return date_time.day, date_time.isoformat()
-
     @staticmethod
     def process_create_event(event_data):
-        subscription = SubscriptionProcessor._map_active_subscription(**event_data)
+        subscription = SubscriptionMapper.map_active_subscription(**event_data)
         stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
         if stripe_subscription_id is None:
             raise Exception('Stripe subscription ID is null.  Cannot process subscription create event further.')
-        sf_subscription_id = Subscription.exists(stripe_subscription_id)
+        sf_subscription_id = Subscription.search_by_stripe_id(stripe_subscription_id)
         if not sf_subscription_id:
-            create_response = Subscription.create(**subscription)
-            if 'success' in create_response:
-                success = create_response.get('success')
-                if success:
-                    salesforce_id = create_response.get('id')
-                    print(
-                        f'Created Stripe subscription {stripe_subscription_id} successfully in Salesforce with ID {salesforce_id}')
-                else:
-                    errors = create_response.get('errors')
-                    error_message = f'Did not create Stripe subscription {stripe_subscription_id} successfully in Salesforce due to: {errors}'
-                    raise Exception(error_message)
+            anet_subscription_id = subscription.get('ANET_ARB_ID__c')
+            if anet_subscription_id is not None:
+                update_existing_anet_subscription(anet_subscription_id, stripe_subscription_id, subscription)
+            else:
+                create_subscription(stripe_subscription_id, subscription)
         else:
             error_message = f'Stripe subscription {stripe_subscription_id} already exists in Salesforce with Recurring Donation ID {sf_subscription_id}. Cannot process subscription create event further.'
             print(error_message)
@@ -83,123 +62,33 @@ class SubscriptionProcessor:
 
     @staticmethod
     def process_update_event(event_data):
-        subscription = SubscriptionProcessor._map_active_subscription(**event_data)
+        subscription = SubscriptionMapper.map_active_subscription(**event_data)
         stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
         if stripe_subscription_id is None:
             raise Exception('Stripe subscription ID is null.  Cannot process subscription update event further.')
-        sf_subscription = Subscription.exists(stripe_subscription_id)
+        sf_subscription = Subscription.search_by_stripe_id(stripe_subscription_id)
         if not sf_subscription:
             error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process subscription update event further.'
             print(error_message)
             time.sleep(30)
             raise Exception(error_message)
         else:
-            sf_subscription_id = sf_subscription.get('id')
-            response = Subscription.update(sf_subscription_id, **subscription)
-            if response != 204:
-                errors = response.get('errors')
-                error_message = f'Did not update Stripe subscription {stripe_subscription_id} successfully in Salesforce due to {errors}'
-                print(error_message)
-                raise Exception(error_message)
-
-            print(
-                f'Updated Stripe subscription {stripe_subscription_id} successfully in Salesforce.')
+            update_subscription(sf_subscription, stripe_subscription_id, subscription)
 
     @staticmethod
     def process_delete_event(subscription_event):
-        subscription = SubscriptionProcessor._map_canceled_subscription(**subscription_event)
+        subscription = SubscriptionMapper.map_canceled_subscription(**subscription_event)
         stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
         if stripe_subscription_id is None:
             raise Exception('Stripe subscription ID is null.  Cannot process subscription delete event further.')
-        sf_subscription = Subscription.exists(stripe_subscription_id)
+        sf_subscription = Subscription.search_by_stripe_id(stripe_subscription_id)
         if not sf_subscription:
             error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process subscription delete event further.'
             print(error_message)
             time.sleep(30)
             raise Exception(error_message)
         else:
-            sf_subscription_id = sf_subscription.get('id')
-            response = Subscription.update(sf_subscription_id, **subscription)
-            if response != 204:
-                errors = response['errors']
-                error_message = f'Did not cancel Stripe subscription {stripe_subscription_id} successfully in Salesforce due to {errors}'
-                print(error_message)
-                raise Exception(error_message)
-
+            update_subscription(sf_subscription, stripe_subscription_id, subscription)
             print(
-                f'Canceled Stripe subscription {stripe_subscription_id}/Salesforce Recurring Donation ID {sf_subscription_id} successfully in Salesforce.')
-
-    @staticmethod
-    def _map_installment_period(interval):
-        installment_period = ''
-        match interval:
-            case "month":
-                installment_period = 'Monthly'
-            case "week":
-                installment_period = 'Weekly'
-            case "year":
-                installment_period = 'Yearly'
-            case _:
-                print("Unknown interval:" + str(interval))
-        return installment_period
-
-    @staticmethod
-    def _map_status(status):
-        subscription_status = ''
-        closed_reason = ''
-        match status:
-            case "active":
-                subscription_status = 'Active'
-            case "incomplete":
-                subscription_status = 'Paused'
-            case "incomplete_expired":
-                subscription_status = 'Canceled'
-                closed_reason = 'Webform Canceled'
-            case "past_due":
-                subscription_status = 'Suspended'
-                closed_reason = 'Unknown'
-            case "canceled":
-                subscription_status = 'Canceled'
-                closed_reason = 'Webform Canceled'
-            case "unpaid":
-                subscription_status = 'Suspended'
-                closed_reason = 'Unknown'
-            case _:
-                print("Unknown status:" + str(status))
-        return subscription_status, closed_reason
-
-    @staticmethod
-    def _map_payment_method(payment_method_type):
-        mapped_payment_method_type = ''
-        match payment_method_type:
-            case "card":
-                mapped_payment_method_type = 'Credit Card'
-            case "us_bank_account":
-                mapped_payment_method_type = 'ACH/EFT'
-            case "acss_debit":
-                mapped_payment_method_type = 'ACH/EFT/Canadian Bank'
-            case "au_becs_debit":
-                mapped_payment_method_type = 'ACH/EFT/Australian Bank'
-            case "bacs_debit":
-                mapped_payment_method_type = 'ACH/EFT/UK Bank'
-            case "cashapp":
-                mapped_payment_method_type = 'Cash App'
-            case "paypal":
-                mapped_payment_method_type = 'Pay Pal'
-            case _:
-                print("Unknown payment method:" + str(payment_method_type))
-        return mapped_payment_method_type
-
-    @staticmethod
-    def _map_canceled_subscription(**event_data):
-        try:
-            data = event_data['data']['object']
-            status = data['status']
-            mapped_status, closed_reason = SubscriptionProcessor._map_status(status)
-            subscription_id = data['id']
-            subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npsp__Status__c': mapped_status,
-                            'npsp__ClosedReason__c': closed_reason}
-
-            return subscription
-        except Exception as error:
-            print(f'Error mapping canceled subscription due to {error}')
+                f'Canceled Stripe subscription {stripe_subscription_id}/Salesforce Recurring Donation ID '
+                f'{sf_subscription.get('id')} successfully in Salesforce.')
