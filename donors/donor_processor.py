@@ -41,7 +41,7 @@ class DonorProcessor:
     @staticmethod
     def process_create_event(event_data):
         donor = DonorMapper.map_donor_create_event(**event_data)
-        stripe_customer_id = donor.get('id')
+        stripe_customer_id = donor.get('External_Contact_ID__c')
         stripe_updates = donor.pop('stripe_updates', None)
         email = donor.get('Email')
         if email is None:
@@ -58,7 +58,7 @@ class DonorProcessor:
     @staticmethod
     def process_update_event(event_data):
         donor = DonorMapper.map_donor_update_event(**event_data)
-        stripe_customer_id = donor.get('id')
+        stripe_customer_id = donor.get('External_Contact_ID__c')
         stripe_updates = donor.pop('stripe_updates', None)
         email = donor.get('Email')
         if email is None:

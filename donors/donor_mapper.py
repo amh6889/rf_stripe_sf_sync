@@ -64,8 +64,8 @@ class DonorMapper:
                  'MailingState': donor_address.get('state'), 'MailingCity': donor_address.get('city'),
                  'MailingCountry': donor_address.get('country'), 'MailingPostalCode': donor_address.get('postal_code'),
                  'npe01__Preferred_Email__c': 'Personal', 'Stripe_Donor__c': True,
-                 'ReceiptDelivery__c': receipt_preference,'stripe_updates': updates,
-                 'HasOptedOutOfEmail': opt_out.get('email_opt_out'), 'DoNotMail__c': opt_out.get('mail_opt_out')}
+                 'ReceiptDelivery__c': receipt_preference,'HasOptedOutOfEmail': opt_out.get('email_opt_out'),
+                 'DoNotMail__c': opt_out.get('mail_opt_out'),'stripe_updates': updates}
         return donor
 
     @staticmethod
