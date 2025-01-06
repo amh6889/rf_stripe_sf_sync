@@ -1,7 +1,7 @@
-from donations.donation_processor import DonationProcessor
+from donations.donation_event_processor import DonationEventProcessor
 
 
 def test_parse_epoch_time():
     epoch_time = 123456
-    normal_time = DonationProcessor._parse_epoch_time(epoch_time)
+    normal_time = DonationEventProcessor._parse_epoch_time(epoch_time)
     assert normal_time == ''

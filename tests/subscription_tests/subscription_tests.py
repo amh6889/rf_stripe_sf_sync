@@ -1,20 +1,18 @@
 import json
 
-
 from subscriptions.subscription import Subscription
-from subscriptions.subscription_processor import SubscriptionProcessor
-
+from subscriptions.subscription_event_processor import SubscriptionEventProcessor
 
 
 def test_subscription_does_not_exist():
     sub_id = '99999'
-    sub = Subscription.search_by_stripe_id(sub_id)
+    sub = Subscription.get_salesforce_recurring_donation_by_stripe_id(sub_id)
     assert sub is None
 
 
 def test_subscription_exists():
     sub_id = '12345'
-    sub = Subscription.search_by_stripe_id(sub_id)
+    sub = Subscription.get_salesforce_recurring_donation_by_stripe_id(sub_id)
     assert sub is not None
 
 
@@ -92,114 +90,30 @@ def test_update_subscription_errors():
     assert response is not 204
 
 
-def test_map_open_incomplete_subscription_works(mocked_donor_id, open_active_subscription_json):
-    subscription = json.loads(open_active_subscription_json)
-    mapped_subscription = SubscriptionProcessor._map_active_subscription(**subscription)
-    assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1PFUWGL1MLd6bigCFPlOUlAD'
-    assert mapped_subscription['npe03__Amount__c'] == '555.00'
-    assert mapped_subscription['npe03__Date_Established__c'] == '2024-05-12T05:00:20+00:00'
-    assert mapped_subscription['npsp__StartDate__c'] == '2024-05-12T05:00:20+00:00'
-    assert mapped_subscription['npsp__EndDate__c'] is None
-    assert mapped_subscription['Donation_Source__c'] == 'RF Web-form'
-    assert mapped_subscription['npsp__Status__c'] == 'Paused'
-    assert mapped_subscription['npsp__ClosedReason__c'] is ''
-    assert mapped_subscription['npe03__Recurring_Donation_Campaign__c'] is None
-    assert mapped_subscription['npsp__RecurringType__c'] == 'Open'
-    assert mapped_subscription['npe03__Installment_Period__c'] == 'Monthly'
-    assert mapped_subscription['npsp__Day_of_Month__c'] == 12
-    assert mapped_subscription['npsp__InstallmentFrequency__c'] == 1
-    assert mapped_subscription['npsp__PaymentMethod__c'] == 'Credit Card'
-    assert mapped_subscription['npe03__Installments__c'] is None
-    assert mapped_subscription['npe03__Contact__c'] == '123456'
-
-def test_map_open_canceled_subscription_works(mocked_sf_recurring_donation_id, canceled_subscription_json):
-    subscription = json.loads(canceled_subscription_json)
-    mapped_subscription = SubscriptionProcessor._map_canceled_subscription(**subscription)
-    assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1P1hCDL1MLd6bigCTMM9YrD9'
-    assert mapped_subscription['npsp__Status__c'] == 'Canceled'
-    assert mapped_subscription['npsp__ClosedReason__c'] == 'Webform Canceled'
-
-
-#TODO: need to fix the assertions below once we implement a stripe schedule with form assembly or custom UI
-def test_map_fixed_active_subscription_works(mocked_donor_id, fixed_active_subscription_json):
-    subscription = json.loads(fixed_active_subscription_json)
-    mapped_subscription = SubscriptionProcessor._map_active_subscription(**subscription)
-    assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1OxZRmL1MLd6bigCGpI8nX8p'
-    assert mapped_subscription['npe03__Amount__c'] == '100.00'
-    assert mapped_subscription['npe03__Date_Established__c'] == '2024-03-23T18:37:38+00:00'
-    assert mapped_subscription['npsp__StartDate__c'] == '2024-03-23T18:37:38+00:00'
-    assert mapped_subscription['npsp__EndDate__c'] is None
-    assert mapped_subscription['Donation_Source__c'] == 'RF Web-form'
-    assert mapped_subscription['npsp__Status__c'] == 'Canceled'
-    assert mapped_subscription['npsp__ClosedReason__c'] == 'Webform Canceled'
-    assert mapped_subscription['npe03__Recurring_Donation_Campaign__c'] is None
-    assert mapped_subscription['npsp__RecurringType__c'] == 'Open'
-    assert mapped_subscription['npe03__Installment_Period__c'] == 'Monthly'
-    assert mapped_subscription['npsp__Day_of_Month__c'] == 23
-    assert mapped_subscription['npsp__InstallmentFrequency__c'] == 1
-    assert mapped_subscription['npsp__PaymentMethod__c'] == 'Credit Card'
-    assert mapped_subscription['npe03__Installments__c'] is None
-    assert mapped_subscription['npe03__Contact__c'] == '123456'
-
-#TODO: need to fix the assertions below once we implement a stripe schedule with form assembly or custom UI
-def test_map_fixed_canceled_subscription_works(mocked_donor_id, fixed_canceled_subscription_json):
-    subscription = json.loads(fixed_canceled_subscription_json)
-    mapped_subscription = SubscriptionProcessor._map_canceled_subscription(**subscription)
-    assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1OxZRmL1MLd6bigCGpI8nX8p'
-    assert mapped_subscription['npe03__Amount__c'] == 100
-    assert mapped_subscription['npe03__Date_Established__c'] == '2024-03-23T18:37:38+00:00'
-    assert mapped_subscription['npsp__StartDate__c'] == '2024-03-23T18:37:38+00:00'
-    assert mapped_subscription['npsp__EndDate__c'] is None
-    assert mapped_subscription['Donation_Source__c'] == 'RF Web-form'
-    assert mapped_subscription['npsp__Status__c'] == 'Canceled'
-    assert mapped_subscription['npsp__ClosedReason__c'] == 'Webform Canceled'
-    assert mapped_subscription['npe03__Recurring_Donation_Campaign__c'] is None
-    assert mapped_subscription['npsp__RecurringType__c'] == 'Open'
-    assert mapped_subscription['npe03__Installment_Period__c'] == 'Monthly'
-    assert mapped_subscription['npsp__Day_of_Month__c'] == 23
-    assert mapped_subscription['npsp__InstallmentFrequency__c'] == 1
-    assert mapped_subscription['npsp__PaymentMethod__c'] == 'Credit Card'
-    assert mapped_subscription['npe03__Installments__c'] is None
-    assert mapped_subscription['npe03__Contact__c'] == '123456'
-
-def test_process_update_event(subscription_update_event_json):
-    event_data = json.loads(subscription_update_event_json)
-    response = SubscriptionProcessor.process_update_event(event_data)
-    assert response is True
-
-def test_parse_epoch_time_works():
-    epoch_time = 1710473782
-    date_time = SubscriptionProcessor._parse_epoch_time(epoch_time)
-    assert date_time[1] == '2024-03-15T03:36:22+00:00'
-    assert date_time[0] == 15
-
-
 def test_get_payment_method_through_default_pm_works():
     subscription_id = 'sub_1OxWHkL1MLd6bigCBIbCyVnC'
-    subscription = Subscription.get_payment_method(subscription_id)
+    subscription = Subscription.get_stripe_payment_method(subscription_id)
     assert subscription is not None
     assert subscription['card']['last4'] == '4242'
 
 
 def test_get_payment_method_through_invoice_works():
     subscription_id = 'sub_1OuRZCL1MLd6bigCf9ifDf0R'
-    subscription = Subscription.get_payment_method(subscription_id)
+    subscription = Subscription.get_stripe_payment_method(subscription_id)
     payment_method_type = subscription['type']
     assert subscription is not None
     assert subscription[payment_method_type]['last4'] == '4242'
 
-def test_get_campaign_id():
+
+def test_get_campaign_id_works_with_general_campaign():
     campaign_code = 'F000 - General'
     campaign_id = Subscription.get_campaign_id(campaign_code)
     assert campaign_id is not None
     assert campaign_id == '7015a000001SjmyAAC'
 
-def test_get_campaign_id():
+
+def test_get_campaign_id_works_with_non_general_campaign():
     campaign_code = 'C1022'
     campaign_id = Subscription.get_campaign_id(campaign_code)
     assert campaign_id is not None
     assert campaign_id == '7015a000001SpJnAAK'
-
-def test_subscription_error_8_18_24(subscription_error_8_18_24):
-    event_data = json.loads(subscription_error_8_18_24)
-    subscription = SubscriptionProcessor.process_update_event(event_data)
