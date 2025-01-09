@@ -10,6 +10,7 @@ from donors.salesforce_donor_service import SalesforceDonorService
 from donors.stripe_donor_service import StripeDonorService
 from event_processor.event_processor import EventProcessor
 
+#TODO: finish creating all objects for application and injecting them into appropriate classes
 if __name__ == '__main__':
     try:
         donor_mapper = DonorMapper()

@@ -1,56 +1,76 @@
 import json
 
 import pytest
+from mock.mock import MagicMock
 
+@pytest.fixture
+def mocked_donor_mapper(donor_with_no_metadata_address_json):
+    mocked_mapper = MagicMock()
+    mocked_mapper.map_donor_create_event.return_value = donor_with_no_metadata_address_json
+    return mocked_mapper
+
+@pytest.fixture
+def mocked_stripe_donor_service():
+    mocked_stripe_donor_service = MagicMock()
+    mocked_stripe_donor_service.update.return_value = {'success': True}
+    return mocked_stripe_donor_service
+
+@pytest.fixture
+def mocked_salesforce_donor_service():
+    mocked_salesforce_donor_service = MagicMock()
+    mocked_salesforce_donor_service.get_contact_id.return_value = '12345'
+    return mocked_salesforce_donor_service
 
 @pytest.fixture
 def donor_with_no_metadata_address_json():
-    return json.dumps({
-        'id': 'evt_1PEO5DL1MLd6bigCDF2VzSU9',
-        'object': 'event',
-        'api_version': '2022-11-15',
-        'created': 1715226951,
-        'data': {
-            'object': {
-                'id': 'cus_Q4X90EUjCmX1wg',
-                'object': 'customer',
-                'address': None,
-                'balance': 0,
-                'created': 1715226950,
-                'currency': None,
-                'default_source': None,
-                'delinquent': False,
-                'description': 'Turd Ferguson',
-                'discount': None,
-                'email': 'turdfergusion_test@gmail.com',
-                'invoice_prefix': 'D7DBC775',
-                'invoice_settings': {
-                    'custom_fields': None,
-                    'default_payment_method': None,
-                    'footer': None,
-                    'rendering_options': None
+    return """
+            {"id": "evt_1PEO5DL1MLd6bigCDF2VzSU9",
+        "object": "event",
+        "api_version": "2022-11-15",
+        "created": 1715226951,
+        "data": {
+            "object": {
+                "id": "cus_Q4X90EUjCmX1wg",
+                "object": "customer",
+                "address": null,
+                "balance": 0,
+                "created": 1715226950,
+                "currency": null,
+                "default_source": null,
+                "delinquent": false,
+                "description": "Turd Ferguson",
+                "discount": null,
+                "email": "turdfergusion_test@gmail.com",
+                "invoice_prefix": "D7DBC775",
+                "invoice_settings": {
+                    "custom_fields": null,
+                    "default_payment_method": null,
+                    "footer": null,
+                    "rendering_options": null
                 },
-                'livemode': False,
-                'metadata': {
-                    'created_by': 'FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 338201953'
+                "livemode": false,
+                "metadata": {
+                    "created_by": "FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 338201953"
                 },
-                'name': None,
-                'next_invoice_sequence': 1,
-                'phone': None,
-                'preferred_locales': [],
-                'shipping': None,
-                'tax_exempt': 'none',
-                'test_clock': None
+                "name": null,
+                "next_invoice_sequence": 1,
+                "phone": null,
+                "preferred_locales": [],
+                "shipping": null,
+                "tax_exempt": "none",
+                "test_clock": null
             }
         },
-        'livemode': False,
-        'pending_webhooks': 0,
-        'request': {
-            'id': 'req_HBIEFtTW7obdZg',
-            'idempotency_key': 'f50dbd10-e465-4ea7-8127-349017a174cd'
+        "livemode": false,
+        "pending_webhooks": 0,
+        "request": {
+            "id": "req_HBIEFtTW7obdZg",
+            "idempotency_key": "f50dbd10-e465-4ea7-8127-349017a174cd"
         },
-        'type': 'customer.created'
-    })
+        "type": "customer.created"
+    }
+    """
+
 
 
 @pytest.fixture

@@ -3,9 +3,8 @@ from donors.donor import Donor
 
 def get_donor_opt_out(data):
     opt_out = {'email_opt_out': False, 'mail_opt_out': False}
-    if data.get('metadata'):
-        if 'opt_out' in data['metadata'] and data['metadata']['opt_out']:
-            opt_out_number = data['metadata']['opt_out']
+    if metadata := data.get('metadata'):
+        if opt_out_number := metadata.get('opt_out'):
             match opt_out_number:
                 case '1':
                     opt_out['email_opt_out'] = True
@@ -28,32 +27,20 @@ def get_donor_receipt_preference(data):
 
 def get_donor_address(data):
     donor_address = {'city': None, 'state': None, 'line1': None, 'country': None, 'postal_code': None}
-    if 'address' in data and data['address']:
-        address = data['address']
-        if 'city' in address:
-            donor_address['city'] = address['city']
-        if 'state' in address:
-            donor_address['state'] = address['state']
-        if 'line1' in address:
-            donor_address['line1'] = address['line1']
+    if address := data.get('address'):
+        donor_address['city'] = address.get('city')
+        donor_address['state'] = address.get('state')
+        donor_address['line1'] = address.get('line1')
         if 'line2' in address and address['line2']:
-            donor_address = donor_address['line1'] + ' ' + address['line2']
-        if 'country' in address:
-            donor_address['country'] = address['country']
-        if 'postal_code' in address:
-            donor_address['postal_code'] = address['postal_code']
-    else:
-        metadata = data['metadata']
-        if 'address_city' in metadata:
-            donor_address['city'] = metadata['address_city']
-        if 'address_street' in metadata:
-            donor_address['line1'] = metadata['address_street']
-        if 'address_state' in metadata:
-            donor_address['state'] = metadata['address_state']
-        if 'address_country' in metadata:
-            donor_address['country'] = metadata['address_country']
-        if 'address_zip' in metadata:
-            donor_address['postal_code'] = metadata['address_zip']
+            donor_address['line1'] = donor_address.get('line1') + ' ' + address.get('line2')
+        donor_address['country'] = address.get('country')
+        donor_address['postal_code'] = address.get('postal_code')
+    elif metadata := data.get('metadata'):
+        donor_address['city'] = metadata.get('address_city')
+        donor_address['line1'] = metadata.get('address_street')
+        donor_address['state'] = metadata.get('address_state')
+        donor_address['country'] = metadata.get('address_country')
+        donor_address['postal_code'] = metadata.get('address_zip')
     return donor_address
 
 
@@ -67,19 +54,20 @@ def get_first_and_last_name(full_name):
 
 def get_donor_name(data):
     donor_name = {'first_name': None, 'last_name': None}
-    if data['metadata']:
-        if 'first_name' in data['metadata'] and data['metadata']['first_name']:
-            donor_name['first_name'] = data['metadata']['first_name']
-
-        if 'last_name' in data['metadata'] and data['metadata']['last_name']:
-            donor_name['last_name'] = data['metadata']['last_name']
-
+    if metadata := data.get('metadata'):
+        donor_name['first_name'] = metadata.get('first_name')
+        donor_name['last_name'] = metadata.get('last_name')
     if not donor_name['first_name'] and not donor_name['last_name']:
-        full_name = data['description']
+        full_name = data.get('description')
         first_name, last_name = get_first_and_last_name(full_name)
         donor_name['first_name'] = first_name
         donor_name['last_name'] = last_name
     return donor_name
+
+
+def filter_donor(donor):
+    filtered_donor = {k: v for k, v in donor.items() if v is not None}
+    return filtered_donor
 
 
 class DonorMapper:
@@ -116,11 +104,7 @@ class DonorMapper:
                  'External_Contact_ID__c': customer_id,
                  'stripe_updates': updates
                  }
-        filtered_donor = self._filter_donor(donor)
-        return filtered_donor
-
-    def _filter_donor(self, donor):
-        filtered_donor = {k: v for k, v in donor.items() if v is not None}
+        filtered_donor = filter_donor(donor)
         return filtered_donor
 
     def map_donor_create_event(self, **event_data):

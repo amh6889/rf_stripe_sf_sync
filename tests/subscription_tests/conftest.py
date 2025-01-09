@@ -3,19 +3,20 @@ import json
 import pytest
 
 from donors.donor import Donor
-from subscriptions.subscription import Subscription
+from donors.salesforce_donor_service import SalesforceDonorService
+from subscriptions.salesforce_subscription_service import SalesforceSubscriptionService
 
 
 # @pytest.fixture(autouse=True)
 @pytest.fixture
 def mocked_donor_id(mocker):
-    mocker.patch.object(Donor, 'exists_by_email', return_value="123456")
+    mocker.patch.object(SalesforceDonorService, 'exists_by_email', return_value="123456")
 
 
 # @pytest.fixture(autouse=True)
 @pytest.fixture
 def mocked_sf_recurring_donation_id(mocker):
-    mocker.patch.object(Subscription, 'exists', return_value={'id': '12345', 'sf_contact_id': '12345'})
+    mocker.patch.object(SalesforceSubscriptionService, 'exists', return_value={'id': '12345', 'sf_contact_id': '12345'})
 
 
 @pytest.fixture
