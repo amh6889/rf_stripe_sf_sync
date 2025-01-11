@@ -11,7 +11,7 @@ class DonorEventProcessor:
         self.stripe_donor_service = stripe_donor
         self.salesforce_donor_service = salesforce_donor
 
-    def process_create_event(self, event_data):
+    def process_create_event(self, event_data: dict) -> str:
         donor = self.donor_mapper.map_donor_create_event(**event_data)
         stripe_customer_id = donor.get('External_Contact_ID__c')
         stripe_updates = donor.pop('stripe_updates', None)
@@ -20,12 +20,14 @@ class DonorEventProcessor:
             raise Exception('Donor email is null.  Cannot process donor create event further.')
         sf_contact_id = self.salesforce_donor_service.get_contact_id(email=email)
         if not sf_contact_id:
-            self._create_donor_in_salesforce(donor)
+            sf_contact_id = self._create_donor_in_salesforce(donor)
             if stripe_updates:
                 self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
         else:
             error_message = f'Stripe customer with email {email} already exists in Salesforce with ID {sf_contact_id}. Cannot process donor create event further.'
             raise Exception(error_message)
+        return sf_contact_id
+
 
     def process_update_event(self, event_data):
         donor = self.donor_mapper.map_donor_update_event(**event_data)
@@ -45,7 +47,7 @@ class DonorEventProcessor:
             if stripe_updates:
                 self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
 
-    def _create_donor_in_salesforce(self, donor):
+    def _create_donor_in_salesforce(self, donor: dict) -> str:
         email = donor.get('Email')
         print(
             f'Creating Stripe customer {donor.get('FirstName')} {donor.get('LastName')} with email {email} in Salesforce')
@@ -53,8 +55,10 @@ class DonorEventProcessor:
         if 'success' in response:
             success = response.get('success')
             if success:
+                salesforce_created_id = response.get('id')
                 print(
-                    f'Created Stripe customer with email {email} successfully in Salesforce with ID {response.get('id')}')
+                    f'Created Stripe customer with email {email} successfully in Salesforce with ID {salesforce_created_id}')
+                return salesforce_created_id
             else:
                 errors = response.get('errors')
                 error_message = f'Did not create Stripe customer with {email} successfully in Salesforce due to: {errors}'

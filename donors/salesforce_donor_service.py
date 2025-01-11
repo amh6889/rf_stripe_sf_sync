@@ -26,7 +26,7 @@ class SalesforceDonorService:
             sf_contact_id = record.get('Id')
         return sf_contact_id
 
-    def create(self, **donor):
+    def create(self, **donor: dict) -> dict:
         print(f'Creating Stripe donor in Salesforce with data:\n{donor}')
         response = sf.Contact.create(donor)
         return response

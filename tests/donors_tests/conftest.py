@@ -5,8 +5,13 @@ from mock.mock import MagicMock
 
 @pytest.fixture
 def mocked_donor_mapper(donor_with_no_metadata_address_json):
+    mapped_donor = {'FirstName': 'Bill', 'LastName': 'Nye', 'npe01__HomeEmail__c': 'bill_nye_test@gmail.com',
+                    'Email': 'bill_nye_test@gmail.com', 'MailingStreet': '901 Alum Springs Rd', 'MailingCity': 'Forest',
+                    'MailingState': 'VA', 'MailingPostalCode': '24551', 'MailingCountry': None, 'Phone': None,
+                    'npe01__Preferred_Email__c': 'Personal', 'External_Contact_ID__c': '12345',
+                    'HasOptedOutOfEmail': True, 'DoNotMail__c': True}
     mocked_mapper = MagicMock()
-    mocked_mapper.map_donor_create_event.return_value = donor_with_no_metadata_address_json
+    mocked_mapper.map_donor_create_event.return_value = mapped_donor
     return mocked_mapper
 
 @pytest.fixture
@@ -74,8 +79,8 @@ def donor_with_no_metadata_address_json():
 
 
 @pytest.fixture
-def donor_with_metadata_address_json():
-    return json.dumps({
+def donor_with_metadata_address_dict():
+    return {
         'id': 'evt_1PEO5DL1MLd6bigCDF2VzSU9',
         'object': 'event',
         'api_version': '2022-11-15',
@@ -125,7 +130,7 @@ def donor_with_metadata_address_json():
             'idempotency_key': 'f50dbd10-e465-4ea7-8127-349017a174cd'
         },
         'type': 'customer.created'
-    })
+    }
 
 
 @pytest.fixture

@@ -118,9 +118,9 @@ def test_donor_processor_maps_works_with_no_donor_metadata_address(donor_with_no
     assert mapped_donor['External_Contact_ID__c'] == 'cus_Q4X90EUjCmX1wg'
 
 
-def test_donor_processor_maps_works_with_donor_metadata_address(donor_with_metadata_address_json):
+def test_donor_processor_maps_works_with_donor_metadata_address(donor_with_metadata_address_dict):
     donor_mapper = DonorMapper()
-    donor = json.loads(donor_with_metadata_address_json)
+    donor = json.loads(donor_with_metadata_address_dict)
     mapped_donor = donor_mapper.map_donor_create_event(**donor)
     assert mapped_donor['FirstName'] == 'Turd'
     assert mapped_donor['LastName'] == 'Ferguson'
