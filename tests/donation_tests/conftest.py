@@ -2,35 +2,9 @@ import json
 
 import pytest
 
-from donations.donation import Donation
-from donors.donor import Donor
-from subscriptions.subscription import Subscription
-
-
-@pytest.fixture(autouse=True)
-def mocked_donor_id(mocker):
-    mocker.patch.object(Donor, 'exists_by_email', return_value="123456")
-
-@pytest.fixture(autouse=True)
-def mocked_donation_id(mocker):
-    mocker.patch.object(Donation, 'exists', return_value="1111")
-
-@pytest.fixture(autouse=True)
-def mocked_stripe_subscription_id(mocker):
-    mocker.patch.object(Donation, 'get_stripe_subscription_id', return_value="123456")
-
-@pytest.fixture(autouse=True)
-def mocked_sf_recurring_donation_id(mocker):
-    mocker.patch.object(Subscription, 'exists', return_value={'id': '12345', 'sf_contact_id': '12345'})
-
-@pytest.fixture(autouse=True)
-def mocked_donor_email(mocker):
-    mocker.patch.object(Donor, 'get_email', return_value="test_email@gmail.com")
-
-
 @pytest.fixture
-def successful_one_time_donation_json():
-    return json.dumps({
+def successful_one_time_donation_dict():
+    return {
     "id": "evt_3P2n9UL1MLd6bigC1QFCdJOw",
     "object": "event",
     "api_version": "2022-11-15",
@@ -152,11 +126,11 @@ def successful_one_time_donation_json():
         "idempotency_key": "8222b55d-0a4b-4b61-8eb8-e37a09e81314"
     },
     "type": "charge.succeeded"
-})
+}
 
 @pytest.fixture
-def refunded_donation_json():
-    return json.dumps({
+def refunded_donation_dict():
+    return {
     "id": "evt_3P2n9UL1MLd6bigC1DaWCS36",
     "object": "event",
     "api_version": "2022-11-15",
@@ -283,12 +257,12 @@ def refunded_donation_json():
         "idempotency_key": "46fccec2-f0c3-4427-8cbe-7d0ec867090a"
     },
     "type": "charge.refunded"
-})
+}
 
 
 @pytest.fixture
-def successful_subscription_donation_json():
-    return json.dumps({
+def successful_subscription_donation_dict():
+    return {
     "id": "evt_3P2gUyL1MLd6bigC0y7msSzJ",
     "object": "event",
     "api_version": "2022-11-15",
@@ -409,4 +383,3 @@ def successful_subscription_donation_json():
     },
     "type": "charge.succeeded"
 }
-    )

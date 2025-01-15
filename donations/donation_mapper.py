@@ -73,7 +73,7 @@ class DonationMapper:
 
         closed_date = get_closed_date(data)
         stage_name = map_stage_name(data)
-        last_4_digits = get_payment_method_last_4(data.get('payment_method_details'))
+        last_4_digits = get_payment_method_last_4(data)
 
         stripe_subscription_id = None
         salesforce_subscription_id = None

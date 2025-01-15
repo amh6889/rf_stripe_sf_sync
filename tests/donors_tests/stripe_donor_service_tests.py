@@ -1,6 +1,8 @@
+import pytest
+
 from donors.stripe_donor_service import StripeDonorService
 
-
+@pytest.mark.integration
 def test_get_email_works_when_donor_does_not_exist():
     # arrange
     donor = StripeDonorService()
@@ -9,7 +11,7 @@ def test_get_email_works_when_donor_does_not_exist():
     # assert
     assert exists is False
 
-
+@pytest.mark.integration
 def test_stripe_update_customer():
     # arrange
     donor = StripeDonorService()
@@ -23,10 +25,11 @@ def test_stripe_update_customer():
     updates = {'address': address}
     # act
     response = donor.update(stripe_customer_id, updates)
+    print(f'response: {response}')
     # assert
     assert response is not None
 
-
+@pytest.mark.integration
 def test_get_email_works():
     # arrange
     donor = StripeDonorService()

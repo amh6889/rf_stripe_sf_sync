@@ -1,22 +1,24 @@
 import json
 
+import pytest
+
 from donors.donor_mapper import DonorMapper, get_first_and_last_name, filter_donor
 
-
+@pytest.mark.unit
 def test_parse_name_four_names_works():
     full_name = 'Wing Pong Robert Luk'
     first_name, last_name = get_first_and_last_name(full_name)
     assert first_name == 'Wing'
     assert last_name == 'Pong Robert Luk'
 
-
+@pytest.mark.unit
 def test_parse_name_three_names_works():
     full_name = 'Billy Bob Thumb'
     first_name, last_name = get_first_and_last_name(full_name)
     assert first_name == 'Billy'
     assert last_name == 'Bob Thumb'
 
-
+@pytest.mark.unit
 def test_parse_name_two_names_works():
     full_name = 'Billy Bob'
     first_name, last_name = get_first_and_last_name(full_name)
@@ -24,7 +26,7 @@ def test_parse_name_two_names_works():
     assert first_name == 'Billy'
     assert last_name == 'Bob'
 
-
+@pytest.mark.unit
 def test_filter_donor_works():
     donor = {'FirstName': None, 'LastName': 'Turkey',
              'MailingStreet': '12345 Bob Villa Way',
@@ -40,11 +42,10 @@ def test_filter_donor_works():
     assert filtered_donor.get('MailingCountry') is None
     assert filtered_donor.get('MailingPostalCode') is None
 
-
+@pytest.mark.unit
 def test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_email_mail(donor_with_metadata_receipt):
     donor_mapper = DonorMapper()
-    donor = json.loads(donor_with_metadata_receipt)
-    mapped_donor = donor_mapper.map_donor_create_event(**donor)
+    mapped_donor = donor_mapper.map_donor_create_event(**donor_with_metadata_receipt)
     assert mapped_donor['FirstName'] == 'Bill'
     assert mapped_donor['LastName'] == 'Nye'
     assert mapped_donor['npe01__HomeEmail__c'] == 'bill_nye_test@gmail.com'
@@ -61,11 +62,10 @@ def test_donor_processor_maps_works_with_donor_create_event_metadata_receipt_ema
     assert mapped_donor['DoNotMail__c'] is False
     assert mapped_donor['ReceiptDelivery__c'] == 'Email + Mail'
 
-
+@pytest.mark.unit
 def test_donor_processor_maps_works_with_donor_metadata_opt_out(donor_with_metadata_opt_out):
     donor_mapper = DonorMapper()
-    donor = json.loads(donor_with_metadata_opt_out)
-    mapped_donor = donor_mapper.map_donor_create_event(**donor)
+    mapped_donor = donor_mapper.map_donor_create_event(**donor_with_metadata_opt_out)
     assert mapped_donor['FirstName'] == 'Bill'
     assert mapped_donor['LastName'] == 'Nye'
     assert mapped_donor['npe01__HomeEmail__c'] == 'bill_nye_test@gmail.com'
@@ -81,11 +81,10 @@ def test_donor_processor_maps_works_with_donor_metadata_opt_out(donor_with_metad
     assert mapped_donor['HasOptedOutOfEmail'] is True
     assert mapped_donor['DoNotMail__c'] is True
 
-
+@pytest.mark.unit
 def test_donor_processor_maps_works_with_donor_metadata_name(donor_with_metadata_name):
     donor_mapper = DonorMapper()
-    donor = json.loads(donor_with_metadata_name)
-    mapped_donor = donor_mapper.map_donor_create_event(**donor)
+    mapped_donor = donor_mapper.map_donor_create_event(**donor_with_metadata_name)
     assert mapped_donor['FirstName'] == 'Allan'
     assert mapped_donor['LastName'] == 'Sanchez'
     assert mapped_donor['npe01__HomeEmail__c'] == 'allansr20@gmail.com'
@@ -99,11 +98,10 @@ def test_donor_processor_maps_works_with_donor_metadata_name(donor_with_metadata
     assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
     assert mapped_donor['External_Contact_ID__c'] == 'cus_QToxMZVIxZRAtF'
 
-
-def test_donor_processor_maps_works_with_no_donor_metadata_address(donor_with_no_metadata_address_json):
+@pytest.mark.unit
+def test_donor_processor_maps_works_with_no_donor_metadata_address(donor_with_no_metadata_address_dict):
     donor_mapper = DonorMapper()
-    donor = json.loads(donor_with_no_metadata_address_json)
-    mapped_donor = donor_mapper.map_donor_create_event(**donor)
+    mapped_donor = donor_mapper.map_donor_create_event(**donor_with_no_metadata_address_dict)
     assert mapped_donor['FirstName'] == 'Turd'
     assert mapped_donor['LastName'] == 'Ferguson'
     assert mapped_donor['npe01__HomeEmail__c'] == 'turdfergusion_test@gmail.com'
@@ -117,11 +115,10 @@ def test_donor_processor_maps_works_with_no_donor_metadata_address(donor_with_no
     assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
     assert mapped_donor['External_Contact_ID__c'] == 'cus_Q4X90EUjCmX1wg'
 
-
+@pytest.mark.unit
 def test_donor_processor_maps_works_with_donor_metadata_address(donor_with_metadata_address_dict):
     donor_mapper = DonorMapper()
-    donor = json.loads(donor_with_metadata_address_dict)
-    mapped_donor = donor_mapper.map_donor_create_event(**donor)
+    mapped_donor = donor_mapper.map_donor_create_event(**donor_with_metadata_address_dict)
     assert mapped_donor['FirstName'] == 'Turd'
     assert mapped_donor['LastName'] == 'Ferguson'
     assert mapped_donor['npe01__HomeEmail__c'] == 'turdfergusion_test@gmail.com'
@@ -135,11 +132,10 @@ def test_donor_processor_maps_works_with_donor_metadata_address(donor_with_metad
     assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
     assert mapped_donor['External_Contact_ID__c'] == 'cus_Q4X90EUjCmX1wg'
 
-
-def test_donor_processor_maps_works_with_donor_address(donor_with_address_json):
+@pytest.mark.unit
+def test_donor_processor_maps_works_with_donor_address(donor_with_address_dict):
     donor_mapper = DonorMapper()
-    donor = json.loads(donor_with_address_json)
-    mapped_donor = donor_mapper.map_donor_create_event(**donor)
+    mapped_donor = donor_mapper.map_donor_create_event(**donor_with_address_dict)
     assert mapped_donor['FirstName'] == 'Ted'
     assert mapped_donor['LastName'] == 'Hunt Mendoza'
     assert mapped_donor['npe01__HomeEmail__c'] == 'testemail99@gmail.com'

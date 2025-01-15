@@ -3,8 +3,9 @@ import json
 import pytest
 from mock.mock import MagicMock
 
+
 @pytest.fixture
-def mocked_donor_mapper(donor_with_no_metadata_address_json):
+def mocked_donor_mapper(donor_with_no_metadata_address_dict):
     mapped_donor = {'FirstName': 'Bill', 'LastName': 'Nye', 'npe01__HomeEmail__c': 'bill_nye_test@gmail.com',
                     'Email': 'bill_nye_test@gmail.com', 'MailingStreet': '901 Alum Springs Rd', 'MailingCity': 'Forest',
                     'MailingState': 'VA', 'MailingPostalCode': '24551', 'MailingCountry': None, 'Phone': None,
@@ -14,11 +15,13 @@ def mocked_donor_mapper(donor_with_no_metadata_address_json):
     mocked_mapper.map_donor_create_event.return_value = mapped_donor
     return mocked_mapper
 
+
 @pytest.fixture
 def mocked_stripe_donor_service():
     mocked_stripe_donor_service = MagicMock()
     mocked_stripe_donor_service.update.return_value = {'success': True}
     return mocked_stripe_donor_service
+
 
 @pytest.fixture
 def mocked_salesforce_donor_service():
@@ -26,10 +29,10 @@ def mocked_salesforce_donor_service():
     mocked_salesforce_donor_service.get_contact_id.return_value = '12345'
     return mocked_salesforce_donor_service
 
+
 @pytest.fixture
-def donor_with_no_metadata_address_json():
-    return """
-            {"id": "evt_1PEO5DL1MLd6bigCDF2VzSU9",
+def donor_with_no_metadata_address_dict():
+    return {"id": "evt_1PEO5DL1MLd6bigCDF2VzSU9",
         "object": "event",
         "api_version": "2022-11-15",
         "created": 1715226951,
@@ -37,36 +40,36 @@ def donor_with_no_metadata_address_json():
             "object": {
                 "id": "cus_Q4X90EUjCmX1wg",
                 "object": "customer",
-                "address": null,
+                "address": None,
                 "balance": 0,
                 "created": 1715226950,
-                "currency": null,
-                "default_source": null,
-                "delinquent": false,
+                "currency": None,
+                "default_source": None,
+                "delinquent": False,
                 "description": "Turd Ferguson",
-                "discount": null,
+                "discount": None,
                 "email": "turdfergusion_test@gmail.com",
                 "invoice_prefix": "D7DBC775",
                 "invoice_settings": {
-                    "custom_fields": null,
-                    "default_payment_method": null,
-                    "footer": null,
-                    "rendering_options": null
+                    "custom_fields": None,
+                    "default_payment_method": None,
+                    "footer": None,
+                    "rendering_options": None
                 },
-                "livemode": false,
+                "livemode": False,
                 "metadata": {
                     "created_by": "FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 338201953"
                 },
-                "name": null,
+                "name": None,
                 "next_invoice_sequence": 1,
-                "phone": null,
+                "phone": None,
                 "preferred_locales": [],
-                "shipping": null,
+                "shipping": None,
                 "tax_exempt": "none",
-                "test_clock": null
+                "test_clock": None
             }
         },
-        "livemode": false,
+        "livemode": False,
         "pending_webhooks": 0,
         "request": {
             "id": "req_HBIEFtTW7obdZg",
@@ -74,8 +77,7 @@ def donor_with_no_metadata_address_json():
         },
         "type": "customer.created"
     }
-    """
-
+    
 
 
 @pytest.fixture
@@ -134,8 +136,8 @@ def donor_with_metadata_address_dict():
 
 
 @pytest.fixture
-def donor_with_address_json():
-    return json.dumps({'id': 'evt_1OnOgxL1MLd6bigCjQVt4aC3',
+def donor_with_address_dict():
+    return {'id': 'evt_1OnOgxL1MLd6bigCjQVt4aC3',
                        'data': {
                            'object': {
                                'id': 'cus_PcdyPDFvTFM1gP',
@@ -195,75 +197,74 @@ def donor_with_address_json():
                        'livemode': False,
                        'api_version': '2022-11-15',
                        'pending_webhooks': 3
-                       })
+                       }
 
 
 @pytest.fixture
 def donor_with_address_line2_missing():
-    return json.dumps({'id': 'evt_1PcrJEL1MLd6bigCdNbs220i',
-                       'object': 'event', 'api_version': '2022-11-15', 'created': 1721059168,
-                       'data':
-                           {'object':
-                                {'id': 'cus_QToxMZVIxZRAtF', 'object': 'customer',
-                                 'address': {'city': 'Alajuela', 'country': 'Costa Rica', 'line1': 'Av. 0AS, Calle 42',
-                                             'line2': None, 'postal_code': '20102', 'state': 'Alajuela'},
-                                 'balance': 0, 'created': 1721059167, 'currency': None, 'default_source': None,
-                                 'delinquent': False,
-                                 'description': 'VISA', 'discount': None, 'email': 'allansr20@gmail.com',
-                                 'invoice_prefix': '341086FB',
-                                 'invoice_settings': {'custom_fields': None,
-                                                      'default_payment_method': 'pm_1PcrJCL1MLd6bigCldfpPEmT',
-                                                      'footer': None, 'rendering_options': None}, 'livemode': False,
-                                 'metadata': {
-                                     'created_by': 'FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 346524701',
-                                     'address_street': 'Av. 0AS, Calle 42', 'address_country': 'Costa Rica',
-                                     'address_state': 'Alajuela', 'address_zip': '20102', 'address_city': 'Alajuela'},
-                                 'name': 'VISA', 'next_invoice_sequence': 1,
-                                 'phone': None, 'preferred_locales': [], 'shipping': None, 'tax_exempt': 'none',
-                                 'test_clock': None},
-                            'previous_attributes': {'address': None, 'name': None}}, 'livemode': False,
-                       'pending_webhooks': 1,
-                       'request': {'id': 'req_p3B9ZYNOmcXQcC',
-                                   'idempotency_key': '4e0dc179-d7fd-468a-bcf1-4b24df489497'},
-                       'type': 'customer.updated'})
+    return {'id': 'evt_1PcrJEL1MLd6bigCdNbs220i',
+            'object': 'event', 'api_version': '2022-11-15', 'created': 1721059168,
+            'data':
+                {'object':
+                     {'id': 'cus_QToxMZVIxZRAtF', 'object': 'customer',
+                      'address': {'city': 'Alajuela', 'country': 'Costa Rica', 'line1': 'Av. 0AS, Calle 42',
+                                  'line2': None, 'postal_code': '20102', 'state': 'Alajuela'},
+                      'balance': 0, 'created': 1721059167, 'currency': None, 'default_source': None,
+                      'delinquent': False,
+                      'description': 'VISA', 'discount': None, 'email': 'allansr20@gmail.com',
+                      'invoice_prefix': '341086FB',
+                      'invoice_settings': {'custom_fields': None,
+                                           'default_payment_method': 'pm_1PcrJCL1MLd6bigCldfpPEmT',
+                                           'footer': None, 'rendering_options': None}, 'livemode': False,
+                      'metadata': {
+                          'created_by': 'FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 346524701',
+                          'address_street': 'Av. 0AS, Calle 42', 'address_country': 'Costa Rica',
+                          'address_state': 'Alajuela', 'address_zip': '20102', 'address_city': 'Alajuela'},
+                      'name': 'VISA', 'next_invoice_sequence': 1,
+                      'phone': None, 'preferred_locales': [], 'shipping': None, 'tax_exempt': 'none',
+                      'test_clock': None},
+                 'previous_attributes': {'address': None, 'name': None}}, 'livemode': False,
+            'pending_webhooks': 1,
+            'request': {'id': 'req_p3B9ZYNOmcXQcC',
+                        'idempotency_key': '4e0dc179-d7fd-468a-bcf1-4b24df489497'},
+            'type': 'customer.updated'}
 
 
 @pytest.fixture
 def donor_with_metadata_name():
-    return json.dumps(
-        {'id': 'evt_1PcrJEL1MLd6bigCdNbs220i', 'object': 'event', 'api_version': '2022-11-15', 'created': 1721059168,
-         'data': {'object':
-                      {'id': 'cus_QToxMZVIxZRAtF', 'object': 'customer',
-                       'address': {'city': 'Alajuela', 'country': 'Costa Rica',
-                                   'line1': 'Av. 0AS, Calle 42',
-                                   'line2': None, 'postal_code': '20102', 'state': 'Alajuela'},
-                       'balance': 0, 'created': 1721059167, 'currency': None, 'default_source': None,
-                       'delinquent': False,
-                       'description': 'VISA', 'discount': None, 'email': 'allansr20@gmail.com',
-                       'invoice_prefix': '341086FB',
-                       'invoice_settings': {'custom_fields': None,
-                                            'default_payment_method': 'pm_1PcrJCL1MLd6bigCldfpPEmT',
-                                            'footer': None, 'rendering_options': None}, 'livemode': False,
-                       'metadata': {
-                           'created_by': 'FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / '
-                                         'Resp. 346524701',
-                           'address_street': 'Av. 0AS, Calle 42', 'address_country': 'Costa Rica',
-                           'address_state': 'Alajuela', 'address_zip': '20102',
-                           'address_city': 'Alajuela',
-                           'first_name': 'Allan', 'last_name': 'Sanchez'},
-                       'name': None, 'next_invoice_sequence': 1,
-                       'phone': None, 'preferred_locales': [], 'shipping': None, 'tax_exempt': 'none',
-                       'test_clock': None},
-                  'previous_attributes': {'address': None, 'name': None}}, 'livemode': False,
-         'pending_webhooks': 1,
-         'request': {'id': 'req_p3B9ZYNOmcXQcC',
-                     'idempotency_key': '4e0dc179-d7fd-468a-bcf1-4b24df489497'},
-         'type': 'customer.updated'})
+    return {'id': 'evt_1PcrJEL1MLd6bigCdNbs220i', 'object': 'event', 'api_version': '2022-11-15', 'created': 1721059168,
+            'data': {'object':
+                         {'id': 'cus_QToxMZVIxZRAtF', 'object': 'customer',
+                          'address': {'city': 'Alajuela', 'country': 'Costa Rica',
+                                      'line1': 'Av. 0AS, Calle 42',
+                                      'line2': None, 'postal_code': '20102', 'state': 'Alajuela'},
+                          'balance': 0, 'created': 1721059167, 'currency': None, 'default_source': None,
+                          'delinquent': False,
+                          'description': 'VISA', 'discount': None, 'email': 'allansr20@gmail.com',
+                          'invoice_prefix': '341086FB',
+                          'invoice_settings': {'custom_fields': None,
+                                               'default_payment_method': 'pm_1PcrJCL1MLd6bigCldfpPEmT',
+                                               'footer': None, 'rendering_options': None}, 'livemode': False,
+                          'metadata': {
+                              'created_by': 'FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / '
+                                            'Resp. 346524701',
+                              'address_street': 'Av. 0AS, Calle 42', 'address_country': 'Costa Rica',
+                              'address_state': 'Alajuela', 'address_zip': '20102',
+                              'address_city': 'Alajuela',
+                              'first_name': 'Allan', 'last_name': 'Sanchez'},
+                          'name': None, 'next_invoice_sequence': 1,
+                          'phone': None, 'preferred_locales': [], 'shipping': None, 'tax_exempt': 'none',
+                          'test_clock': None},
+                     'previous_attributes': {'address': None, 'name': None}}, 'livemode': False,
+            'pending_webhooks': 1,
+            'request': {'id': 'req_p3B9ZYNOmcXQcC',
+                        'idempotency_key': '4e0dc179-d7fd-468a-bcf1-4b24df489497'},
+            'type': 'customer.updated'}
 
 
 @pytest.fixture
 def donor_with_metadata_opt_out():
-    return json.dumps({
+    return {
         'id': 'evt_1PdlYsL1MLd6bigCYMOA3AWK',
         'object': 'event',
         'api_version': '2022-11-15',
@@ -316,12 +317,12 @@ def donor_with_metadata_opt_out():
             'idempotency_key': '249f4f31-5632-448c-bd9e-7fd9279ae4d3'
         },
         'type': 'customer.created'
-    })
+    }
 
 
 @pytest.fixture
 def donor_with_metadata_receipt():
-    return json.dumps({
+    return {
         'id': 'evt_1PdlYsL1MLd6bigCYMOA3AWK',
         'object': 'event',
         'api_version': '2022-11-15',
@@ -373,4 +374,4 @@ def donor_with_metadata_receipt():
             'idempotency_key': '249f4f31-5632-448c-bd9e-7fd9279ae4d3'
         },
         'type': 'customer.created'
-    })
+    }

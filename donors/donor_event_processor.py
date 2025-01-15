@@ -6,7 +6,8 @@ from donors.stripe_donor_service import StripeDonorService
 
 
 class DonorEventProcessor:
-    def __init__(self, donor_mapper: DonorMapper, stripe_donor: StripeDonorService, salesforce_donor: SalesforceDonorService) -> None:
+    def __init__(self, donor_mapper: DonorMapper, stripe_donor: StripeDonorService,
+                 salesforce_donor: SalesforceDonorService) -> None:
         self.donor_mapper = donor_mapper
         self.stripe_donor_service = stripe_donor
         self.salesforce_donor_service = salesforce_donor
@@ -22,12 +23,13 @@ class DonorEventProcessor:
         if not sf_contact_id:
             sf_contact_id = self._create_donor_in_salesforce(donor)
             if stripe_updates:
-                self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
+                updated_donor = self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
+                print(
+                    f'Successfully updated stripe donor {updated_donor.get('id')} in Stripe with the following updates: {stripe_updates}')
         else:
             error_message = f'Stripe customer with email {email} already exists in Salesforce with ID {sf_contact_id}. Cannot process donor create event further.'
             raise Exception(error_message)
         return sf_contact_id
-
 
     def process_update_event(self, event_data):
         donor = self.donor_mapper.map_donor_update_event(**event_data)
@@ -43,9 +45,17 @@ class DonorEventProcessor:
             time.sleep(30)
             raise Exception(error_message)
         else:
-            self._update_donor_in_salesforce(sf_contact_id, donor)
+            response = self._update_donor_in_salesforce(sf_contact_id, donor)
+            if response != 204:
+                error_message = f'Did not update Salesforce Contact {sf_contact_id} successfully in Salesforce due to {response}'
+                print(error_message)
+                raise Exception(error_message)
+            print(
+                f'Updated Salesforce Contact {sf_contact_id} successfully in Salesforce.')
             if stripe_updates:
-                self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
+                updated_donor = self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
+                print(
+                    f'Successfully updated stripe donor {updated_donor.get('id')} in Stripe with the following updates: {stripe_updates}')
 
     def _create_donor_in_salesforce(self, donor: dict) -> str:
         email = donor.get('Email')
@@ -61,18 +71,16 @@ class DonorEventProcessor:
                 return salesforce_created_id
             else:
                 errors = response.get('errors')
-                error_message = f'Did not create Stripe customer with {email} successfully in Salesforce due to: {errors}'
+                salesforce_error = None
+                if len(errors) > 0:
+                    salesforce_error = errors[0].get('message')
+                error_message = f'Did not create Stripe customer with {email} successfully in Salesforce due to: {salesforce_error}'
                 raise Exception(error_message)
 
-    def _update_donor_in_stripe(self, stripe_customer_id: str, stripe_updates: dict) -> None:
-        self.stripe_donor_service.update(stripe_customer_id, stripe_updates)
+    def _update_donor_in_stripe(self, stripe_customer_id: str, stripe_updates: dict) -> dict:
+        response = self.stripe_donor_service.update(stripe_customer_id, stripe_updates)
+        return response
 
-    def _update_donor_in_salesforce(self, sf_contact_id: str, donor: dict) -> None:
+    def _update_donor_in_salesforce(self, sf_contact_id: str, donor: dict) -> int:
         response = self.salesforce_donor_service.update(sf_contact_id=sf_contact_id, **donor)
-        if response != 204:
-            errors = response.get('errors')
-            error_message = f'Did not update Salesforce Contact {sf_contact_id} successfully in Salesforce due to {errors}'
-            print(error_message)
-            raise Exception(error_message)
-        print(
-            f'Updated Salesforce Contact {sf_contact_id} successfully in Salesforce.')
+        return response

@@ -3,8 +3,8 @@ from utils.stripe_connection import StripeConnection
 
 class StripeDonorService:
 
-    def __init__(self):
-        self.connection = StripeConnection()
+    def __init__(self, stripe_connection: StripeConnection):
+        self.connection = stripe_connection
 
     def get_donor_email(self, stripe_customer_id):
         print(f'Retrieving Stripe customer {stripe_customer_id} info from Stripe...')
