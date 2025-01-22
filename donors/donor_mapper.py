@@ -72,7 +72,7 @@ def filter_donor(donor):
 
 class DonorMapper:
 
-    def map_donor_update_event(self, **event_data):
+    def map_update_event(self, **event_data):
         data = event_data['data']['object']
         customer_id = data.get('id')
         full_name = data.get('name')
@@ -107,7 +107,7 @@ class DonorMapper:
         filtered_donor = filter_donor(donor)
         return filtered_donor
 
-    def map_donor_create_event(self, **event_data):
+    def map_create_event(self, **event_data):
         data = event_data['data']['object']
         customer_id = data.get('id')
         full_name = data.get('name')

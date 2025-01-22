@@ -13,7 +13,7 @@ class DonorEventProcessor:
         self.salesforce_donor_service = salesforce_donor
 
     def process_create_event(self, event_data: dict) -> str:
-        donor = self.donor_mapper.map_donor_create_event(**event_data)
+        donor = self.donor_mapper.map_create_event(**event_data)
         stripe_customer_id = donor.get('External_Contact_ID__c')
         stripe_updates = donor.pop('stripe_updates', None)
         email = donor.get('Email')
@@ -32,7 +32,7 @@ class DonorEventProcessor:
         return sf_contact_id
 
     def process_update_event(self, event_data):
-        donor = self.donor_mapper.map_donor_update_event(**event_data)
+        donor = self.donor_mapper.map_update_event(**event_data)
         stripe_customer_id = donor.get('External_Contact_ID__c')
         stripe_updates = donor.pop('stripe_updates', None)
         email = donor.get('Email')

@@ -6,20 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="e242112d-11d0-49a5-a8b9-e5317a5594e1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donations/donation_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_mapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donations/stripe_donation_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/stripe_donation_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/donors/donor_event_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_event_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donors/stripe_donor_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/stripe_donor_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donation_tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donation_tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donation_tests/donation_mapper_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donation_tests/donation_mapper_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donation_tests/donation_tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/donors/donor_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_mapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_event_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_event_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_mapper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/donors_tests/donor_mapper_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/donor_mapper_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/donor_processor_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/donor_processor_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/salesforce_donor_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/salesforce_donor_service_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/stripe_donor_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/stripe_donor_service_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/subscription_mapper_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/subscription_mapper_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/subscription_processor_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/subscription_processor_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/subscription_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/subscription_tests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,6 +121,8 @@
     "Python tests.Python tests for slack_message_test.test_slack_message.executor": "Run",
     "Python tests.Python tests for stripe_donor_tests.test_get_email_works.executor": "Run",
     "Python tests.Python tests for stripe_donor_tests.test_stripe_update_customer.executor": "Run",
+    "Python tests.Python tests for stripe_subscription_service_tests.test_get_subscription_schedule_works.executor": "Run",
+    "Python tests.Python tests for stripe_subscription_service_tests.test_get_subscription_schedule_works_when_subscription_schedule_id_does_not_exist.executor": "Run",
     "Python tests.Python tests for subscription_mapper_tests.test_get_start_date_works.executor": "Run",
     "Python tests.Python tests for subscription_mapper_tests.test_map_fixed_active_subscription_works.executor": "Run",
     "Python tests.Python tests for subscription_mapper_tests.test_map_fixed_canceled_subscription_works.executor": "Run",
@@ -151,6 +148,7 @@
     "Python tests.Python tests for subscription_tests.test_subscription_error_8_18_24.executor": "Debug",
     "Python tests.Python tests for subscription_tests.test_subscription_exists.executor": "Run",
     "Python tests.Python tests for subscription_tests.test_update_subscription_succeeds.executor": "Debug",
+    "Python tests.Python tests in donation_mapper_tests.py.executor": "Run",
     "Python tests.Python tests in donor_mapper_tests.py.executor": "Run",
     "Python tests.Python tests in donor_processor_tests.py.executor": "Run",
     "Python tests.Python tests in donor_tests.py.executor": "Run",
@@ -194,7 +192,7 @@
       <recent name="C:\Users\amh68\Documents\Source Code\RF_Stripe_SF_Sync\donors" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for donation_mapper_tests.test_map_donation_refund_succeeds">
+  <component name="RunManager" selected="Python tests.Python tests for subscription_mapper_tests.test_map_fixed_active_subscription_works">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
@@ -218,84 +216,84 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for donation_mapper_tests.test_map_closed_won_one_time_card_donation_succeeds" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for stripe_subscription_service_tests.test_get_subscription_schedule_works" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/donation_tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/subscription_tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;donation_mapper_tests.test_map_closed_won_one_time_card_donation_succeeds&quot;" />
+      <option name="_new_target" value="&quot;stripe_subscription_service_tests.test_get_subscription_schedule_works&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for donation_mapper_tests.test_map_closed_won_subscription_card_donation_succeeds" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for stripe_subscription_service_tests.test_get_subscription_schedule_works_when_subscription_schedule_id_does_not_exist" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/donation_tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/subscription_tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;donation_mapper_tests.test_map_closed_won_subscription_card_donation_succeeds&quot;" />
+      <option name="_new_target" value="&quot;stripe_subscription_service_tests.test_get_subscription_schedule_works_when_subscription_schedule_id_does_not_exist&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for donation_mapper_tests.test_map_donation_refund_succeeds" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for subscription_mapper_tests.test_map_fixed_active_subscription_works" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/donation_tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/subscription_tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;donation_mapper_tests.test_map_donation_refund_succeeds&quot;" />
+      <option name="_new_target" value="&quot;subscription_mapper_tests.test_map_fixed_active_subscription_works&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for donor_mapper_tests.test_donor_processor_maps_works_with_donor_metadata_name" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for subscription_mapper_tests.test_map_open_canceled_subscription_works" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/donors_tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/subscription_tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;donor_mapper_tests.test_donor_processor_maps_works_with_donor_metadata_name&quot;" />
+      <option name="_new_target" value="&quot;subscription_mapper_tests.test_map_open_canceled_subscription_works&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests in donor_mapper_tests.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for subscription_mapper_tests.test_map_open_incomplete_subscription_works" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/donors_tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/subscription_tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/donors_tests/donor_mapper_tests.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;subscription_mapper_tests.test_map_open_incomplete_subscription_works&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="tests" factoryName="py.test">
@@ -319,19 +317,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.main" />
-      <item itemvalue="Python tests.Python tests for donation_mapper_tests.test_map_closed_won_one_time_card_donation_succeeds" />
-      <item itemvalue="Python tests.Python tests for donation_mapper_tests.test_map_closed_won_subscription_card_donation_succeeds" />
-      <item itemvalue="Python tests.Python tests for donation_mapper_tests.test_map_donation_refund_succeeds" />
-      <item itemvalue="Python tests.Python tests for donor_mapper_tests.test_donor_processor_maps_works_with_donor_metadata_name" />
-      <item itemvalue="Python tests.Python tests in donor_mapper_tests.py" />
+      <item itemvalue="Python tests.Python tests for stripe_subscription_service_tests.test_get_subscription_schedule_works" />
+      <item itemvalue="Python tests.Python tests for stripe_subscription_service_tests.test_get_subscription_schedule_works_when_subscription_schedule_id_does_not_exist" />
+      <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_fixed_active_subscription_works" />
+      <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_open_canceled_subscription_works" />
+      <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_open_incomplete_subscription_works" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for donation_mapper_tests.test_map_donation_refund_succeeds" />
-        <item itemvalue="Python tests.Python tests for donation_mapper_tests.test_map_closed_won_subscription_card_donation_succeeds" />
-        <item itemvalue="Python tests.Python tests for donation_mapper_tests.test_map_closed_won_one_time_card_donation_succeeds" />
-        <item itemvalue="Python tests.Python tests in donor_mapper_tests.py" />
-        <item itemvalue="Python tests.Python tests for donor_mapper_tests.test_donor_processor_maps_works_with_donor_metadata_name" />
+        <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_fixed_active_subscription_works" />
+        <item itemvalue="Python tests.Python tests for stripe_subscription_service_tests.test_get_subscription_schedule_works_when_subscription_schedule_id_does_not_exist" />
+        <item itemvalue="Python tests.Python tests for stripe_subscription_service_tests.test_get_subscription_schedule_works" />
+        <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_open_canceled_subscription_works" />
+        <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_open_incomplete_subscription_works" />
       </list>
     </recent_temporary>
   </component>
@@ -371,7 +369,8 @@
       <workItem from="1732325261725" duration="595000" />
       <workItem from="1732326121019" duration="7307000" />
       <workItem from="1735237463516" duration="2094000" />
-      <workItem from="1735307741434" duration="94115000" />
+      <workItem from="1735307741434" duration="94827000" />
+      <workItem from="1737139376238" duration="7460000" />
     </task>
     <servers />
   </component>
@@ -476,7 +475,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$main.coverage" NAME="main Coverage Results" MODIFIED="1728354294723" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1736917498133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/donation_tests" />
+    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1737514121914" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/subscription_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$event_processor_tests.coverage" NAME="event_processor_tests Coverage Results" MODIFIED="1710209137532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/event_processor_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$database_connection.coverage" NAME="database_connection Coverage Results" MODIFIED="1710208968263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$scratch_1.coverage" NAME="scratch_1 Coverage Results" MODIFIED="1736630371304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />

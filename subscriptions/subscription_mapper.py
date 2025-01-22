@@ -115,11 +115,61 @@ class SubscriptionMapper:
             if current_phase := subscription_schedule.get('current_phase'):
                 if current_phase.get('end_date'):
                     recurring_type = 'Fixed'
+
+        # TODO: will need to remove start date field from dict for anet subscriptions created in Stripe since they already have this field set in Salesforce
         if metadata := data.get('metadata'):
             if campaign_code := metadata.get('campaign_code'):
                 sf_campaign_id = self.salesforce_subscription.get_campaign_id(campaign_code)
 
         amount = get_amount(data)
+        #TODO: will need to remove start date field from dict for anet subscriptions created in Stripe since they already have this field set in Salesforce
+        start_date = get_start_date(data)
+        salesforce_id = self._get_salesforce_contact_id(data)
+        installment_period = map_installment_period(data)
+        payment_method_type = self._get_payment_method_type(subscription_id)
+        installment_frequency = data['plan']['interval_count']
+        donation_source = 'RF Web-form'
+
+        subscription = {'Stripe_Subscription_ID__c': subscription_id,
+                        'npe03__Amount__c': amount,
+                        'npe03__Date_Established__c': start_date.isoformat(),
+                        'npsp__StartDate__c': start_date.isoformat(),
+                        'Donation_Source__c': donation_source,
+                        'npsp__Status__c': mapped_status,
+                        'npsp__ClosedReason__c': closed_reason,
+                        'npe03__Recurring_Donation_Campaign__c': sf_campaign_id,
+                        'npsp__RecurringType__c': recurring_type,
+                        'npe03__Installment_Period__c': installment_period,
+                        'npsp__Day_of_Month__c': start_date.day,
+                        'npsp__InstallmentFrequency__c': installment_frequency,
+                        'npsp__PaymentMethod__c': payment_method_type,
+                        'npe03__Contact__c': salesforce_id,
+                        'ANET_ARB_ID__c': anet_subscription_id}
+        return subscription
+
+    def map_update_event(self, **event_data):
+        data = event_data['data']['object']
+        mapped_status, closed_reason = map_status(data)
+        subscription_id = data.get('id')
+        sf_campaign_id = None
+        anet_subscription_id = None
+        recurring_type = 'Open'
+
+        if schedule_id := data.get('schedule'):
+            subscription_schedule = self.stripe_subscription.get_subscription_schedule(schedule_id)
+            if subscription_schedule_metadata := subscription_schedule.get('metadata'):
+                anet_subscription_id = subscription_schedule_metadata.get('anetSubscriptionId')
+            if current_phase := subscription_schedule.get('current_phase'):
+                if current_phase.get('end_date'):
+                    recurring_type = 'Fixed'
+
+        # TODO: will need to remove start date field from dict for anet subscriptions created in Stripe since they already have this field set in Salesforce
+        if metadata := data.get('metadata'):
+            if campaign_code := metadata.get('campaign_code'):
+                sf_campaign_id = self.salesforce_subscription.get_campaign_id(campaign_code)
+
+        amount = get_amount(data)
+        #TODO: will need to remove start date field from dict for anet subscriptions created in Stripe since they already have this field set in Salesforce
         start_date = get_start_date(data)
         salesforce_id = self._get_salesforce_contact_id(data)
         installment_period = map_installment_period(data)

@@ -1,7 +1,6 @@
 import json
 
 from subscriptions.subscription import Subscription
-from subscriptions.subscription_event_processor import SubscriptionEventProcessor
 
 
 def test_subscription_does_not_exist():
