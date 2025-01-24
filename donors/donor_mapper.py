@@ -72,41 +72,6 @@ def filter_donor(donor):
 
 class DonorMapper:
 
-    def map_update_event(self, **event_data):
-        data = event_data['data']['object']
-        customer_id = data.get('id')
-        full_name = data.get('name')
-        updates = {}
-        if not full_name:
-            donor_names = get_donor_name(data)
-            first_name = donor_names.get('first_name')
-            last_name = donor_names.get('last_name')
-            updates['name'] = first_name + ' ' + last_name
-        else:
-            first_name, last_name = get_first_and_last_name(full_name)
-
-        donor_address = get_donor_address(data)
-        address = data.get('address')
-        if not address:
-            updates['address'] = donor_address
-
-        donor = {'FirstName': first_name,
-                 'LastName': last_name,
-                 'npe01__HomeEmail__c': data.get('email'),
-                 'Stripe_Donor__c': True,
-                 'Email': data.get('email'),
-                 'Phone': data.get('phone'),
-                 'MailingStreet': donor_address.get('line1'),
-                 'MailingState': donor_address.get('state'),
-                 'MailingCity': donor_address.get('city'),
-                 'MailingCountry': donor_address.get('country'),
-                 'MailingPostalCode': donor_address.get('postal_code'),
-                 'External_Contact_ID__c': customer_id,
-                 'stripe_updates': updates
-                 }
-        filtered_donor = filter_donor(donor)
-        return filtered_donor
-
     def map_create_event(self, **event_data):
         data = event_data['data']['object']
         customer_id = data.get('id')
@@ -148,3 +113,40 @@ class DonorMapper:
                  'DoNotMail__c': opt_out.get('mail_opt_out'),
                  'stripe_updates': updates}
         return donor
+
+    def map_update_event(self, **event_data):
+        data = event_data['data']['object']
+        customer_id = data.get('id')
+        full_name = data.get('name')
+        updates = {}
+        if not full_name:
+            donor_names = get_donor_name(data)
+            first_name = donor_names.get('first_name')
+            last_name = donor_names.get('last_name')
+            updates['name'] = first_name + ' ' + last_name
+        else:
+            first_name, last_name = get_first_and_last_name(full_name)
+
+        donor_address = get_donor_address(data)
+        address = data.get('address')
+        if not address:
+            updates['address'] = donor_address
+
+        donor = {'FirstName': first_name,
+                 'LastName': last_name,
+                 'npe01__HomeEmail__c': data.get('email'),
+                 'Stripe_Donor__c': True,
+                 'Email': data.get('email'),
+                 'Phone': data.get('phone'),
+                 'MailingStreet': donor_address.get('line1'),
+                 'MailingState': donor_address.get('state'),
+                 'MailingCity': donor_address.get('city'),
+                 'MailingCountry': donor_address.get('country'),
+                 'MailingPostalCode': donor_address.get('postal_code'),
+                 'External_Contact_ID__c': customer_id,
+                 'stripe_updates': updates
+                 }
+        filtered_donor = filter_donor(donor)
+        return filtered_donor
+
+

@@ -14,22 +14,22 @@ class DonorEventProcessor:
 
     def process_create_event(self, event_data: dict) -> str:
         donor = self.donor_mapper.map_create_event(**event_data)
-        stripe_customer_id = donor.get('External_Contact_ID__c')
-        stripe_updates = donor.pop('stripe_updates', None)
-        email = donor.get('Email')
-        if email is None:
-            raise Exception('Donor email is null.  Cannot process donor create event further.')
-        sf_contact_id = self.salesforce_donor_service.get_contact_id(email=email)
-        if not sf_contact_id:
-            sf_contact_id = self._create_donor_in_salesforce(donor)
-            if stripe_updates:
-                updated_donor = self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
-                print(
-                    f'Successfully updated stripe donor {updated_donor.get('id')} in Stripe with the following updates: {stripe_updates}')
+        if email := donor.get('Email'):
+            if sf_contact_id := self.salesforce_donor_service.get_contact_id(email=email):
+                error_message = f'Stripe customer with email {email} already exists in Salesforce with ID {sf_contact_id}. Cannot process donor create event further.'
+                raise Exception(error_message)
+            else:
+                stripe_updates = donor.pop('stripe_updates', None)
+                sf_contact_id = self._create_donor_in_salesforce(donor)
+                if stripe_updates:
+                    stripe_customer_id = donor.get('External_Contact_ID__c')
+                    updated_donor = self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
+                    print(
+                        f'Successfully updated stripe donor {updated_donor.get('id')} in Stripe with the following updates: {stripe_updates}')
+            return sf_contact_id
         else:
-            error_message = f'Stripe customer with email {email} already exists in Salesforce with ID {sf_contact_id}. Cannot process donor create event further.'
-            raise Exception(error_message)
-        return sf_contact_id
+            raise Exception('Donor email is null.  Cannot process donor create event further.')
+
 
     def process_update_event(self, event_data):
         donor = self.donor_mapper.map_update_event(**event_data)
