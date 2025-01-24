@@ -36,7 +36,7 @@ def test_map_open_incomplete_subscription_works(open_active_subscription_dict):
                                              salesforce_donor=mocked_salesforce_donor_service)
 
     # act
-    mapped_subscription = subscription_mapper.map_active_subscription(**open_active_subscription_dict)
+    mapped_subscription = subscription_mapper.map_create_event(**open_active_subscription_dict)
     # assert
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1PFUWGL1MLd6bigCFPlOUlAD'
     assert mapped_subscription['npe03__Amount__c'] == '555.00'
@@ -66,7 +66,7 @@ def test_map_open_canceled_subscription_works(canceled_subscription_dict):
                                              stripe_donor=mocked_stripe_donor_service,
                                              salesforce_donor=mocked_salesforce_donor_service)
     # act
-    mapped_subscription = subscription_mapper.map_canceled_subscription(**canceled_subscription_dict)
+    mapped_subscription = subscription_mapper.map_delete_event(**canceled_subscription_dict)
 
     # assert
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1P1hCDL1MLd6bigCTMM9YrD9'
@@ -98,7 +98,7 @@ def test_map_fixed_active_subscription_works(fixed_active_subscription_dict):
                                              stripe_donor=mocked_stripe_donor_service,
                                              salesforce_donor=mocked_salesforce_donor_service)
     # act
-    mapped_subscription = subscription_mapper.map_active_subscription(**fixed_active_subscription_dict)
+    mapped_subscription = subscription_mapper.map_create_event(**fixed_active_subscription_dict)
     # assert
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1QjZZiL1MLd6bigC1zMiPpEz'
     assert mapped_subscription['npe03__Amount__c'] == '50.00'
@@ -119,7 +119,7 @@ def test_map_fixed_active_subscription_works(fixed_active_subscription_dict):
 # TODO: need to fix the assertions below once we implement a stripe schedule with form assembly or custom UI
 def test_map_fixed_canceled_subscription_works(fixed_canceled_subscription_json):
     subscription = json.loads(fixed_canceled_subscription_json)
-    mapped_subscription = SubscriptionMapper.map_canceled_subscription(**subscription)
+    mapped_subscription = SubscriptionMapper.map_delete_event(**subscription)
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1OxZRmL1MLd6bigCGpI8nX8p'
     assert mapped_subscription['npe03__Amount__c'] == 100
     assert mapped_subscription['npe03__Date_Established__c'] == '2024-03-23T18:37:38+00:00'
