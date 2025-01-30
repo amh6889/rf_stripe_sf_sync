@@ -67,7 +67,7 @@ def map_installment_period(data: dict) -> str:
 def map_status(data: dict) -> tuple[str, str]:
     status = data.get('status')
     subscription_status = ''
-    closed_reason = ''
+    closed_reason = None
     match status:
         case "active":
             subscription_status = 'Active'
@@ -172,11 +172,12 @@ class SubscriptionMapper:
         data = event_data['data']['object']
         subscription_id = data.get('id')
         recurring_type = 'Open'
+        donation_source = 'RF Web-form'
 
         if subscription_schedule := self.get_subscription_schedule(data):
             recurring_type = map_recurring_type(subscription_schedule)
 
-        sf_campaign_id = self.map_campaign_code(data)
+        #sf_campaign_id = self.map_campaign_code(data)
         mapped_status, closed_reason = map_status(data)
         amount = get_amount(data)
         start_date = get_start_date(data)
@@ -184,12 +185,13 @@ class SubscriptionMapper:
         installment_period = map_installment_period(data)
         payment_method_type = self._get_payment_method_type(subscription_id)
         installment_frequency = data['plan']['interval_count']
-        donation_source = 'RF Web-form'
+
 
         subscription = {'Stripe_Subscription_ID__c': subscription_id,
                         'npe03__Amount__c': amount,
                         'npe03__Date_Established__c': start_date.isoformat(),
                         'npsp__StartDate__c': start_date.isoformat(),
+                        'Donation_Source__c': donation_source,
                         'npsp__Status__c': mapped_status,
                         'npsp__ClosedReason__c': closed_reason,
                         'npsp__RecurringType__c': recurring_type,

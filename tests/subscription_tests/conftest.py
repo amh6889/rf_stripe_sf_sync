@@ -18,6 +18,89 @@ from subscriptions.salesforce_subscription_service import SalesforceSubscription
 def mocked_sf_recurring_donation_id(mocker):
     mocker.patch.object(SalesforceSubscriptionService, 'exists', return_value={'id': '12345', 'sf_contact_id': '12345'})
 
+@pytest.fixture
+def mocked_subscription_schedule():
+    return {
+  "application": None,
+  "canceled_at": None,
+  "completed_at": None,
+  "created": 1735245775,
+  "current_phase": {
+    "end_date": 1740114000,
+    "start_date": 1737435600
+  },
+  "customer": "cus_RTKTPO89z5Ge53",
+  "default_settings": {
+    "application_fee_percent": None,
+    "automatic_tax": {
+      "disabled_reason": None,
+      "enabled": False,
+      "liability": None
+    },
+    "billing_cycle_anchor": "automatic",
+    "billing_thresholds": None,
+    "collection_method": "charge_automatically",
+    "default_payment_method": None,
+    "default_source": None,
+    "description": None,
+    "invoice_settings": {
+      "account_tax_ids": None,
+      "days_until_due": None,
+      "issuer": {
+        "type": "self"
+      }
+    },
+    "on_behalf_of": None,
+    "transfer_data": None
+  },
+  "end_behavior": "release",
+  "id": "sub_sched_1QaNtTL1MLd6bigC9AQHNWKK",
+  "livemode": False,
+  "metadata": {
+    "anetSubscriptionId": "65804855"
+  },
+  "object": "subscription_schedule",
+  "phases": [
+    {
+      "add_invoice_items": [],
+      "application_fee_percent": None,
+      "billing_cycle_anchor": None,
+      "billing_thresholds": None,
+      "collection_method": None,
+      "coupon": None,
+      "currency": "usd",
+      "default_payment_method": None,
+      "default_tax_rates": [],
+      "description": None,
+      "discounts": [],
+      "end_date": 1740114000,
+      "invoice_settings": None,
+      "items": [
+        {
+          "billing_thresholds": None,
+          "discounts": [],
+          "metadata": {},
+          "plan": "price_1QPdeSL1MLd6bigC8hHq4zFm",
+          "price": "price_1QPdeSL1MLd6bigC8hHq4zFm",
+          "quantity": 1,
+          "tax_rates": []
+        }
+      ],
+      "metadata": {},
+      "on_behalf_of": None,
+      "proration_behavior": "create_prorations",
+      "start_date": 1737435600,
+      "transfer_data": None,
+      "trial_end": None
+    }
+  ],
+  "released_at": None,
+  "released_subscription": None,
+  "renewal_interval": None,
+  "status": "active",
+  "subscription": "sub_1QjZZiL1MLd6bigC1zMiPpEz",
+  "test_clock": None
+}
 
 @pytest.fixture
 def fixed_active_subscription_dict():
@@ -317,7 +400,8 @@ def open_active_subscription_dict():
                 "latest_invoice": "in_1PFUWGL1MLd6bigC0GTmyKFu",
                 "livemode": False,
                 "metadata": {
-                    "created_by": "FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 338509469"
+                    "created_by": "FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 338509469",
+                    "campaign_code": "F000"
                 },
                 "next_pending_invoice_item_invoice": None,
                 "on_behalf_of": None,

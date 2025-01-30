@@ -9,22 +9,20 @@ class SalesforceDonorService:
         print(search_query)
         response = sf.search(search_query)
         records = response.get('searchRecords')
-        sf_contact_id = None
         if records:
             record = records[0]
             sf_contact_id = record.get('Id')
-        return sf_contact_id
+            return sf_contact_id
 
     def get_contact_id_by_stripe_customer_id(self, stripe_customer_id: str) -> str:
         search_query = f'SELECT Id FROM Contact Where {stripe_customer_id} IN EMAIL FIELDS RETURNING Contact(Id)'
         print(search_query)
         response = sf.search(search_query)
         records = response.get('searchRecords')
-        sf_contact_id = None
         if len(records) > 0:
             record = records[0]
             sf_contact_id = record.get('Id')
-        return sf_contact_id
+            return sf_contact_id
 
     def create(self, **donor: dict) -> dict:
         print(f'Creating Stripe donor in Salesforce with data:\n{donor}')

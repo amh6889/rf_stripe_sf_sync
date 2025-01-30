@@ -31,31 +31,29 @@ class DonorEventProcessor:
             raise Exception('Donor email is null.  Cannot process donor create event further.')
 
 
-    def process_update_event(self, event_data):
+    def process_update_event(self, event_data: dict) -> bool:
+        success = False
         donor = self.donor_mapper.map_update_event(**event_data)
-        stripe_customer_id = donor.get('External_Contact_ID__c')
-        stripe_updates = donor.pop('stripe_updates', None)
-        email = donor.get('Email')
-        if email is None:
-            raise Exception('Donor email is null.  Cannot process donor update event further.')
-        sf_contact_id = self.salesforce_donor_service.get_contact_id(email)
-        if not sf_contact_id:
-            error_message = f'Stripe customer with email {email} does not exist in Salesforce. Cannot process donor update event further.'
-            print(error_message)
-            time.sleep(30)
-            raise Exception(error_message)
-        else:
-            response = self._update_donor_in_salesforce(sf_contact_id, donor)
-            if response != 204:
-                error_message = f'Did not update Salesforce Contact {sf_contact_id} successfully in Salesforce due to {response}'
-                print(error_message)
-                raise Exception(error_message)
-            print(
-                f'Updated Salesforce Contact {sf_contact_id} successfully in Salesforce.')
-            if stripe_updates:
-                updated_donor = self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
+        if email := donor.get('Email'):
+            stripe_updates = donor.pop('stripe_updates', None)
+            if sf_contact_id := self.salesforce_donor_service.get_contact_id(email):
+                self._update_donor_in_salesforce(sf_contact_id, donor)
                 print(
-                    f'Successfully updated stripe donor {updated_donor.get('id')} in Stripe with the following updates: {stripe_updates}')
+                    f'Updated Salesforce Contact {sf_contact_id} successfully in Salesforce.')
+                if stripe_updates:
+                    stripe_customer_id = donor.get('External_Contact_ID__c')
+                    updated_donor = self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
+                    print(
+                        f'Successfully updated stripe donor {updated_donor.get('id')} in Stripe with the following updates: {stripe_updates}')
+            else:
+                error_message = f'Stripe customer with email {email} does not exist in Salesforce. Cannot process donor update event further.'
+                print(error_message)
+                time.sleep(30)
+                raise Exception(error_message)
+        else:
+            raise Exception('Donor email is null.  Cannot process donor update event further.')
+        success = True
+        return success
 
     def _create_donor_in_salesforce(self, donor: dict) -> str:
         email = donor.get('Email')
@@ -67,7 +65,7 @@ class DonorEventProcessor:
             if success:
                 salesforce_created_id = response.get('id')
                 print(
-                    f'Created Stripe customer with email {email} successfully in Salesforce with ID {salesforce_created_id}')
+                    f'Created Stripe customer {donor.get('FirstName')} {donor.get('LastName')} with email {email} successfully in Salesforce with ID {salesforce_created_id}')
                 return salesforce_created_id
             else:
                 errors = response.get('errors')
@@ -81,6 +79,9 @@ class DonorEventProcessor:
         response = self.stripe_donor_service.update(stripe_customer_id, stripe_updates)
         return response
 
-    def _update_donor_in_salesforce(self, sf_contact_id: str, donor: dict) -> int:
+    def _update_donor_in_salesforce(self, sf_contact_id: str, donor: dict) -> None:
         response = self.salesforce_donor_service.update(sf_contact_id=sf_contact_id, **donor)
-        return response
+        if response != 204:
+            error_message = f'Did not update Salesforce Contact {sf_contact_id} successfully in Salesforce due to {response}'
+            print(error_message)
+            raise Exception(error_message)

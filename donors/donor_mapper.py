@@ -118,19 +118,19 @@ class DonorMapper:
         data = event_data['data']['object']
         customer_id = data.get('id')
         full_name = data.get('name')
-        updates = {}
+        stripe_updates = {}
         if not full_name:
             donor_names = get_donor_name(data)
             first_name = donor_names.get('first_name')
             last_name = donor_names.get('last_name')
-            updates['name'] = first_name + ' ' + last_name
+            stripe_updates['name'] = first_name + ' ' + last_name
         else:
             first_name, last_name = get_first_and_last_name(full_name)
 
         donor_address = get_donor_address(data)
         address = data.get('address')
         if not address:
-            updates['address'] = donor_address
+            stripe_updates['address'] = donor_address
 
         donor = {'FirstName': first_name,
                  'LastName': last_name,
@@ -144,7 +144,7 @@ class DonorMapper:
                  'MailingCountry': donor_address.get('country'),
                  'MailingPostalCode': donor_address.get('postal_code'),
                  'External_Contact_ID__c': customer_id,
-                 'stripe_updates': updates
+                 'stripe_updates': stripe_updates
                  }
         filtered_donor = filter_donor(donor)
         return filtered_donor
