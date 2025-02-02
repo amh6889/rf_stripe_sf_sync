@@ -1,6 +1,6 @@
 import pytest
 
-from donations.salesforce_donation_service import SalesforceDonationService
+from donations.donation_salesforce_service import SalesforceDonationService
 
 
 @pytest.mark.integration

@@ -1,6 +1,6 @@
 import pytest
 
-from donors.salesforce_donor_service import SalesforceDonorService
+from donors.donor_salesforce_service import SalesforceDonorService
 
 @pytest.mark.integration
 def test_exist_by_email_works_when_email_does_not_exist():

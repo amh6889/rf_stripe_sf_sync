@@ -1,6 +1,6 @@
 import pytest
 
-from subscriptions.stripe_subscription_service import StripeSubscriptionService
+from subscriptions.subscription_stripe_service import StripeSubscriptionService
 from utils.stripe_connection import StripeConnection
 
 @pytest.mark.integration

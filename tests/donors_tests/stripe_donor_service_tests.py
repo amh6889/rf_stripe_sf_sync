@@ -1,6 +1,6 @@
 import pytest
 
-from donors.stripe_donor_service import StripeDonorService
+from donors.donor_stripe_service import StripeDonorService
 
 @pytest.mark.integration
 def test_get_email_works_when_donor_does_not_exist():

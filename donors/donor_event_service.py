@@ -1,11 +1,11 @@
 import time
 
 from donors.donor_mapper import DonorMapper
-from donors.salesforce_donor_service import SalesforceDonorService
-from donors.stripe_donor_service import StripeDonorService
+from donors.donor_salesforce_service import SalesforceDonorService
+from donors.donor_stripe_service import StripeDonorService
 
 
-class DonorEventProcessor:
+class DonorEventService:
     def __init__(self, donor_mapper: DonorMapper, stripe_donor: StripeDonorService,
                  salesforce_donor: SalesforceDonorService) -> None:
         self.donor_mapper = donor_mapper

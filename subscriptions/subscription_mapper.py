@@ -2,10 +2,10 @@ import locale
 import time
 from datetime import datetime, UTC
 
-from donors.salesforce_donor_service import SalesforceDonorService
-from donors.stripe_donor_service import StripeDonorService
-from subscriptions.salesforce_subscription_service import SalesforceSubscriptionService
-from subscriptions.stripe_subscription_service import StripeSubscriptionService
+from donors.donor_salesforce_service import SalesforceDonorService
+from donors.donor_stripe_service import StripeDonorService
+from subscriptions.subscription_salesforce_service import SalesforceSubscriptionService
+from subscriptions.subscription_stripe_service import StripeSubscriptionService
 
 
 def get_amount(data: dict) -> str:

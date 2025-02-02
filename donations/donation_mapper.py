@@ -3,10 +3,10 @@ import time
 from builtins import str
 from datetime import datetime, UTC
 
-from donations.stripe_donation_service import StripeDonationService
-from donors.salesforce_donor_service import SalesforceDonorService
-from donors.stripe_donor_service import StripeDonorService
-from subscriptions.salesforce_subscription_service import SalesforceSubscriptionService
+from donations.donation_stripe_service import StripeDonationService
+from donors.donor_salesforce_service import SalesforceDonorService
+from donors.donor_stripe_service import StripeDonorService
+from subscriptions.subscription_salesforce_service import SalesforceSubscriptionService
 
 
 def get_closed_date(data: dict) -> str:

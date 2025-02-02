@@ -1,6 +1,6 @@
 import pytest
 
-from donations.stripe_donation_service import StripeDonationService
+from donations.donation_stripe_service import StripeDonationService
 from utils.stripe_connection import StripeConnection
 
 @pytest.mark.integration

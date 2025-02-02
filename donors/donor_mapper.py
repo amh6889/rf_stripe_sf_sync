@@ -1,4 +1,4 @@
-from donors.donor import Donor
+
 
 
 def get_donor_opt_out(data):

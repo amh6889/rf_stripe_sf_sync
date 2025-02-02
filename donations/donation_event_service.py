@@ -1,11 +1,10 @@
 import time
 
-from donations.donation import Donation
 from donations.donation_mapper import DonationMapper
-from donations.salesforce_donation_service import SalesforceDonationService
+from donations.donation_salesforce_service import SalesforceDonationService
 
 
-class DonationEventProcessor:
+class DonationEventService:
     def __init__(self, donation_mapper: DonationMapper, salesforce_donation: SalesforceDonationService):
         self.donation_mapper = donation_mapper
         self.salesforce_donation = salesforce_donation

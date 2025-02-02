@@ -4,10 +4,10 @@ from datetime import datetime, UTC
 import pytest
 from mock.mock import MagicMock
 
-from donors.salesforce_donor_service import SalesforceDonorService
-from donors.stripe_donor_service import StripeDonorService
-from subscriptions.salesforce_subscription_service import SalesforceSubscriptionService
-from subscriptions.stripe_subscription_service import StripeSubscriptionService
+from donors.donor_salesforce_service import SalesforceDonorService
+from donors.donor_stripe_service import StripeDonorService
+from subscriptions.subscription_salesforce_service import SalesforceSubscriptionService
+from subscriptions.subscription_stripe_service import StripeSubscriptionService
 from subscriptions.subscription_mapper import SubscriptionMapper, get_start_date
 from utils.stripe_connection import StripeConnection
 
@@ -16,7 +16,6 @@ def test_map_subscription_with_subscription_schedule_is_correct():
     pass
 
 
-# TODO: mock getting payment method data from Stripe for test
 @pytest.mark.unit
 def test_map_open_active_subscription_works_with_create_event(open_active_subscription_dict):
     # arrange

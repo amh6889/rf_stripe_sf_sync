@@ -2,9 +2,7 @@ import json
 
 import pytest
 
-from donors.donor import Donor
-from donors.salesforce_donor_service import SalesforceDonorService
-from subscriptions.salesforce_subscription_service import SalesforceSubscriptionService
+from subscriptions.subscription_salesforce_service import SalesforceSubscriptionService
 
 
 # @pytest.fixture(autouse=True)
