@@ -66,7 +66,7 @@ def map_installment_period(data: dict) -> str:
 
 def map_status(data: dict) -> tuple[str, str]:
     status = data.get('status')
-    subscription_status = ''
+    subscription_status = None
     closed_reason = None
     match status:
         case "active":
@@ -177,7 +177,7 @@ class SubscriptionMapper:
         if subscription_schedule := self.get_subscription_schedule(data):
             recurring_type = map_recurring_type(subscription_schedule)
 
-        #sf_campaign_id = self.map_campaign_code(data)
+        # sf_campaign_id = self.map_campaign_code(data)
         mapped_status, closed_reason = map_status(data)
         amount = get_amount(data)
         start_date = get_start_date(data)
@@ -185,7 +185,6 @@ class SubscriptionMapper:
         installment_period = map_installment_period(data)
         payment_method_type = self._get_payment_method_type(subscription_id)
         installment_frequency = data['plan']['interval_count']
-
 
         subscription = {'Stripe_Subscription_ID__c': subscription_id,
                         'npe03__Amount__c': amount,
@@ -220,13 +219,10 @@ class SubscriptionMapper:
                 return mapped_payment_method_type
 
     def map_delete_event(self, **event_data):
-        try:
-            data = event_data['data']['object']
-            mapped_status, closed_reason = map_status(data)
-            subscription_id = data.get('id')
-            subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npsp__Status__c': mapped_status,
-                            'npsp__ClosedReason__c': closed_reason}
+        data = event_data['data']['object']
+        mapped_status, closed_reason = map_status(data)
+        subscription_id = data.get('id')
+        subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npsp__Status__c': mapped_status,
+                        'npsp__ClosedReason__c': closed_reason}
 
-            return subscription
-        except Exception as error:
-            print(f'Error mapping canceled subscription due to {error}')
+        return subscription

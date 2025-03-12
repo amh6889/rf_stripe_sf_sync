@@ -49,7 +49,7 @@ def test_map_open_active_subscription_works_with_create_event(open_active_subscr
     assert mapped_subscription['npe03__Date_Established__c'] == '2024-05-12T05:00:20+00:00'
     assert mapped_subscription['npsp__StartDate__c'] == '2024-05-12T05:00:20+00:00'
     assert mapped_subscription['Donation_Source__c'] == 'RF Web-form'
-    assert mapped_subscription['npsp__Status__c'] == 'Paused'
+    assert mapped_subscription['npsp__Status__c'] == 'Active'
     assert mapped_subscription['npsp__ClosedReason__c'] is None
     assert mapped_subscription['npe03__Recurring_Donation_Campaign__c'] == '12345'
     assert mapped_subscription['npsp__RecurringType__c'] == 'Open'
@@ -58,6 +58,39 @@ def test_map_open_active_subscription_works_with_create_event(open_active_subscr
     assert mapped_subscription['npsp__InstallmentFrequency__c'] == 1
     assert mapped_subscription['npsp__PaymentMethod__c'] == 'Credit Card'
     assert mapped_subscription['npe03__Contact__c'] == '123456'
+
+# it looks like when a subscription is created in Stripe it's status is first incomplete, but once payment goes through it changes to active
+@pytest.mark.integration
+def test_integration_map_open_active_subscription_works_with_create_event_no_anet_import(active_subscription_create_event_no_anet_import):
+    # arrange
+    stripe_connection = StripeConnection()
+    stripe_subscription_service = StripeSubscriptionService(stripe_connection)
+    salesforce_subscription_service = SalesforceSubscriptionService()
+    stripe_donor_service = StripeDonorService(stripe_connection)
+    salesforce_donor_service = SalesforceDonorService()
+
+    subscription_mapper = SubscriptionMapper(stripe_subscription=stripe_subscription_service,
+                                             salesforce_subscription=salesforce_subscription_service,
+                                             stripe_donor=stripe_donor_service,
+                                             salesforce_donor=salesforce_donor_service)
+
+    # act
+    mapped_subscription = subscription_mapper.map_create_event(**active_subscription_create_event_no_anet_import)
+    # assert
+    assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1Qobo8L1MLd6bigCdCPbW1yJ'
+    assert mapped_subscription['npe03__Amount__c'] == '51.00'
+    assert mapped_subscription['npe03__Date_Established__c'] == '2025-02-04T02:24:12+00:00'
+    assert mapped_subscription['npsp__StartDate__c'] == '2025-02-04T02:24:12+00:00'
+    assert mapped_subscription['Donation_Source__c'] == 'RF Web-form'
+    assert mapped_subscription['npsp__Status__c'] == 'Paused'
+    assert mapped_subscription['npsp__ClosedReason__c'] is None
+    assert mapped_subscription['npe03__Recurring_Donation_Campaign__c'] == '7015a000001SjmyAAC'
+    assert mapped_subscription['npsp__RecurringType__c'] == 'Open'
+    assert mapped_subscription['npe03__Installment_Period__c'] == 'Monthly'
+    assert mapped_subscription['npsp__Day_of_Month__c'] == 4
+    assert mapped_subscription['npsp__InstallmentFrequency__c'] == 1
+    assert mapped_subscription['npsp__PaymentMethod__c'] == 'Credit Card'
+    assert mapped_subscription['npe03__Contact__c'] == '003Ox00000dNhIjIAK'
 
 @pytest.mark.unit
 def test_map_open_canceled_subscription_works_with_delete_event(canceled_subscription_dict):
