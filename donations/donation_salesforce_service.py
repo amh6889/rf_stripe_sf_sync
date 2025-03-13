@@ -17,12 +17,12 @@ class SalesforceDonationService:
 
 
     def create(self, **donation):
-        print(f'Creating donation in Salesforce with data:\n{donation}')
+        print(f'Creating Stripe donation in Salesforce with data:\n{donation}')
         response = sf.Opportunity.create(donation)
         return response
 
 
     def update(self, donation_id, **donation):
-        print(f'Updating Donation {donation_id} in Salesforce with data:\n{donation}')
+        print(f'Updating Stripe donation {donation_id} in Salesforce with data:\n{donation}')
         response = sf.Opportunity.update(donation_id, donation)
         return response

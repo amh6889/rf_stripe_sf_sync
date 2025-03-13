@@ -32,7 +32,6 @@ class DonorEventService:
 
 
     def process_update_event(self, event_data: dict) -> bool:
-        success = False
         donor = self.donor_mapper.map_update_event(**event_data)
         if email := donor.get('Email'):
             stripe_updates = donor.pop('stripe_updates', None)
@@ -76,8 +75,7 @@ class DonorEventService:
                 raise Exception(error_message)
 
     def _update_donor_in_stripe(self, stripe_customer_id: str, stripe_updates: dict) -> dict:
-        response = self.stripe_donor_service.update(stripe_customer_id, stripe_updates)
-        return response
+        return self.stripe_donor_service.update(stripe_customer_id, stripe_updates)
 
     def _update_donor_in_salesforce(self, sf_contact_id: str, donor: dict) -> None:
         response = self.salesforce_donor_service.update(sf_contact_id=sf_contact_id, **donor)

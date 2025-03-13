@@ -160,7 +160,7 @@ def test_stripe_update_event(donor_with_address_line2_missing):
     assert success is True
 
 @pytest.mark.integration
-def test_update_event_works(donor_with_address_line2_missing):
+def test_update_event_works(donor_update_error_3_12_25):
     # arrange
     stripe_connection = StripeConnection()
     donor_mapper = DonorMapper()
@@ -169,6 +169,6 @@ def test_update_event_works(donor_with_address_line2_missing):
     donor_event_processor = DonorEventService(donor_mapper, stripe_donor_service,
                                               salesforce_donor_service)
     # act
-    success = donor_event_processor.process_update_event(donor_with_address_line2_missing)
+    success = donor_event_processor.process_update_event(donor_update_error_3_12_25)
     # assert
     assert success is True
