@@ -96,11 +96,10 @@ def get_anet_subscription_id(subscription_schedule: dict) -> str:
         return anet_subscription_id
 
 
-def map_recurring_type(subscription_schedule: dict) -> str:
+def map_recurring_type(subscription: dict) -> str:
     recurring_type = 'Open'
-    if current_phase := subscription_schedule.get('current_phase'):
-        if current_phase.get('end_date'):
-            recurring_type = 'Fixed'
+    if subscription.get('cancel_at'):
+        recurring_type = 'Fixed'
     return recurring_type
 
 
@@ -123,14 +122,13 @@ class SubscriptionMapper:
     def map_create_event(self, **event_data):
         data = event_data['data']['object']
         subscription_id = data.get('id')
-        recurring_type = 'Open'
         donation_source = 'RF Web-form'
 
         if subscription_schedule := self.get_subscription_schedule(data):
             if anet_subscription_id := get_anet_subscription_id(subscription_schedule):
                 return map_anet_subscription(subscription_id, anet_subscription_id)
-            recurring_type = map_recurring_type(subscription_schedule)
 
+        recurring_type = map_recurring_type(data)
         mapped_status, closed_reason = map_status(data)
         sf_campaign_id = self.map_campaign_code(data)
         amount = get_amount(data)
@@ -171,11 +169,9 @@ class SubscriptionMapper:
     def map_update_event(self, **event_data):
         data = event_data['data']['object']
         subscription_id = data.get('id')
-        recurring_type = 'Open'
         donation_source = 'RF Web-form'
 
-        if subscription_schedule := self.get_subscription_schedule(data):
-            recurring_type = map_recurring_type(subscription_schedule)
+        recurring_type = map_recurring_type(data)
 
         # sf_campaign_id = self.map_campaign_code(data)
         mapped_status, closed_reason = map_status(data)

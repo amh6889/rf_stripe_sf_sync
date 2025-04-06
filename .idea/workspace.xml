@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e242112d-11d0-49a5-a8b9-e5317a5594e1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donations/donation_salesforce_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_salesforce_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donors/donor_event_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_event_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donors/donor_salesforce_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_salesforce_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donors/donor_stripe_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_stripe_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/donor_event_processor_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/donor_event_processor_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_mapper.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,6 +114,7 @@
     "Python tests.Python tests for salesforce_donor_tests.test_exist_by_email_works.executor": "Run",
     "Python tests.Python tests for salesforce_donor_tests.test_reserved_characters_email_does_not_exist.executor": "Run",
     "Python tests.Python tests for salesforce_donor_tests.test_update_donor_handles_error_gracefully.executor": "Debug",
+    "Python tests.Python tests for salesforce_subscription_service_tests.test_get_campaign_id.executor": "Run",
     "Python tests.Python tests for slack_message_test.test_send_message.executor": "Run",
     "Python tests.Python tests for slack_message_test.test_slack_message.executor": "Run",
     "Python tests.Python tests for stripe_donor_tests.test_get_email_works.executor": "Run",
@@ -176,7 +172,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/amh68/Documents/Source Code/ANET_Stripe_Importer",
+    "last_opened_file_path": "C:/Users/amh68/Documents/Source Code/RF_Stripe_SF_Sync",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -202,7 +198,7 @@
       <recent name="C:\Users\amh68\Documents\Source Code\RF_Stripe_SF_Sync\donors" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for donor_event_processor_tests.test_update_event_works">
+  <component name="RunManager" selected="Python tests.Python tests for salesforce_subscription_service_tests.test_get_campaign_id">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
@@ -242,6 +238,22 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests for salesforce_subscription_service_tests.test_get_campaign_id" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="RF_Stripe_SF_Sync" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/subscription_tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;salesforce_subscription_service_tests.test_get_campaign_id&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="Python tests for subscription_mapper_tests.test_integration_map_open_active_subscription_works_with_create_event_no_anet_import" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="" />
@@ -255,22 +267,6 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;subscription_mapper_tests.test_integration_map_open_active_subscription_works_with_create_event_no_anet_import&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for subscription_mapper_tests.test_map_open_active_subscription_works" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="RF_Stripe_SF_Sync" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/subscription_tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;subscription_mapper_tests.test_map_open_active_subscription_works&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -328,18 +324,18 @@
     <list>
       <item itemvalue="Python.main" />
       <item itemvalue="Python tests.Python tests for donor_event_processor_tests.test_update_event_works" />
+      <item itemvalue="Python tests.Python tests for salesforce_subscription_service_tests.test_get_campaign_id" />
       <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_integration_map_open_active_subscription_works_with_create_event_no_anet_import" />
-      <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_open_active_subscription_works" />
       <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_open_active_subscription_works_with_create_event" />
       <item itemvalue="Python tests.Python tests for subscription_processor_tests.test_process_delete_event" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for salesforce_subscription_service_tests.test_get_campaign_id" />
         <item itemvalue="Python tests.Python tests for donor_event_processor_tests.test_update_event_works" />
         <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_integration_map_open_active_subscription_works_with_create_event_no_anet_import" />
         <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_open_active_subscription_works_with_create_event" />
         <item itemvalue="Python tests.Python tests for subscription_processor_tests.test_process_delete_event" />
-        <item itemvalue="Python tests.Python tests for subscription_mapper_tests.test_map_open_active_subscription_works" />
       </list>
     </recent_temporary>
   </component>
@@ -384,7 +380,9 @@
       <workItem from="1739046583310" duration="1610000" />
       <workItem from="1739643801107" duration="2146000" />
       <workItem from="1740877839922" duration="1154000" />
-      <workItem from="1741552252706" duration="6058000" />
+      <workItem from="1741552252706" duration="9085000" />
+      <workItem from="1743039620690" duration="900000" />
+      <workItem from="1743868260760" duration="3376000" />
     </task>
     <servers />
   </component>
@@ -497,7 +495,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_mapper.py</url>
-          <line>168</line>
+          <line>166</line>
           <option name="timeStamp" value="207" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -515,7 +513,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$main.coverage" NAME="main Coverage Results" MODIFIED="1741744247721" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1741838450256" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/donors_tests" />
+    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1742062499808" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/subscription_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$event_processor_tests.coverage" NAME="event_processor_tests Coverage Results" MODIFIED="1710209137532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/event_processor_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$database_connection.coverage" NAME="database_connection Coverage Results" MODIFIED="1710208968263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$scratch_1.coverage" NAME="scratch_1 Coverage Results" MODIFIED="1737696774152" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
