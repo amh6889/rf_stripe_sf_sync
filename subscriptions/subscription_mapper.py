@@ -103,9 +103,12 @@ def map_recurring_type(subscription: dict) -> str:
     return recurring_type
 
 
-def map_anet_subscription(subscription_id: str, anet_subscription_id: str) -> dict:
+def map_anet_subscription(subscription_id: str, anet_subscription_id: str, mapped_status: str, closed_reason: str) -> dict:
     mapped_subscription = {'Stripe_Subscription_ID__c': subscription_id,
-                           'ANET_ARB_ID__c': anet_subscription_id}
+                           'ANET_ARB_ID__c': anet_subscription_id,
+                           'npsp__Status__c': mapped_status,
+                           'npsp__ClosedReason__c': closed_reason
+                           }
     return mapped_subscription
 
 
@@ -123,10 +126,11 @@ class SubscriptionMapper:
         data = event_data['data']['object']
         subscription_id = data.get('id')
         donation_source = 'RF Web-form'
+        mapped_status, closed_reason = map_status(data)
 
         if subscription_schedule := self.get_subscription_schedule(data):
             if anet_subscription_id := get_anet_subscription_id(subscription_schedule):
-                return map_anet_subscription(subscription_id, anet_subscription_id)
+                return map_anet_subscription(subscription_id, anet_subscription_id, mapped_status, closed_reason)
 
         recurring_type = map_recurring_type(data)
         mapped_status, closed_reason = map_status(data)

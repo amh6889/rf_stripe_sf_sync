@@ -382,7 +382,7 @@
       <workItem from="1740877839922" duration="1154000" />
       <workItem from="1741552252706" duration="9085000" />
       <workItem from="1743039620690" duration="900000" />
-      <workItem from="1743868260760" duration="3376000" />
+      <workItem from="1743868260760" duration="3792000" />
     </task>
     <servers />
   </component>
@@ -495,7 +495,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_mapper.py</url>
-          <line>166</line>
+          <line>170</line>
           <option name="timeStamp" value="207" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
