@@ -176,12 +176,9 @@ class SubscriptionMapper:
         donation_source = 'RF Web-form'
 
         recurring_type = map_recurring_type(data)
-
-        # sf_campaign_id = self.map_campaign_code(data)
         mapped_status, closed_reason = map_status(data)
         amount = get_amount(data)
         start_date = get_start_date(data)
-        salesforce_id = self._get_salesforce_contact_id(data)
         installment_period = map_installment_period(data)
         payment_method_type = self._get_payment_method_type(subscription_id)
         installment_frequency = data['plan']['interval_count']
@@ -197,8 +194,7 @@ class SubscriptionMapper:
                         'npe03__Installment_Period__c': installment_period,
                         'npsp__Day_of_Month__c': start_date.day,
                         'npsp__InstallmentFrequency__c': installment_frequency,
-                        'npsp__PaymentMethod__c': payment_method_type,
-                        'npe03__Contact__c': salesforce_id}
+                        'npsp__PaymentMethod__c': payment_method_type}
 
         return subscription
 
