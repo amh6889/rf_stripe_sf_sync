@@ -1,6 +1,6 @@
 import locale
 import time
-from datetime import datetime, UTC
+from datetime import datetime, UTC, date, timedelta
 
 from donors.donor_salesforce_service import SalesforceDonorService
 from donors.donor_stripe_service import StripeDonorService
@@ -218,7 +218,11 @@ class SubscriptionMapper:
         data = event_data['data']['object']
         mapped_status, closed_reason = map_status(data)
         subscription_id = data.get('id')
+        # the below is to handle the subscription errors that occured whenever a user cancels his subscription on the same day as a donation goes through
+        today = date.today()
+        # Add one day to the current date
+        tomorrow = today + timedelta(days=1)
         subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npsp__Status__c': mapped_status,
-                        'npsp__ClosedReason__c': closed_reason}
+                        'npsp__ClosedReason__c': closed_reason, 'npsp__EndDate__c': str(tomorrow)}
 
         return subscription
