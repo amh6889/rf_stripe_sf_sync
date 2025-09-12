@@ -4,14 +4,14 @@ from utils.stripe_connection import StripeConnection
 def parse_payment_method(subscription):
     payment_method = None
     payment_methods = []
-    if subscription['default_payment_method']:
+    if subscription.get('default_payment_method'):
         payment_methods.append(subscription['default_payment_method'])
-    if subscription['default_source']:
+    if subscription.get('default_source'):
         payment_methods.append(subscription['default_source'])
-    if subscription['latest_invoice']:
+    if subscription.get('latest_invoice'):
         if subscription['latest_invoice']['payment_intent']:
             temp_payment_intent = subscription['latest_invoice']['payment_intent']
-            if temp_payment_intent['payment_method']:
+            if temp_payment_intent.get('payment_method'):
                 payment_methods.append(temp_payment_intent.get('payment_method'))
     if payment_methods:
         any(payment_method := pm for pm in tuple(payment_methods))

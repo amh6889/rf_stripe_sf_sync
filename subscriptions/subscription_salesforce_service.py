@@ -17,13 +17,13 @@ class SalesforceSubscriptionService:
         return response
 
     def get_by_stripe_id(self, subscription_id: str) -> dict:
-        query = f"SELECT Id,npe03__Contact__c from npe03__Recurring_Donation__c where Stripe_Subscription_ID__c = '{subscription_id}'"
+        query = f"SELECT Id,npe03__Contact__c, npsp__RecurringType__c from npe03__Recurring_Donation__c where Stripe_Subscription_ID__c = '{subscription_id}'"
         print(query)
         response = sf.query(query)
         records = response.get('records')
         if len(records) > 0:
             record = records[0]
-            subscription = {'id': record.get('Id'), 'sf_contact_id': record.get('npe03__Contact__c')}
+            subscription = {'id': record.get('Id'), 'sf_contact_id': record.get('npe03__Contact__c'), 'type': record.get('npsp__RecurringType__c')}
             return subscription
 
     def get_by_anet_id(self, subscription_id: str) -> dict:

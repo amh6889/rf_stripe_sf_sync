@@ -64,13 +64,15 @@ def map_installment_period(data: dict) -> str:
     return installment_period
 
 
-def map_status(data: dict) -> tuple[str, str]:
-    status = data.get('status')
+def map_status(status: str) -> tuple[str, str]:
     subscription_status = None
     closed_reason = None
     match status:
         case "active":
             subscription_status = 'Active'
+        case "completed":
+            subscription_status = 'Expired'
+            closed_reason = 'Commitment Completed'
         case "incomplete":
             subscription_status = 'Paused'
         case "incomplete_expired":
@@ -82,6 +84,9 @@ def map_status(data: dict) -> tuple[str, str]:
         case "canceled":
             subscription_status = 'Canceled'
             closed_reason = 'Webform Canceled'
+        case "released":
+            subscription_status = 'Canceled'
+            closed_reason = 'Unknown'
         case "unpaid":
             subscription_status = 'Suspended'
             closed_reason = 'Unknown'
@@ -126,14 +131,16 @@ class SubscriptionMapper:
         data = event_data['data']['object']
         subscription_id = data.get('id')
         donation_source = 'RF Web-form'
-        mapped_status, closed_reason = map_status(data)
+        status = data.get('status')
+        mapped_status, closed_reason = map_status(status)
 
         if subscription_schedule := self.get_subscription_schedule(data):
             if anet_subscription_id := get_anet_subscription_id(subscription_schedule):
                 return map_anet_subscription(subscription_id, anet_subscription_id, mapped_status, closed_reason)
 
         recurring_type = map_recurring_type(data)
-        mapped_status, closed_reason = map_status(data)
+        status = data.get('status')
+        mapped_status, closed_reason = map_status(status)
         sf_campaign_id = self.map_campaign_code(data)
         amount = get_amount(data)
         start_date = get_start_date(data)
@@ -176,7 +183,8 @@ class SubscriptionMapper:
         donation_source = 'RF Web-form'
 
         recurring_type = map_recurring_type(data)
-        mapped_status, closed_reason = map_status(data)
+        status = data.get('status')
+        mapped_status, closed_reason = map_status(status)
         amount = get_amount(data)
         start_date = get_start_date(data)
         installment_period = map_installment_period(data)
@@ -214,15 +222,35 @@ class SubscriptionMapper:
                 mapped_payment_method_type = map_payment_method(payment_method_type)
                 return mapped_payment_method_type
 
+    def _map_delete_event_end_date(self, stripe_subscription_id: str):
+        if salesforce_recurring_donation := self.salesforce_subscription.get_by_stripe_id(stripe_subscription_id):
+            salesforce_recurring_donation_type = salesforce_recurring_donation.get('type')
+            if 'fixed' in salesforce_recurring_donation_type.lower():
+                today = date.today()
+                end_date = str(today)
+            else:
+                # the below is to handle the subscription errors that occured whenever a user cancels his subscription on the same day as a donation goes through
+                today = date.today()
+                # Add one day to the current date
+                tomorrow = today + timedelta(days=1)
+                end_date = str(tomorrow)
+            return end_date
+
     def map_delete_event(self, **event_data):
         data = event_data['data']['object']
-        mapped_status, closed_reason = map_status(data)
-        subscription_id = data.get('id')
-        # the below is to handle the subscription errors that occured whenever a user cancels his subscription on the same day as a donation goes through
-        today = date.today()
-        # Add one day to the current date
-        tomorrow = today + timedelta(days=1)
-        subscription = {'Stripe_Subscription_ID__c': subscription_id, 'npsp__Status__c': mapped_status,
-                        'npsp__ClosedReason__c': closed_reason, 'npsp__EndDate__c': str(tomorrow)}
+        stripe_subscription_id = data.get('id')
+
+        end_date = self._map_delete_event_end_date(stripe_subscription_id)
+
+        if schedule_id := data.get('schedule'):
+            sub_schedule = self.stripe_subscription.get_subscription_schedule(schedule_id)
+            status = sub_schedule.get('status')
+        else:
+            status = data.get('status')
+
+        mapped_status, closed_reason = map_status(status)
+
+        subscription = {'Stripe_Subscription_ID__c': stripe_subscription_id, 'npsp__Status__c': mapped_status,
+                        'npsp__ClosedReason__c': closed_reason, 'npsp__EndDate__c': end_date}
 
         return subscription
