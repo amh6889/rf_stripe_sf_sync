@@ -73,7 +73,7 @@ def test_process_delete_event(subscription_delete_event_dict):
 
 
 @pytest.mark.integration
-def test_integration_process_delete_event(subscription_delete_event_dict):
+def test_integration_process_delete_event_with_no_subscription_schedule(subscription_delete_event_dict):
     # arrange
     stripe_connection = StripeConnection()
     stripe_subscription_service = StripeSubscriptionService(stripe_connection)
@@ -92,8 +92,28 @@ def test_integration_process_delete_event(subscription_delete_event_dict):
     # assert
     assert response is True
 
+@pytest.mark.integration
+def test_integration_process_delete_event_works_with_subscription_schedule(subscription_delete_event_with_subscription_schedule):
+    # arrange
+    stripe_connection = StripeConnection()
+    stripe_subscription_service = StripeSubscriptionService(stripe_connection)
+    salesforce_subscription_service = SalesforceSubscriptionService()
+    stripe_donor_service = StripeDonorService(stripe_connection)
+    salesforce_donor_service = SalesforceDonorService()
+    subscription_mapper = SubscriptionMapper(stripe_subscription=stripe_subscription_service,
+                                             salesforce_subscription=salesforce_subscription_service,
+                                             stripe_donor=stripe_donor_service,
+                                             salesforce_donor=salesforce_donor_service)
+
+    subscription_event_processor = SubscriptionEventService(mapper=subscription_mapper,
+                                                            salesforce_subscription=salesforce_subscription_service)
+    # act
+    response = subscription_event_processor.process_delete_event(subscription_delete_event_with_subscription_schedule)
+    # assert
+    assert response is True
+
 @pytest.mark.unit
-def test_integration_process_delete_event_works(mocker, subscription_delete_event_dict):
+def test_process_delete_event_works(mocker, subscription_delete_event_dict):
     # arrange
     mock_stripe_connection = mocker.mock(spec=StripeConnection)
     stripe_subscription_service = StripeSubscriptionService(mock_stripe_connection)

@@ -47,8 +47,8 @@ class SubscriptionEventService:
         if sf_subscription := self._salesforce_subscription.get_by_stripe_id(stripe_subscription_id):
             self._update_salesforce_subscription(sf_subscription, stripe_subscription_id, subscription)
             print(
-                f'Canceled Stripe subscription {stripe_subscription_id}/Salesforce Recurring Donation ID '
-                f'{sf_subscription.get('id')} successfully in Salesforce.')
+                f'Processed Stripe subscription {stripe_subscription_id}/Salesforce Recurring Donation ID '
+                f'{sf_subscription.get('id')} as {subscription.get('npsp__Status__c')} successfully in Salesforce.')
         else:
             error_message = f'Stripe subscription {stripe_subscription_id} does not exist in Salesforce. Cannot process subscription delete event further.'
             print(error_message)
