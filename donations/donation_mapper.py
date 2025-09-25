@@ -27,6 +27,14 @@ def map_stage_name(data: dict) -> str:
     return stage_name
 
 
+def map_donation_source(data: dict) -> str:
+    donation_source = 'RF Web-form'
+    if metadata := data.get('metadata'):
+        if source := metadata.get('donation_source'):
+            donation_source = source
+    return donation_source
+
+
 def get_payment_method_last_4(data: dict) -> str:
     stripe_payment_method = data.get('payment_method_details')
     payment_method_type = stripe_payment_method.get('type')
@@ -57,11 +65,11 @@ class DonationMapper:
         self.salesforce_subscription = salesforce_subscription
 
     def map_donation(self, **event_data):
-        donation_source = 'RF Web-form'
         salesforce_id = None
         data = event_data['data']['object']
         charge_id = data.get('id')
         amount = get_amount(data)
+        donation_source = map_donation_source(data)
         stripe_customer_id = data.get('customer')
         donor_email = self.stripe_donor.get_donor_email(stripe_customer_id)
         if donor_email:

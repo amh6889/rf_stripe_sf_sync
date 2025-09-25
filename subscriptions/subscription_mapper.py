@@ -116,6 +116,13 @@ def map_anet_subscription(subscription_id: str, anet_subscription_id: str, mappe
                            }
     return mapped_subscription
 
+def map_donation_source(data: dict) -> str:
+    donation_source = 'RF Web-form'
+    if metadata := data.get('metadata'):
+        if source := metadata.get('donation_source'):
+            donation_source = source
+    return donation_source
+
 
 class SubscriptionMapper:
 
@@ -130,7 +137,7 @@ class SubscriptionMapper:
     def map_create_event(self, **event_data):
         data = event_data['data']['object']
         subscription_id = data.get('id')
-        donation_source = 'RF Web-form'
+        donation_source = map_donation_source(data)
         status = data.get('status')
         mapped_status, closed_reason = map_status(status)
 

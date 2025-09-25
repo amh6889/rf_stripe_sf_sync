@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e242112d-11d0-49a5-a8b9-e5317a5594e1" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_event_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_event_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/subscription_processor_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/subscription_processor_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/donations/donation_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_mapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_mapper.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -402,6 +401,7 @@
       <workItem from="1754159480431" duration="620000" />
       <workItem from="1756571206910" duration="12474000" />
       <workItem from="1757733356435" duration="832000" />
+      <workItem from="1758766556876" duration="1766000" />
     </task>
     <servers />
   </component>
@@ -489,7 +489,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/donations/donation_mapper.py</url>
-          <line>80</line>
+          <line>88</line>
           <option name="timeStamp" value="201" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -514,7 +514,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_mapper.py</url>
-          <line>177</line>
+          <line>184</line>
           <option name="timeStamp" value="207" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -539,12 +539,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_mapper.py</url>
-          <line>251</line>
+          <line>258</line>
           <option name="timeStamp" value="216" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/subscriptions/subscription_mapper.py</url>
-          <line>246</line>
+          <line>253</line>
           <option name="timeStamp" value="220" />
         </line-breakpoint>
       </breakpoints>

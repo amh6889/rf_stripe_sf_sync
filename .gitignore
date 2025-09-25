@@ -8,6 +8,8 @@
 venv/
 ENV/
 workspace.xml
+.idea/workspace.xml
+
 
 # Installer logs
 pip-log.txt
