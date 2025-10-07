@@ -187,8 +187,7 @@ class SubscriptionMapper:
     def map_update_event(self, **event_data):
         data = event_data['data']['object']
         subscription_id = data.get('id')
-        donation_source = 'RF Web-form'
-
+        donation_source = map_donation_source(data)
         recurring_type = map_recurring_type(data)
         status = data.get('status')
         mapped_status, closed_reason = map_status(status)
