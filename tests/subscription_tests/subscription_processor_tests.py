@@ -46,6 +46,25 @@ def test_process_update_event(subscription_update_event_dict):
     response = SubscriptionEventService.process_update_event(event_data)
     assert response is True
 
+def test_process_update_event_error_10_11_2025(subscription_error_10_11_25_mock):
+    # arrange
+    stripe_connection = StripeConnection()
+    stripe_subscription_service = StripeSubscriptionService(stripe_connection)
+    salesforce_subscription_service = SalesforceSubscriptionService()
+    stripe_donor_service = StripeDonorService(stripe_connection)
+    salesforce_donor_service = SalesforceDonorService()
+    subscription_mapper = SubscriptionMapper(stripe_subscription=stripe_subscription_service,
+                                             salesforce_subscription=salesforce_subscription_service,
+                                             stripe_donor=stripe_donor_service,
+                                             salesforce_donor=salesforce_donor_service)
+
+    subscription_event_processor = SubscriptionEventService(mapper=subscription_mapper,
+                                                            salesforce_subscription=salesforce_subscription_service)
+    # act
+    response = subscription_event_processor.process_update_event(subscription_error_10_11_25_mock)
+    # assert
+    assert response is True
+
 
 @pytest.mark.unit
 def test_process_create_event(subscription_create_event_dict):

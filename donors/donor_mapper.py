@@ -74,7 +74,6 @@ class DonorMapper:
 
     def map_create_event(self, **event_data):
         data = event_data['data']['object']
-        customer_id = data.get('id')
         full_name = data.get('name')
         updates = {}
 
@@ -97,7 +96,6 @@ class DonorMapper:
 
         donor = {'FirstName': first_name,
                  'LastName': last_name,
-                 'External_Contact_ID__c': customer_id,
                  'npe01__HomeEmail__c': email,
                  'Email': email,
                  'Phone': phone,
@@ -116,7 +114,6 @@ class DonorMapper:
 
     def map_update_event(self, **event_data):
         data = event_data['data']['object']
-        customer_id = data.get('id')
         full_name = data.get('name')
         stripe_updates = {}
         if not full_name:
@@ -143,7 +140,6 @@ class DonorMapper:
                  'MailingCity': donor_address.get('city'),
                  'MailingCountry': donor_address.get('country'),
                  'MailingPostalCode': donor_address.get('postal_code'),
-                 'External_Contact_ID__c': customer_id,
                  'stripe_updates': stripe_updates
                  }
         filtered_donor = filter_donor(donor)
