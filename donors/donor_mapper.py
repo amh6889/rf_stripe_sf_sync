@@ -94,6 +94,9 @@ class DonorMapper:
         if not address:
             updates['address'] = donor_address
 
+        if updates:
+            updates['id'] = data.get('id')
+
         donor = {'FirstName': first_name,
                  'LastName': last_name,
                  'npe01__HomeEmail__c': email,
@@ -128,6 +131,9 @@ class DonorMapper:
         address = data.get('address')
         if not address:
             stripe_updates['address'] = donor_address
+
+        if stripe_updates:
+            stripe_updates['id'] = data.get('id')
 
         donor = {'FirstName': first_name,
                  'LastName': last_name,

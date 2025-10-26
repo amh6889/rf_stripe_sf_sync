@@ -22,7 +22,7 @@ class DonorEventService:
                 stripe_updates = donor.pop('stripe_updates', None)
                 sf_contact_id = self._create_donor_in_salesforce(donor)
                 if stripe_updates:
-                    stripe_customer_id = donor.get('External_Contact_ID__c')
+                    stripe_customer_id = stripe_updates.get('id')
                     updated_donor = self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
                     print(
                         f'Successfully updated stripe donor {updated_donor.get('id')} in Stripe with the following updates: {stripe_updates}')
@@ -40,7 +40,7 @@ class DonorEventService:
                 print(
                     f'Updated Salesforce Contact {sf_contact_id} successfully in Salesforce.')
                 if stripe_updates:
-                    stripe_customer_id = donor.get('External_Contact_ID__c')
+                    stripe_customer_id = stripe_updates.pop('id')
                     updated_donor = self._update_donor_in_stripe(stripe_customer_id, stripe_updates)
                     print(
                         f'Successfully updated stripe donor {updated_donor.get('id')} in Stripe with the following updates: {stripe_updates}')

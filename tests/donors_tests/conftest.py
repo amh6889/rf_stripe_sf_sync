@@ -425,3 +425,62 @@ def donor_update_error_3_12_25():
         'pending_webhooks': 1,
         'request': {'id': 'req_pD12zy59OhDs4e', 'idempotency_key': '86c41d96-44b4-41e0-9e99-b0c60e47775f'},
         'type': 'customer.updated'}
+
+@pytest.fixture
+def json_10_26_25_error():
+    return {
+    "id": "evt_1SMWFGL1MLd6bigCRjpuN7Gw",
+    "object": "event",
+    "api_version": "2022-11-15",
+    "created": 1761493957,
+    "data": {
+        "object": {
+            "id": "cus_TJ8WFWUi0mIQm4",
+            "object": "customer",
+            "address": None,
+            "balance": 0,
+            "created": 1761493956,
+            "currency": None,
+            "default_source": None,
+            "delinquent": False,
+            "description": "Aaron N Miller",
+            "discount": None,
+            "email": "aaronneilmiller80@gmail.com",
+            "invoice_prefix": "M7DMKGGA",
+            "invoice_settings": {
+                "custom_fields": None,
+                "default_payment_method": "pm_1SMWFDL1MLd6bigC3wnshzPE",
+                "footer": None,
+                "rendering_options": None,
+            },
+            "livemode": True,
+            "metadata": {
+                "address_street": "234 Brookfield Rd",
+                "receipt": "Email",
+                "first_name": "Aaron",
+                "address_state": "OH",
+                "address_country": "United States",
+                "created_by": "FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 389163993",
+                "address_zip": "44012",
+                "address_city": "Avon Lake",
+                "last_name": "Miller",
+            },
+            "name": None,
+            "next_invoice_sequence": 1,
+            "phone": None,
+            "preferred_locales": [],
+            "shipping": None,
+            "tax_exempt": "none",
+            "test_clock": None,
+        },
+        "previous_attributes": {"invoice_settings": {"default_payment_method": None}},
+    },
+    "livemode": True,
+    "pending_webhooks": 1,
+    "request": {
+        "id": "req_iEr35xQKg46WFU",
+        "idempotency_key": "19329c45-2494-4efd-a2d7-6617ab1d6c0b",
+    },
+    "type": "customer.updated",
+}
+
