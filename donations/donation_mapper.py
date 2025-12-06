@@ -35,19 +35,6 @@ def map_donation_source(data: dict) -> str:
     return donation_source
 
 
-def get_payment_method_last_4(data: dict) -> str:
-    stripe_payment_method = data.get('payment_method_details')
-    payment_method_type = stripe_payment_method.get('type')
-    if payment_method_type == 'card':
-        last_4_digits = stripe_payment_method['card']['last4']
-    elif payment_method_type == 'us_bank_account':
-        last_4_digits = stripe_payment_method['us_bank_account']['last4']
-    else:
-        print(f'Payment method type {payment_method_type} is not supported')
-        raise Exception(f'Payment method type {payment_method_type} is not supported')
-    return last_4_digits
-
-
 def get_amount(data: dict):
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     formatted_amount = locale.currency(data.get('amount') / 100, symbol=False)
@@ -81,7 +68,7 @@ class DonationMapper:
 
         closed_date = get_closed_date(data)
         stage_name = map_stage_name(data)
-        last_4_digits = get_payment_method_last_4(data)
+        last_4_digits = self.get_payment_method_last_4(data)
 
         stripe_subscription_id = None
         salesforce_subscription_id = None
@@ -118,3 +105,15 @@ class DonationMapper:
                 raise Exception(
                     f'Donation event error: Stripe subscription {stripe_subscription_id} does not exist in Salesforce')
         return salesforce_recurring_donation_id
+
+    def get_payment_method_last_4(self, data: dict) -> str:
+        stripe_payment_method = data.get('payment_method_details')
+        payment_method_type = stripe_payment_method.get('type')
+        if payment_method_type == 'card':
+            last_4_digits = stripe_payment_method['card']['last4']
+        elif payment_method_type == 'us_bank_account':
+            last_4_digits = stripe_payment_method['us_bank_account']['last4']
+        else:
+            print(f'Payment method type {payment_method_type} is not supported')
+            raise Exception(f'Payment method type {payment_method_type} is not supported')
+        return last_4_digits

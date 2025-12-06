@@ -52,10 +52,10 @@ class EventService:
                 stack_trace = traceback.format_exc()
                 slack_notifier.send_message(f"""
                 ERROR PROCESSING DONATION {event_type.upper()} EVENT AT {error_time} due to: {e}
-                STACK TRACE: 
-                {stack_trace}
-                EVENT CONTENT: 
-                {donor_event}
+            STACK TRACE: 
+            {stack_trace}
+            EVENT CONTENT: 
+            {donor_event}
                 """)
             ch.basic_nack(delivery_tag=method.delivery_tag)
 
@@ -92,10 +92,10 @@ class EventService:
                 stack_trace = traceback.format_exc()
                 slack_notifier.send_message(f"""
                 ERROR PROCESSING SUBSCRIPTION {event_type.upper()} EVENT AT {error_time} due to: {e}
-                STACK TRACE: 
-                {stack_trace}
-                EVENT CONTENT: 
-                {subscription_event}
+            STACK TRACE: 
+            {stack_trace}
+            EVENT CONTENT: 
+            {subscription_event}
                 """)
             ch.basic_nack(delivery_tag=method.delivery_tag)
 
@@ -118,6 +118,11 @@ class EventService:
                     self.donation_event_service.process_refund_event(donation_event)
                     print(f'Successfully processed donation refund event id: {event_id}')
                     ch.basic_ack(delivery_tag=method.delivery_tag)
+                case 'invoice.payment_failed':
+                    print(f'Processing invoice failure event id: {event_id}')
+                    self.donation_event_service.process_failure_event(donation_event)
+                    print(f'Successfully processed invoice failure event id: {event_id}')
+                    ch.basic_ack(delivery_tag=method.delivery_tag)
                 case _:
                     print(f'Unknown donation event: {event_type}')
         except Exception as e:
@@ -127,9 +132,9 @@ class EventService:
                 stack_trace = traceback.format_exc()
                 slack_notifier.send_message(f"""
                 ERROR PROCESSING DONATION {event_type.upper()} EVENT AT {error_time} due to: {e}
-                STACK TRACE: 
-                {stack_trace}
-                EVENT CONTENT: 
-                {donation_event}
+            STACK TRACE: 
+            {stack_trace}
+            EVENT CONTENT: 
+            {donation_event}
                 """)
             ch.basic_nack(delivery_tag=method.delivery_tag)
