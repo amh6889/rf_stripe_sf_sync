@@ -12,6 +12,7 @@ from donors.donor_event_service import DonorEventService
 from donors.donor_mapper import DonorMapper
 from donors.donor_salesforce_service import SalesforceDonorService
 from donors.donor_stripe_service import StripeDonorService
+from salesforce.salesforce_email_service import SalesforceEmailService
 from events.event_service import EventService
 from subscriptions.subscription_salesforce_service import SalesforceSubscriptionService
 from subscriptions.subscription_stripe_service import StripeSubscriptionService
@@ -19,7 +20,6 @@ from subscriptions.subscription_event_service import SubscriptionEventService
 from subscriptions.subscription_mapper import SubscriptionMapper
 from utils.stripe_connection import StripeConnection
 
-# TODO: finish creating all objects for application and injecting them into appropriate classes
 if __name__ == '__main__':
     try:
         stripe_connection = StripeConnection()
@@ -45,12 +45,15 @@ if __name__ == '__main__':
         # instantiate donation services
         salesforce_donation_service = SalesforceDonationService()
         stripe_donation_service = StripeDonationService(stripe_connection)
+        salesforce_email_service = SalesforceEmailService()
         donation_mapper = DonationMapper(salesforce_subscription=salesforce_subscription_service,
                                          salesforce_donor=salesforce_donor_service,
                                          stripe_donor=stripe_donor_service,
                                          stripe_donation=stripe_donation_service)
         donation_event_service = DonationEventService(donation_mapper=donation_mapper,
-                                                      salesforce_donation=salesforce_donation_service)
+                                                      salesforce_donation=salesforce_donation_service,
+                                                      stripe_donation_service=stripe_donation_service,
+                                                      email_donation_service=salesforce_email_service)
 
         event_processor = EventService(donation_event_service=donation_event_service,
                                        subscription_event_service=subscription_event_service,

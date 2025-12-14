@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="stripe@localhost">
-  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.51">
+  <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.54">
     <root id="1">
       <DefaultCasing>lower/lower</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
@@ -936,37 +936,37 @@ stripe_event|||stripe_svc||UPDATE|G</Grants>
     </table>
     <column id="293" parent="292" name="id">
       <AutoIncrement>5</AutoIncrement>
-      <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
+      <StoredType>int|0s</StoredType>
     </column>
     <column id="294" parent="292" name="event_type">
-      <DasType>varchar(100)|0s</DasType>
       <Position>2</Position>
+      <StoredType>varchar(100)|0s</StoredType>
     </column>
     <column id="295" parent="292" name="event_data">
-      <DasType>json|0s</DasType>
       <Position>3</Position>
+      <StoredType>json|0s</StoredType>
     </column>
     <column id="296" parent="292" name="is_synced">
-      <DasType>char(2)|0s</DasType>
       <DefaultExpression>&apos;N&apos;</DefaultExpression>
       <Position>4</Position>
+      <StoredType>char(2)|0s</StoredType>
     </column>
     <column id="297" parent="292" name="created_at">
-      <DasType>int|0s</DasType>
       <Position>5</Position>
+      <StoredType>int|0s</StoredType>
     </column>
     <column id="298" parent="292" name="error_count">
-      <DasType>int|0s</DasType>
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
+      <StoredType>int|0s</StoredType>
     </column>
     <column id="299" parent="292" name="activity_date">
-      <DasType>datetime|0s</DasType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>7</Position>
+      <StoredType>datetime|0s</StoredType>
     </column>
     <index id="300" parent="292" name="PRIMARY">
       <ColNames>id</ColNames>

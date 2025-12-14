@@ -3,15 +3,17 @@ import time
 from donations.donation_mapper import DonationMapper
 from donations.donation_salesforce_service import SalesforceDonationService
 from donations.donation_stripe_service import StripeDonationService
-from email.salesforce_email_service import SalesforceEmailService
+from salesforce.salesforce_email_service import SalesforceEmailService
 
 
 class DonationEventService:
+
     def __init__(self, donation_mapper: DonationMapper, salesforce_donation: SalesforceDonationService,
-                 stripe_donation_service: StripeDonationService):
+                 stripe_donation_service: StripeDonationService, email_donation_service: SalesforceEmailService):
         self.donation_mapper = donation_mapper
         self.salesforce_donation = salesforce_donation
         self.stripe_donation_service = stripe_donation_service
+        self.email_donation_service = email_donation_service
 
     def process_create_event(self, donation_event):
         donation = self.donation_mapper.map_donation(**donation_event)
@@ -25,6 +27,7 @@ class DonationEventService:
             raise Exception(error_message)
 
     def process_failure_event(self, failure_event):
+        success = False
         data = failure_event['data']['object']
         stripe_invoice_id = data.get('id')
         print(f'Processing donation failure event for invoice id {stripe_invoice_id}')
@@ -33,17 +36,19 @@ class DonationEventService:
 
         if billing_reason in accepted_failed_billing_reasons:
             try:
-                salesforce_email_service = SalesforceEmailService()
                 charge_id = data.get('charge')
                 stripe_subscription_id = data.get('subscription')
                 charge = self.stripe_donation_service.get_stripe_charge_by_id(charge_id)
                 last4 = self.donation_mapper.get_payment_method_last_4(charge)
-                salesforce_email_service.send_email(stripe_subscription_id, last4)
+                self.email_donation_service.send_email(stripe_subscription_id, last4)
                 #failure_message = charge.get('failure_message')
                 #failure_code = charge.get('failure_code')
+                success = True
             except Exception as e:
                 print(f'Error processing donation failure due to: {str(e)}')
                 raise Exception(e)
+            finally:
+                return success
 
 
     def process_refund_event(self, refund_event):
