@@ -10,7 +10,7 @@ class SalesforceSubscriptionService:
         response = sf.npe03__Recurring_Donation__c.create(recurring_donation)
         return response
 
-    def update(self, recurring_donation_id: str, **recurring_donation: dict):
+    def update(self, recurring_donation_id: str, recurring_donation: dict):
         print(
             f'Updating Salesforce recurring donation {recurring_donation_id} in Salesforce with data:\n{recurring_donation}\n')
         response = sf.npe03__Recurring_Donation__c.update(recurring_donation_id, recurring_donation)

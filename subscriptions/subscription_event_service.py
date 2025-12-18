@@ -83,7 +83,7 @@ class SubscriptionEventService:
 
     def _update_salesforce_subscription(self, sf_subscription, stripe_subscription_id, subscription):
         sf_subscription_id = sf_subscription.get('id')
-        response = self._salesforce_subscription.update(sf_subscription_id, **subscription)
+        response = self._salesforce_subscription.update(sf_subscription_id, subscription)
         if response != 204:
             errors = response.get('errors')
             error_message = f'Did not update Stripe subscription {stripe_subscription_id} successfully in Salesforce due to {errors}'

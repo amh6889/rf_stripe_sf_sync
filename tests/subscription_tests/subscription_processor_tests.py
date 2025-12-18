@@ -90,6 +90,27 @@ def test_process_delete_event(subscription_delete_event_dict):
     # assert
     assert response is True
 
+@pytest.mark.integration
+def test_cancel_subscription_event(canceled_subscription_dict):
+    # arrange
+    stripe_connection = StripeConnection()
+    stripe_subscription_service = StripeSubscriptionService(stripe_connection)
+    salesforce_subscription_service = SalesforceSubscriptionService()
+    stripe_donor_service = StripeDonorService(stripe_connection)
+    salesforce_donor_service = SalesforceDonorService()
+    subscription_mapper = SubscriptionMapper(stripe_subscription=stripe_subscription_service,
+                                             salesforce_subscription=salesforce_subscription_service,
+                                             stripe_donor=stripe_donor_service,
+                                             salesforce_donor=salesforce_donor_service)
+
+    subscription_event_processor = SubscriptionEventService(mapper=subscription_mapper,
+                                                            salesforce_subscription=salesforce_subscription_service)
+    # act
+    response = subscription_event_processor.process_delete_event(canceled_subscription_dict)
+    # assert
+    assert response is True
+
+
 
 @pytest.mark.integration
 def test_integration_process_delete_event_with_no_subscription_schedule(subscription_delete_event_dict):

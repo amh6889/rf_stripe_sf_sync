@@ -228,25 +228,26 @@ class SubscriptionMapper:
                 mapped_payment_method_type = map_payment_method(payment_method_type)
                 return mapped_payment_method_type
 
-    def _map_delete_event_end_date(self, stripe_subscription_id: str):
+    def _map_delete_event_end_date(self, stripe_subscription_id: str, ended_at_timestamp: int) -> str | None:
         if salesforce_recurring_donation := self.salesforce_subscription.get_by_stripe_id(stripe_subscription_id):
             salesforce_recurring_donation_type = salesforce_recurring_donation.get('type')
             if 'fixed' in salesforce_recurring_donation_type.lower():
-                today = date.today()
-                end_date = str(today)
+                ended_at = datetime.fromtimestamp(ended_at_timestamp)
+                end_date = str(ended_at.date())
             else:
                 # the below is to handle the subscription errors that occured whenever a user cancels his subscription on the same day as a donation goes through
-                today = date.today()
+                ended_at = datetime.fromtimestamp(ended_at_timestamp)
                 # Add one day to the current date
-                tomorrow = today + timedelta(days=1)
-                end_date = str(tomorrow)
+                tomorrow = ended_at + timedelta(days=1)
+                end_date = str(tomorrow.date())
             return end_date
 
     def map_delete_event(self, **event_data):
         data = event_data['data']['object']
         stripe_subscription_id = data.get('id')
+        ended_at = data.get('ended_at')
 
-        end_date = self._map_delete_event_end_date(stripe_subscription_id)
+        end_date = self._map_delete_event_end_date(stripe_subscription_id, ended_at)
 
         if schedule_id := data.get('schedule'):
             sub_schedule = self.stripe_subscription.get_subscription_schedule(schedule_id)
