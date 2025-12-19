@@ -13,7 +13,7 @@ class StripeDonorService:
 
     def update(self, customer_id: str, updates: dict) -> dict:
         print(f'Updating Stripe customer {customer_id} in Stripe with data:\n{updates}\n')
-        response = self.connection.stripe.Customer.modify(customer_id, **updates)
+        response = self.connection.stripe.Customer.modify(customer_id, updates)
         print(f'Stripe response: {response}')
         return response
 

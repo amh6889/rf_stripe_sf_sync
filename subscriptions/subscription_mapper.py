@@ -134,7 +134,7 @@ class SubscriptionMapper:
         self.stripe_donor = stripe_donor
         self.salesforce_donor = salesforce_donor
 
-    def map_create_event(self, **event_data):
+    def map_create_event(self, event_data):
         data = event_data['data']['object']
         subscription_id = data.get('id')
         donation_source = map_donation_source(data)
@@ -184,7 +184,7 @@ class SubscriptionMapper:
             subscription_schedule = self.stripe_subscription.get_subscription_schedule(schedule_id)
             return subscription_schedule
 
-    def map_update_event(self, **event_data):
+    def map_update_event(self, event_data):
         data = event_data['data']['object']
         subscription_id = data.get('id')
         donation_source = map_donation_source(data)
@@ -242,7 +242,7 @@ class SubscriptionMapper:
                 end_date = str(tomorrow.date())
             return end_date
 
-    def map_delete_event(self, **event_data):
+    def map_delete_event(self, event_data):
         data = event_data['data']['object']
         stripe_subscription_id = data.get('id')
         ended_at = data.get('ended_at')

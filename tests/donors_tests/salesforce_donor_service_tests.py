@@ -42,7 +42,7 @@ def test_update_donor_errors():
              'npe01__PreferredPhone__c': 'Home', 'Created_by_Anet_Sync__c': True}
     sf_contact_id = '003Ox00000Acq6HIAX'
     # act
-    response = donor.update(sf_contact_id, **donor_data)
+    response = donor.update(sf_contact_id, donor_data)
     print(response)
     # assert
     assert response is not 204
@@ -55,7 +55,7 @@ def test_update_donor_succeeds():
              'Email': 'testemail99@gmail.com',
              'npe01__PreferredPhone__c': 'Home', 'Created_by_Anet_Sync__c': True}
     sf_contact_id = '003Ox00000Acq6HIAR'
-    response = donor.update(sf_contact_id, **donor_data)
+    response = donor.update(sf_contact_id, donor_data)
     assert response is 204
 @pytest.mark.integration
 def test_update_donor_handles_error_gracefully():
@@ -66,7 +66,7 @@ def test_update_donor_handles_error_gracefully():
              'Email': 'testemail99@gmail.com',
              'npe01__PreferredPhone__c': 'Home', 'Created_by_Anet_Sync__c': True}
     sf_contact_id = '123456789'
-    response = donor.update(sf_contact_id, **donor_data)
+    response = donor.update(sf_contact_id, donor_data)
     print(response)
     assert response.get('errors') is not None
 @pytest.mark.integration
@@ -80,7 +80,7 @@ def test_create_donor_errors():
              "MailingStreet": "5668 Lilac Blossom Lane", "MailingCity": "San Jose", "MailingState": "CA",
              "MailingCountry": "United States",
              "MailingPostalCode": "95124"}
-    response = donor.create(**donor_data)
+    response = donor.create(donor_data)
     assert response.get('success') is False
 @pytest.mark.integration
 def test_create_donor_succeeds():
@@ -93,7 +93,7 @@ def test_create_donor_succeeds():
              "MailingStreet": "5668 Lilac Blossom Lane", "MailingCity": "San Jose", "MailingState": "CA",
              "MailingCountry": "United States",
              "MailingPostalCode": "95124"}
-    response = donor.create(**donor_data)
+    response = donor.create(donor_data)
     assert response.get('success') is True
 @pytest.mark.integration
 def test_donor_does_not_exist():

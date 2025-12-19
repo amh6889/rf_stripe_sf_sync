@@ -72,7 +72,7 @@ def filter_donor(donor):
 
 class DonorMapper:
 
-    def map_create_event(self, **event_data):
+    def map_create_event(self, event_data):
         data = event_data['data']['object']
         full_name = data.get('name')
         updates = {}
@@ -115,7 +115,7 @@ class DonorMapper:
                  'stripe_updates': updates}
         return donor
 
-    def map_update_event(self, **event_data):
+    def map_update_event(self, event_data):
         data = event_data['data']['object']
         full_name = data.get('name')
         stripe_updates = {}

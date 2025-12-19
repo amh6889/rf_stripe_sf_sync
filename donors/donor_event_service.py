@@ -13,7 +13,7 @@ class DonorEventService:
         self.salesforce_donor_service = salesforce_donor
 
     def process_create_event(self, event_data: dict) -> str:
-        donor = self.donor_mapper.map_create_event(**event_data)
+        donor = self.donor_mapper.map_create_event(event_data)
         if email := donor.get('Email'):
             if sf_contact_id := self.salesforce_donor_service.get_contact_id(email=email):
                 error_message = f'Stripe customer with email {email} already exists in Salesforce with ID {sf_contact_id}. Cannot process donor create event further.'
@@ -32,7 +32,7 @@ class DonorEventService:
 
 
     def process_update_event(self, event_data: dict) -> bool:
-        donor = self.donor_mapper.map_update_event(**event_data)
+        donor = self.donor_mapper.map_update_event(event_data)
         if email := donor.get('Email'):
             stripe_updates = donor.pop('stripe_updates', None)
             if sf_contact_id := self.salesforce_donor_service.get_contact_id(email):
@@ -58,7 +58,7 @@ class DonorEventService:
         email = donor.get('Email')
         print(
             f'Creating Stripe customer {donor.get('FirstName')} {donor.get('LastName')} with email {email} in Salesforce')
-        response = self.salesforce_donor_service.create(**donor)
+        response = self.salesforce_donor_service.create(donor)
         if 'success' in response:
             success = response.get('success')
             if success:
@@ -78,7 +78,7 @@ class DonorEventService:
         return self.stripe_donor_service.update(stripe_customer_id, stripe_updates)
 
     def _update_donor_in_salesforce(self, sf_contact_id: str, donor: dict) -> None:
-        response = self.salesforce_donor_service.update(sf_contact_id=sf_contact_id, **donor)
+        response = self.salesforce_donor_service.update(sf_contact_id=sf_contact_id, donor)
         if response != 204:
             error_message = f'Did not update Salesforce Contact {sf_contact_id} successfully in Salesforce due to {response}'
             print(error_message)

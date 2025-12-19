@@ -16,7 +16,7 @@ class DonationEventService:
         self.email_donation_service = email_donation_service
 
     def process_create_event(self, donation_event):
-        donation = self.donation_mapper.map_donation(**donation_event)
+        donation = self.donation_mapper.map_donation(donation_event)
         stripe_invoice_id = donation.get('Stripe_Invoice_ID__c')
         sf_donation_id = self.salesforce_donation.exists(stripe_invoice_id)
         if not sf_donation_id:
@@ -65,7 +65,7 @@ class DonationEventService:
             raise Exception(error_message)
 
     def process_update_event(self, donation_event):
-        donation = self.donation_mapper.map_donation(**donation_event)
+        donation = self.donation_mapper.map_donation(donation_event)
         stripe_invoice_id = donation.get('Stripe_Invoice_ID__c')
         sf_donation_id = self.salesforce_donation.exists(stripe_invoice_id)
         if sf_donation_id:
@@ -77,7 +77,7 @@ class DonationEventService:
             raise Exception(error_message)
 
     def _create_donation_in_salesforce(self, stripe_invoice_id, donation):
-        response = self.salesforce_donation.create(**donation)
+        response = self.salesforce_donation.create(donation)
         if 'success' in response:
             success = response.get('success')
             if success:
@@ -90,7 +90,7 @@ class DonationEventService:
                 raise Exception(error_message)
 
     def _update_donation_in_salesforce(self, stripe_invoice_id, sf_donation_id, donation):
-        response = self.salesforce_donation.update(sf_donation_id, **donation)
+        response = self.salesforce_donation.update(sf_donation_id, donation)
         if response != 204:
             errors = response.get('errors')
             error_message = f'Did not update Stripe charge {stripe_invoice_id} successfully in Salesforce due to {errors}'

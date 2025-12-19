@@ -21,7 +21,7 @@ def test_map_closed_won_one_time_card_donation_succeeds(successful_one_time_dona
     donation_mapper = DonationMapper(mocked_salesforce_subscription_service, mocked_salesforce_donor_service, mocked_stripe_donation_service,
                                      mocked_stripe_donor_service)
 
-    mapped_invoice = donation_mapper.map_donation(**successful_one_time_donation_dict)
+    mapped_invoice = donation_mapper.map_donation(successful_one_time_donation_dict)
     assert mapped_invoice['Stripe_Invoice_ID__c'] == 'ch_3P2n9UL1MLd6bigC19aOqPGG'
     assert mapped_invoice['CloseDate'] == '2024-04-07T04:16:22+00:00'
     assert mapped_invoice['StageName'] == 'Closed Won'
@@ -53,7 +53,7 @@ def test_map_closed_won_subscription_card_donation_succeeds(successful_subscript
     donation_mapper = DonationMapper(mocked_salesforce_subscription_service, mocked_salesforce_donor_service,
                                      mocked_stripe_donor_service, mocked_stripe_donation_service)
     # act
-    mapped_invoice = donation_mapper.map_donation(**successful_subscription_donation_dict)
+    mapped_invoice = donation_mapper.map_donation(successful_subscription_donation_dict)
     # assert
     assert mapped_invoice['Stripe_Invoice_ID__c'] == 'ch_3P2gUyL1MLd6bigC0mZJcaso'
     assert mapped_invoice['CloseDate'] == '2024-04-06T21:10:07+00:00'

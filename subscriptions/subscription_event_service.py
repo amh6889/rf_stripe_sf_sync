@@ -12,7 +12,7 @@ class SubscriptionEventService:
 
     def process_create_event(self, event_data: dict) -> str:
         salesforce_subscription_id = None
-        subscription = self._mapper.map_create_event(**event_data)
+        subscription = self._mapper.map_create_event(event_data)
         stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
         if sf_subscription_id := self._salesforce_subscription.get_by_stripe_id(stripe_subscription_id):
             error_message = f'Stripe subscription {stripe_subscription_id} already exists in Salesforce with Recurring Donation ID {sf_subscription_id}. Cannot process subscription create event further.'
@@ -28,7 +28,7 @@ class SubscriptionEventService:
 
     def process_update_event(self, event_data: dict) -> bool:
         success = False
-        subscription = self._mapper.map_update_event(**event_data)
+        subscription = self._mapper.map_update_event(event_data)
         stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
         if sf_subscription := self._salesforce_subscription.get_by_stripe_id(stripe_subscription_id):
             self._update_salesforce_subscription(sf_subscription, stripe_subscription_id, subscription)
@@ -42,7 +42,7 @@ class SubscriptionEventService:
 
     def process_delete_event(self, subscription_event: dict) -> bool:
         success = False
-        subscription = self._mapper.map_delete_event(**subscription_event)
+        subscription = self._mapper.map_delete_event(subscription_event)
         stripe_subscription_id = subscription.get('Stripe_Subscription_ID__c')
         if sf_subscription := self._salesforce_subscription.get_by_stripe_id(stripe_subscription_id):
             self._update_salesforce_subscription(sf_subscription, stripe_subscription_id, subscription)
@@ -59,7 +59,7 @@ class SubscriptionEventService:
 
     def _create_salesforce_subscription(self, stripe_subscription_id: str, subscription: dict) -> str:
         salesforce_id = None
-        response = self._salesforce_subscription.create(**subscription)
+        response = self._salesforce_subscription.create(subscription)
         if 'success' in response:
             success = response.get('success')
             if success:

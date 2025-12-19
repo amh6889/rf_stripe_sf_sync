@@ -51,7 +51,7 @@ class DonationMapper:
         self.stripe_donation = stripe_donation
         self.salesforce_subscription = salesforce_subscription
 
-    def map_donation(self, **event_data):
+    def map_donation(self, event_data):
         salesforce_id = None
         data = event_data['data']['object']
         charge_id = data.get('id')
@@ -99,7 +99,6 @@ class DonationMapper:
         if stripe_subscription_id:
             if salesforce_recurring_donation := self.salesforce_subscription.get_by_stripe_id(stripe_subscription_id):
                 salesforce_recurring_donation_id = salesforce_recurring_donation.get('id')
-                # salesforce_id = salesforce_recurring_donation['sf_contact_id']
             else:
                 time.sleep(30)
                 raise Exception(

@@ -5,7 +5,7 @@ from salesforce.salesforce_connection import sf
 
 class SalesforceSubscriptionService:
 
-    def create(self, **recurring_donation):
+    def create(self, recurring_donation):
         print(f'Creating recurring donation in Salesforce with data:\n{recurring_donation}\n')
         response = sf.npe03__Recurring_Donation__c.create(recurring_donation)
         return response

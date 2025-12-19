@@ -42,7 +42,7 @@ def test_map_open_active_subscription_works_with_create_event(open_active_subscr
                                              salesforce_donor=mocked_salesforce_donor_service)
 
     # act
-    mapped_subscription = subscription_mapper.map_create_event(**open_active_subscription_dict)
+    mapped_subscription = subscription_mapper.map_create_event(open_active_subscription_dict)
     # assert
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1PFUWGL1MLd6bigCFPlOUlAD'
     assert mapped_subscription['npe03__Amount__c'] == '555.00'
@@ -75,7 +75,7 @@ def test_integration_map_open_active_subscription_works_with_create_event_no_ane
                                              salesforce_donor=salesforce_donor_service)
 
     # act
-    mapped_subscription = subscription_mapper.map_create_event(**active_subscription_create_event_no_anet_import)
+    mapped_subscription = subscription_mapper.map_create_event(active_subscription_create_event_no_anet_import)
     # assert
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1Qobo8L1MLd6bigCdCPbW1yJ'
     assert mapped_subscription['npe03__Amount__c'] == '51.00'
@@ -105,7 +105,7 @@ def test_map_open_canceled_subscription_works_with_delete_event(canceled_subscri
                                              stripe_donor=mocked_stripe_donor_service,
                                              salesforce_donor=mocked_salesforce_donor_service)
     # act
-    mapped_subscription = subscription_mapper.map_delete_event(**canceled_subscription_dict)
+    mapped_subscription = subscription_mapper.map_delete_event(canceled_subscription_dict)
 
     # assert
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1P1hCDL1MLd6bigCTMM9YrD9'
@@ -127,7 +127,7 @@ def test_unit_map_imported_anet_subscription_works_with_create_event(fixed_activ
                                              stripe_donor=mocked_stripe_donor_service,
                                              salesforce_donor=mocked_salesforce_donor_service)
     # act
-    mapped_subscription = subscription_mapper.map_create_event(**fixed_active_subscription_dict)
+    mapped_subscription = subscription_mapper.map_create_event(fixed_active_subscription_dict)
     # assert
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1QjZZiL1MLd6bigC1zMiPpEz'
     assert mapped_subscription['ANET_ARB_ID__c'] == '65804855'
@@ -147,7 +147,7 @@ def test_integration_map_imported_anet_subscription_works(fixed_active_subscript
                                              stripe_donor=stripe_donor_service,
                                              salesforce_donor=salesforce_donor_service)
     # act
-    mapped_subscription = subscription_mapper.map_create_event(**fixed_active_subscription_dict)
+    mapped_subscription = subscription_mapper.map_create_event(fixed_active_subscription_dict)
     # assert
     assert mapped_subscription['Stripe_Subscription_ID__c'] == 'sub_1QjZZiL1MLd6bigC1zMiPpEz'
     assert mapped_subscription['ANET_ARB_ID__c'] == '65804855'

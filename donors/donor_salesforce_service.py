@@ -24,13 +24,13 @@ class SalesforceDonorService:
             sf_contact_id = record.get('Id')
             return sf_contact_id
 
-    def create(self, **donor: dict) -> dict:
+    def create(self, donor: dict) -> dict:
         print(f'Creating Stripe donor in Salesforce with data:\n{donor}')
         response = sf.Contact.create(donor)
         print(f'Successfully created Stripe donor in Salesforce with ID: {response.get("id")}')
         return response
 
-    def update(self, sf_contact_id: str, **donor: dict):
+    def update(self, sf_contact_id: str, donor: dict):
         print(f'Updating Stripe donor {sf_contact_id} in Salesforce with data:\n{donor}')
         response = sf.Contact.update(sf_contact_id, donor)
         print(f'Successfully updated Stripe donor {sf_contact_id} in Salesforce.')

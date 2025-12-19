@@ -15,7 +15,7 @@ def test_create_donation_succeeds():
                'npe03__Recurring_Donation__c': None,
                'Stripe_Subscription_ID__c': None, 'Card_Last_4__c': '5555',
                'npsp__Primary_Contact__c': '0030b00002TWs3eAAD', 'npe01__Contact_Id_for_Role__c': '0030b00002TWs3eAAD'}
-    response = salesforce_donation_service.create(**invoice)
+    response = salesforce_donation_service.create(invoice)
     assert response.get('success') is True
     assert type(response) is dict
 
@@ -34,7 +34,7 @@ def test_create_donation_errors():
                'npsp__Day_of_Month__c': '17',
                'npsp__Primary_Contact__c': '0030b00002TWs3eAAD', 'npe01__Contact_Id_for_Role__c': '0030b00002TWs3eAAD'}
     # act
-    response = salesforce_donation_service.create(**invoice)
+    response = salesforce_donation_service.create(invoice)
     # assert
     assert response.get('success') is False
     assert type(response) is dict
@@ -53,7 +53,7 @@ def test_update_donation_succeeds():
                'Stripe_Subscription_ID__c': '12345', 'Card_Last_4__c': '5555'
                }
     # act
-    response = salesforce_donation_service.update('006Ox000008NqZCIA0', **invoice)
+    response = salesforce_donation_service.update('006Ox000008NqZCIA0', invoice)
     # assert
     assert response is 204
 
