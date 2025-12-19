@@ -78,7 +78,7 @@ class DonorEventService:
         return self.stripe_donor_service.update(stripe_customer_id, stripe_updates)
 
     def _update_donor_in_salesforce(self, sf_contact_id: str, donor: dict) -> None:
-        response = self.salesforce_donor_service.update(sf_contact_id=sf_contact_id, donor)
+        response = self.salesforce_donor_service.update(sf_contact_id=sf_contact_id, donor=donor)
         if response != 204:
             error_message = f'Did not update Salesforce Contact {sf_contact_id} successfully in Salesforce due to {response}'
             print(error_message)

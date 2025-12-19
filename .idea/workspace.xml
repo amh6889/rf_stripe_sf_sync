@@ -5,22 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e242112d-11d0-49a5-a8b9-e5317a5594e1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donations/donation_event_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_event_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donations/donation_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_mapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donations/donation_salesforce_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donations/donation_salesforce_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/donors/donor_event_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_event_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donors/donor_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_mapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donors/donor_salesforce_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_salesforce_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/donors/donor_stripe_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/donors/donor_stripe_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_event_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_event_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_mapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subscriptions/subscription_salesforce_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions/subscription_salesforce_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donation_tests/donation_mapper_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donation_tests/donation_mapper_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donation_tests/salesforce_donation_service_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donation_tests/salesforce_donation_service_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/donor_mapper_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/donor_mapper_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/donors_tests/salesforce_donor_service_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/donors_tests/salesforce_donor_service_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/subscription_tests/subscription_mapper_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/subscription_tests/subscription_mapper_tests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,6 +180,7 @@
     "Python.event_processor_tests.executor": "Debug",
     "Python.get_donor_events.executor": "Debug",
     "Python.main.executor": "Run",
+    "Python.patch_sf_recurring_donations.executor": "Run",
     "Python.scratch.executor": "Run",
     "Python.scratch_1.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -230,6 +218,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\amh68\Documents\Source Code\RF_Stripe_SF_Sync" />
       <recent name="C:\Users\amh68\Documents\Source Code\RF_Stripe_SF_Sync\tests\subscription_tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -238,7 +227,7 @@
       <recent name="C:\Users\amh68\Documents\Source Code\RF_Stripe_SF_Sync\donors" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for tests.donors_tests.donor_mapper_tests.test_filter_donor_works">
+  <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="RF_Stripe_SF_Sync" />
       <option name="ENV_FILES" value="$PROJECT_DIR$/.env" />
@@ -449,7 +438,7 @@
       <workItem from="1765049141172" duration="4964000" />
       <workItem from="1765676272130" duration="827000" />
       <workItem from="1765677286876" duration="2087000" />
-      <workItem from="1765679900876" duration="10708000" />
+      <workItem from="1765679900876" duration="11384000" />
     </task>
     <servers />
   </component>
@@ -622,6 +611,7 @@
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$event_processor_tests.coverage" NAME="event_processor_tests Coverage Results" MODIFIED="1710209137532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/event_processor_tests" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$database_connection.coverage" NAME="database_connection Coverage Results" MODIFIED="1710208968263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$event_processor.coverage" NAME="event_processor Coverage Results" MODIFIED="1710209027955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/event_processor" />
+    <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$patch_sf_recurring_donations.coverage" NAME="patch_sf_recurring_donations Coverage Results" MODIFIED="1766164435618" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1727531056469" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$.coverage" NAME=" Coverage Results" MODIFIED="1766163728010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RF_Stripe_SF_Sync$main.coverage" NAME="main Coverage Results" MODIFIED="1741744247721" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

@@ -9,6 +9,8 @@ venv/
 ENV/
 workspace.xml
 .idea/workspace.xml
+patch_sf_recurring_donations.py
+stripe_canceled_subscriptions.csv
 
 
 # Installer logs
