@@ -50,13 +50,7 @@ class EventService:
             print(f'Error in process_donor_event at {error_time} due to: {e}')
             if properties.headers.get('x-delivery-count') == 30:
                 stack_trace = traceback.format_exc()
-                slack_notifier.send_message(f"""
-                ERROR PROCESSING DONATION {event_type.upper()} EVENT AT {error_time} due to: {e}
-            STACK TRACE: 
-            {stack_trace}
-            EVENT CONTENT: 
-            {donor_event}
-                """)
+                slack_notifier.send_message(f"ERROR PROCESSING DONOR {event_type.upper()} EVENT AT {error_time} due to: {e}\n\nSTACK TRACE:{stack_trace}\n\nEVENT CONTENT: {donor_event}")
             ch.basic_nack(delivery_tag=method.delivery_tag)
 
 
@@ -90,13 +84,7 @@ class EventService:
             print(f'Error in process_subscription_event at {error_time} due to {e}')
             if properties.headers.get('x-delivery-count') == 30:
                 stack_trace = traceback.format_exc()
-                slack_notifier.send_message(f"""
-                ERROR PROCESSING SUBSCRIPTION {event_type.upper()} EVENT AT {error_time} due to: {e}
-            STACK TRACE: 
-            {stack_trace}
-            EVENT CONTENT: 
-            {subscription_event}
-                """)
+                slack_notifier.send_message(f"ERROR PROCESSING SUBSCRIPTION {event_type.upper()} EVENT AT {error_time} due to: {e}\n\nSTACK TRACE:{stack_trace}\n\nEVENT CONTENT: {subscription_event}")
             ch.basic_nack(delivery_tag=method.delivery_tag)
 
 
@@ -127,14 +115,8 @@ class EventService:
                     print(f'Unknown donation event: {event_type}')
         except Exception as e:
             error_time = datetime.now()
-            print(f'Error in process_subscription_event at {error_time} due to {e}')
+            print(f'Error in process_donation_event at {error_time} due to {e}')
             if properties.headers.get('x-delivery-count') == 30:
                 stack_trace = traceback.format_exc()
-                slack_notifier.send_message(f"""
-                ERROR PROCESSING DONATION {event_type.upper()} EVENT AT {error_time} due to: {e}
-            STACK TRACE: 
-            {stack_trace}
-            EVENT CONTENT: 
-            {donation_event}
-                """)
+                slack_notifier.send_message(f"ERROR PROCESSING DONATION {event_type.upper()} EVENT AT {error_time} due to: {e}\n\nSTACK TRACE:{stack_trace}\n\nEVENT CONTENT: {donation_event}")
             ch.basic_nack(delivery_tag=method.delivery_tag)

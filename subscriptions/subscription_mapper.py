@@ -16,7 +16,7 @@ def get_amount(data: dict) -> str:
 
 
 def get_start_date(data: dict) -> datetime:
-    epoch_time = data.get('created')
+    epoch_time = data.get('billing_cycle_anchor')
     start_date = datetime.fromtimestamp(epoch_time, UTC)
     return start_date
 
