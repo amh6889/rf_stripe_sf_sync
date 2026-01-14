@@ -58,6 +58,8 @@ class DonationMapper:
         amount = get_amount(data)
         donation_source = map_donation_source(data)
         stripe_customer_id = data.get('customer')
+        #if honoree_name := data.get('honoree_name'):
+
         donor_email = self.stripe_donor.get_donor_email(stripe_customer_id)
         if donor_email:
             salesforce_id = self.salesforce_donor.get_contact_id(donor_email)

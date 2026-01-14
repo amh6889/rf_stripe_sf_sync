@@ -57,6 +57,11 @@ def get_donor_name(data):
     if metadata := data.get('metadata'):
         donor_name['first_name'] = metadata.get('first_name')
         donor_name['last_name'] = metadata.get('last_name')
+    if donor_name['first_name'] and not donor_name.get('last_name'):
+        full_name = data.get('description')
+        first_name, last_name = get_first_and_last_name(full_name)
+        donor_name['first_name'] = first_name
+        donor_name['last_name'] = last_name
     if not donor_name['first_name'] and not donor_name['last_name']:
         full_name = data.get('description')
         first_name, last_name = get_first_and_last_name(full_name)

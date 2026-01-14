@@ -145,3 +145,18 @@ def test_donor_processor_maps_works_with_donor_address(donor_with_address_dict):
     assert mapped_donor['MailingCountry'] == 'US'
     assert mapped_donor['Phone'] == '+14347280720'
     assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'
+
+@pytest.mark.unit
+def test_donor_map_works_with_no_last_name(donor_no_last_name):
+    donor_mapper = DonorMapper()
+    mapped_donor = donor_mapper.map_create_event(donor_no_last_name)
+    assert mapped_donor['FirstName'] == 'Hayden'
+    assert mapped_donor['LastName'] == 'Frizzell'
+    assert mapped_donor['npe01__HomeEmail__c'] == 'logicalbiblestudy@gmail.com'
+    assert mapped_donor['Email'] == 'logicalbiblestudy@gmail.com'
+    assert mapped_donor['MailingStreet'] == '7 Vickers Street'
+    assert mapped_donor['MailingCity'] == 'Kialla'
+    assert mapped_donor['MailingState'] == 'Victoria'
+    assert mapped_donor['MailingPostalCode'] == '3631'
+    assert mapped_donor['MailingCountry'] == 'Australia'
+    assert mapped_donor['npe01__Preferred_Email__c'] == 'Personal'

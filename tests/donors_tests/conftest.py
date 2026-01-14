@@ -427,6 +427,65 @@ def donor_update_error_3_12_25():
         'type': 'customer.updated'}
 
 @pytest.fixture
+def donor_no_last_name():
+    return {
+    "id": "evt_1SR7BgL1MLd6bigCG5D379o9",
+    "object": "event",
+    "api_version": "2022-11-15",
+    "created": 1762589276,
+    "data": {
+        "object": {
+            "id": "cus_TNsxY7VBzTW7JX",
+            "object": "customer",
+            "address": None,
+            "balance": 0,
+            "created": 1762589276,
+            "currency": None,
+            "default_source": None,
+            "delinquent": False,
+            "description": "Hayden Frizzell",
+            "discount": None,
+            "email": "logicalbiblestudy@gmail.com",
+            "invoice_prefix": "6TBW3XP0",
+            "invoice_settings": {
+                "custom_fields": None,
+                "default_payment_method": None,
+                "footer": None,
+                "rendering_options": None,
+            },
+            "livemode": True,
+            "metadata": {
+                "opt_out": "2",
+                "address_street": "7 Vickers Street",
+                "address_country": "Australia",
+                "first_name": "Logical Bible Study",
+                "address_state": "Victoria",
+                "receipt": "Email",
+                "created_by": "FormAssembly - Stripe - Reference: Form 5120065 / Conn. 762535 / Resp. 390040058",
+                "address_zip": "3631",
+                "address_city": "Kialla",
+            },
+            "name": None,
+            "next_invoice_sequence": 1,
+            "phone": None,
+            "preferred_locales": [],
+            "shipping": None,
+            "tax_exempt": "none",
+            "test_clock": None,
+        }
+    },
+    "livemode": True,
+    "pending_webhooks": 1,
+    "request": {
+        "id": "req_Ntvp8TpBx2skYZ",
+        "idempotency_key": "d176624d-3657-4dad-b474-128802d142d3",
+    },
+    "type": "customer.created",
+}
+
+
+
+@pytest.fixture
 def json_10_26_25_error():
     return {
     "id": "evt_1SMWFGL1MLd6bigCRjpuN7Gw",

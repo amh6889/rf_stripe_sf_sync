@@ -172,3 +172,19 @@ def test_update_event_works(donor_update_error_3_12_25):
     success = donor_event_processor.process_update_event(donor_update_error_3_12_25)
     # assert
     assert success is True
+
+@pytest.mark.integration
+def test_process_create_event_works(donor_no_last_name):
+    # arrange
+    stripe_connection = StripeConnection()
+    donor_mapper = DonorMapper()
+    stripe_donor_service = StripeDonorService(stripe_connection)
+    salesforce_donor_service = SalesforceDonorService()
+    donor_event_processor = DonorEventService(donor_mapper, stripe_donor_service,
+                                              salesforce_donor_service)
+    # act
+    success = donor_event_processor.process_create_event(donor_no_last_name)
+    # assert
+    assert success is True
+
+
