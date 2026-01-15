@@ -14,6 +14,17 @@ class SalesforceDonorService:
             sf_contact_id = record.get('Id')
             return sf_contact_id
 
+    def get_contact_id_by_name(self, first_name: str, last_name: str, middle_name: str) -> str:
+        query = f"SELECT Id from Contact where FirstName = '{first_name}' and LastName = '{last_name}' and MiddleName = '{middle_name}'"
+        print(query)
+        response = sf.query(query)
+        records = response['records']
+        contact_id = None
+        if len(records) > 0:
+            record = records[0]
+            contact_id = record.get('Id')
+        return contact_id
+
     def get_contact_id_by_stripe_customer_id(self, stripe_customer_id: str) -> str:
         search_query = f'SELECT Id FROM Contact Where {stripe_customer_id} IN EMAIL FIELDS RETURNING Contact(Id)'
         print(search_query)

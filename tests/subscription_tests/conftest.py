@@ -1548,6 +1548,195 @@ def subscription_delete_event_dict():
 }
 
 @pytest.fixture
+def subscription_event_with_honoree_name():
+    return {
+    "id": "evt_1Spg7XL1MLd6bigCejqap7wS",
+    "object": "event",
+    "api_version": "2022-11-15",
+    "created": 1768443431,
+    "data": {
+        "object": {
+            "id": "sub_1Spg7VL1MLd6bigCVs56WfSQ",
+            "object": "subscription",
+            "application": "ca_EEtbhRJHFK2etIhjyxcqXqBw3Ck05bKK",
+            "application_fee_percent": None,
+            "automatic_tax": {
+                "disabled_reason": None,
+                "enabled": False,
+                "liability": None
+            },
+            "billing_cycle_anchor": 1768443429,
+            "billing_cycle_anchor_config": None,
+            "billing_mode": {
+                "flexible": None,
+                "type": "classic"
+            },
+            "billing_thresholds": None,
+            "cancel_at": None,
+            "cancel_at_period_end": False,
+            "canceled_at": None,
+            "cancellation_details": {
+                "comment": None,
+                "feedback": None,
+                "reason": None
+            },
+            "collection_method": "charge_automatically",
+            "created": 1768443429,
+            "currency": "usd",
+            "current_period_end": 1771121829,
+            "current_period_start": 1768443429,
+            "customer": "cus_TnGebqoEQHrpIh",
+            "customer_account": None,
+            "days_until_due": None,
+            "default_payment_method": "pm_1Spg7UL1MLd6bigCqaJlkpSl",
+            "default_source": None,
+            "default_tax_rates": [],
+            "description": None,
+            "discount": None,
+            "discounts": [],
+            "ended_at": None,
+            "invoice_settings": {
+                "account_tax_ids": None,
+                "issuer": {
+                    "type": "self"
+                }
+            },
+            "items": {
+                "object": "list",
+                "data": [
+                    {
+                        "id": "si_TnGeY6tIssOAFm",
+                        "object": "subscription_item",
+                        "billing_thresholds": None,
+                        "created": 1768443430,
+                        "current_period_end": 1771121829,
+                        "current_period_start": 1768443429,
+                        "discounts": [],
+                        "metadata": {},
+                        "plan": {
+                            "id": "price_1OxZPCL1MLd6bigCglyGWwz9",
+                            "object": "plan",
+                            "active": True,
+                            "aggregate_usage": None,
+                            "amount": 100,
+                            "amount_decimal": "100",
+                            "billing_scheme": "per_unit",
+                            "created": 1711218898,
+                            "currency": "usd",
+                            "interval": "month",
+                            "interval_count": 1,
+                            "livemode": False,
+                            "metadata": {},
+                            "meter": None,
+                            "nickname": None,
+                            "product": "prod_Pn9imCT8L9sSWq",
+                            "tiers_mode": None,
+                            "transform_usage": None,
+                            "trial_period_days": None,
+                            "usage_type": "licensed"
+                        },
+                        "price": {
+                            "id": "price_1OxZPCL1MLd6bigCglyGWwz9",
+                            "object": "price",
+                            "active": True,
+                            "billing_scheme": "per_unit",
+                            "created": 1711218898,
+                            "currency": "usd",
+                            "custom_unit_amount": None,
+                            "livemode": False,
+                            "lookup_key": None,
+                            "metadata": {},
+                            "nickname": None,
+                            "product": "prod_Pn9imCT8L9sSWq",
+                            "recurring": {
+                                "aggregate_usage": None,
+                                "interval": "month",
+                                "interval_count": 1,
+                                "meter": None,
+                                "trial_period_days": None,
+                                "usage_type": "licensed"
+                            },
+                            "tax_behavior": "exclusive",
+                            "tiers_mode": None,
+                            "transform_quantity": None,
+                            "type": "recurring",
+                            "unit_amount": 100,
+                            "unit_amount_decimal": "100"
+                        },
+                        "quantity": 354,
+                        "subscription": "sub_1Spg7VL1MLd6bigCVs56WfSQ",
+                        "tax_rates": []
+                    }
+                ],
+                "has_more": False,
+                "total_count": 1,
+                "url": "/v1/subscription_items?subscription=sub_1Spg7VL1MLd6bigCVs56WfSQ"
+            },
+            "latest_invoice": "in_1Spg7VL1MLd6bigCYFD9Vsdj",
+            "livemode": False,
+            "metadata": {
+                "campaign_code": "F000",
+                "created_by": "FormAssembly - Stripe Test Connector - Reference: Form 5209061 / Conn. 873218 / Resp. 394119127",
+                "honoree_name": "James Thomas Murphy"
+            },
+            "next_pending_invoice_item_invoice": None,
+            "on_behalf_of": None,
+            "pause_collection": None,
+            "payment_settings": {
+                "payment_method_options": None,
+                "payment_method_types": None,
+                "save_default_payment_method": "off"
+            },
+            "pending_invoice_item_interval": None,
+            "pending_setup_intent": None,
+            "pending_update": None,
+            "plan": {
+                "id": "price_1OxZPCL1MLd6bigCglyGWwz9",
+                "object": "plan",
+                "active": True,
+                "aggregate_usage": None,
+                "amount": 100,
+                "amount_decimal": "100",
+                "billing_scheme": "per_unit",
+                "created": 1711218898,
+                "currency": "usd",
+                "interval": "month",
+                "interval_count": 1,
+                "livemode": False,
+                "metadata": {},
+                "meter": None,
+                "nickname": None,
+                "product": "prod_Pn9imCT8L9sSWq",
+                "tiers_mode": None,
+                "transform_usage": None,
+                "trial_period_days": None,
+                "usage_type": "licensed"
+            },
+            "quantity": 354,
+            "schedule": None,
+            "start_date": 1768443429,
+            "status": "incomplete",
+            "test_clock": None,
+            "transfer_data": None,
+            "trial_end": None,
+            "trial_settings": {
+                "end_behavior": {
+                    "missing_payment_method": "create_invoice"
+                }
+            },
+            "trial_start": None
+        }
+    },
+    "livemode": False,
+    "pending_webhooks": 0,
+    "request": {
+        "id": "req_msoTPXcvbM5Sfx",
+        "idempotency_key": "f071b04d-1db3-4079-80c1-b2c96ea6ff71"
+    },
+    "type": "customer.subscription.created"
+}
+
+@pytest.fixture
 def failed_subscription_event_11_8_25():
     return {
     "id": "evt_1SR7BkL1MLd6bigCroc2jyYC",

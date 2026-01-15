@@ -82,3 +82,10 @@ def test_map_donation_refund_succeeds():
     mapped_refund = donation_mapper.map_refund(stripe_invoice_id)
     assert mapped_refund['Stripe_Invoice_ID__c'] == '1111'
     assert mapped_refund['StageName'] == 'Withdrawn'
+
+@pytest.mark.integration
+def test_map_donation_creation_suceeds_with_honoree_contact():
+    #arrange
+
+    # act
+    donation_mapper = DonationMapper(None, None,)

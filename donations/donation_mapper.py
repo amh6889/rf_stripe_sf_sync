@@ -58,6 +58,14 @@ class DonationMapper:
         amount = get_amount(data)
         donation_source = map_donation_source(data)
         stripe_customer_id = data.get('customer')
+        honoree_contact_id = None
+        if metadata := data.get('metadata'):
+            if honoree_name := metadata.get('honoree_name'):
+                split_name = honoree_name.split()
+                first_name = split_name[0]
+                middle_name = split_name[1]
+                last_name = split_name[2]
+                honoree_contact_id = self.salesforce_donor.get_contact_id_by_name(first_name=first_name, last_name=last_name, middle_name=middle_name)
         donor_email = self.stripe_donor.get_donor_email(stripe_customer_id)
         if donor_email:
             salesforce_id = self.salesforce_donor.get_contact_id(donor_email)
@@ -87,7 +95,7 @@ class DonationMapper:
                     'Card_Last_4__c': last_4_digits,
                     'Stripe_Invoice_ID__c': charge_id,
                     'Stripe_Subscription_ID__c': stripe_subscription_id,
-                    'npsp__Honoree_Name__c': data.get('honoree_name')
+                    'npsp__Honoree_Contact__c': honoree_contact_id
                     }
         return donation
 

@@ -140,6 +140,14 @@ class SubscriptionMapper:
         donation_source = map_donation_source(data)
         status = data.get('status')
         mapped_status, closed_reason = map_status(status)
+        honoree_contact_id = None
+        if metadata := data.get('metadata'):
+            if honoree_name := metadata.get('honoree_name'):
+                split_name = honoree_name.split()
+                first_name = split_name[0]
+                middle_name = split_name[1]
+                last_name = split_name[2]
+                honoree_contact_id = self.salesforce_donor.get_contact_id_by_name(first_name=first_name, last_name=last_name, middle_name=middle_name)
 
         if subscription_schedule := self.get_subscription_schedule(data):
             if anet_subscription_id := get_anet_subscription_id(subscription_schedule):
@@ -169,7 +177,8 @@ class SubscriptionMapper:
                                'npsp__Day_of_Month__c': start_date.day,
                                'npsp__InstallmentFrequency__c': installment_frequency,
                                'npsp__PaymentMethod__c': payment_method_type,
-                               'npe03__Contact__c': salesforce_id}
+                               'npe03__Contact__c': salesforce_id,
+                               'Honoree_Contact__c': honoree_contact_id}
 
         return mapped_subscription
 

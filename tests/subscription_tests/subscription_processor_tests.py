@@ -132,6 +132,27 @@ def test_process_create_subscription_event_works(failed_subscription_event_11_8_
     assert response is True
 
 
+@pytest.mark.integration
+def test_process_create_subscription_event_works_with_honoree_name(subscription_event_with_honoree_name):
+    # arrange
+    stripe_connection = StripeConnection()
+    stripe_subscription_service = StripeSubscriptionService(stripe_connection)
+    salesforce_subscription_service = SalesforceSubscriptionService()
+    stripe_donor_service = StripeDonorService(stripe_connection)
+    salesforce_donor_service = SalesforceDonorService()
+    subscription_mapper = SubscriptionMapper(stripe_subscription=stripe_subscription_service,
+                                             salesforce_subscription=salesforce_subscription_service,
+                                             stripe_donor=stripe_donor_service,
+                                             salesforce_donor=salesforce_donor_service)
+
+    subscription_event_processor = SubscriptionEventService(mapper=subscription_mapper,
+                                                            salesforce_subscription=salesforce_subscription_service)
+    # act
+    response = subscription_event_processor.process_create_event(subscription_event_with_honoree_name)
+    # assert
+    assert response is True
+
+
 
 @pytest.mark.integration
 def test_integration_process_delete_event_with_no_subscription_schedule(subscription_delete_event_dict):
