@@ -19,6 +19,39 @@ def test_create_donation_succeeds():
     assert response.get('success') is True
     assert type(response) is dict
 
+@pytest.mark.integration
+def test_create_donation_succeeds_with_honoree_name():
+    # arrange
+    salesforce_donation_service = SalesforceDonationService()
+    invoice = {'Stripe_Invoice_ID__c': '11111', 'Amount': '5',
+               'CloseDate': '2023-06-08',
+               'StageName': 'Closed Won',
+               'Donation_Source__c': 'RF Web-form',
+               'Name': '$5 RF Web-form',
+               'npe03__Recurring_Donation__c': None,
+               'npsp__Honoree_Name__c': 'James Thomas Murphy',
+               'Stripe_Subscription_ID__c': None, 'Card_Last_4__c': '5555',
+               'npsp__Primary_Contact__c': '0030b00002TWs3eAAD', 'npe01__Contact_Id_for_Role__c': '0030b00002TWs3eAAD'}
+    response = salesforce_donation_service.create(invoice)
+    assert response.get('success') is True
+
+
+@pytest.mark.integration
+def test_create_donation_succeeds_with_no_honoree_name():
+    # arrange
+    salesforce_donation_service = SalesforceDonationService()
+    invoice = {'Stripe_Invoice_ID__c': '22222', 'Amount': '5',
+               'CloseDate': '2023-06-08',
+               'StageName': 'Closed Won',
+               'Donation_Source__c': 'RF Web-form',
+               'Name': '$5 RF Web-form',
+               'npe03__Recurring_Donation__c': None,
+               'npsp__Honoree_Name__c': None,
+               'Stripe_Subscription_ID__c': None, 'Card_Last_4__c': '5555',
+               'npsp__Primary_Contact__c': '0030b00002TWs3eAAD', 'npe01__Contact_Id_for_Role__c': '0030b00002TWs3eAAD'}
+    response = salesforce_donation_service.create(invoice)
+    assert response.get('success') is True
+
 
 @pytest.mark.integration
 def test_create_donation_errors():

@@ -58,8 +58,6 @@ class DonationMapper:
         amount = get_amount(data)
         donation_source = map_donation_source(data)
         stripe_customer_id = data.get('customer')
-        #if honoree_name := data.get('honoree_name'):
-
         donor_email = self.stripe_donor.get_donor_email(stripe_customer_id)
         if donor_email:
             salesforce_id = self.salesforce_donor.get_contact_id(donor_email)
@@ -88,7 +86,8 @@ class DonationMapper:
                     'npe03__Recurring_Donation__c': salesforce_subscription_id,
                     'Card_Last_4__c': last_4_digits,
                     'Stripe_Invoice_ID__c': charge_id,
-                    'Stripe_Subscription_ID__c': stripe_subscription_id
+                    'Stripe_Subscription_ID__c': stripe_subscription_id,
+                    'npsp__Honoree_Name__c': data.get('honoree_name')
                     }
         return donation
 
