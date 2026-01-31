@@ -37,7 +37,7 @@ def test_donation_failure_event_works(donation_failure_event):
 
 
 @pytest.mark.integration
-def test_donation_create_event_works(donation_failure_event_11_8_2025):
+def test_donation_create_event_works(donation_failure_event_1_31_26):
     #arrange
     stripe_connection = StripeConnection()
     salesforce_subscription_service = SalesforceSubscriptionService()
@@ -55,6 +55,6 @@ def test_donation_create_event_works(donation_failure_event_11_8_2025):
                                                   stripe_donation_service=stripe_donation_service,
                                                   email_donation_service=salesforce_email_service)
     #act
-    success = donation_event_service.process_create_event(donation_failure_event_11_8_2025)
+    sf_donation_id = donation_event_service.process_create_event(donation_failure_event_1_31_26)
     #assert
-    assert success is True
+    assert sf_donation_id is not None

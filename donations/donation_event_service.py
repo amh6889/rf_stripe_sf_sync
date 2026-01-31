@@ -1,4 +1,5 @@
 import time
+from typing import Dict
 
 from donations.donation_mapper import DonationMapper
 from donations.donation_salesforce_service import SalesforceDonationService
@@ -15,16 +16,19 @@ class DonationEventService:
         self.stripe_donation_service = stripe_donation_service
         self.email_donation_service = email_donation_service
 
-    def process_create_event(self, donation_event):
+    def process_create_event(self, donation_event: Dict[str,str]) -> str:
         donation = self.donation_mapper.map_donation(donation_event)
         stripe_invoice_id = donation.get('Stripe_Invoice_ID__c')
         sf_donation_id = self.salesforce_donation.exists(stripe_invoice_id)
         if not sf_donation_id:
-            self._create_donation_in_salesforce(stripe_invoice_id, donation)
+            sf_donation_id = self._create_donation_in_salesforce(stripe_invoice_id, donation)
+            print(
+                f'Created Stripe donation {stripe_invoice_id} successfully in Salesforce with ID {sf_donation_id}')
         else:
             error_message = f'Stripe charge {stripe_invoice_id} already exists in Salesforce with Donation ID {sf_donation_id}. Cannot process donation create event further.'
             print(error_message)
             raise Exception(error_message)
+        return sf_donation_id
 
     def process_failure_event(self, failure_event):
         success = False
@@ -76,18 +80,18 @@ class DonationEventService:
             time.sleep(30)
             raise Exception(error_message)
 
-    def _create_donation_in_salesforce(self, stripe_invoice_id, donation):
+    def _create_donation_in_salesforce(self, stripe_invoice_id, donation) -> str:
         response = self.salesforce_donation.create(donation)
+        salesforce_donation_id = None
         if 'success' in response:
             success = response.get('success')
             if success:
-                salesforce_id = response.get('id')
-                print(
-                    f'Created Stripe donation {stripe_invoice_id} successfully in Salesforce with ID {salesforce_id}')
+                salesforce_donation_id = response.get('id')
             else:
                 errors = response.get('errors')
                 error_message = f'Did not create Stripe donation {stripe_invoice_id} successfully in Salesforce due to: {errors}'
                 raise Exception(error_message)
+        return salesforce_donation_id
 
     def _update_donation_in_salesforce(self, stripe_invoice_id, sf_donation_id, donation):
         response = self.salesforce_donation.update(sf_donation_id, donation)
